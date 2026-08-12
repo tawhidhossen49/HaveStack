@@ -1,1090 +1,1875 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HaveStack Technologies — We Build Your Ideas</title>
-<meta name="description" content="HaveStack Technologies is a software development company based in Bangladesh, owned by Amaze Consortium. We build portfolios, business websites, ERP systems, LMS platforms and digital solutions.">
-<link rel="icon" type="image/png" href="assets/favicon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --bg: #050506;
-    --bg-alt: #08080a;
-    --surface: #0c0c0e;
-    --surface-2: #131316;
-    --line: #202024;
-    --line-soft: #17171a;
-    --text: #f4f3f1;
-    --text-dim: #9c9ca4;
-    --text-faint: #5c5c63;
-    --brand: #ff3157;
-    --brand-2: #ff5a76;
-    --brand-tint: rgba(255,49,87,0.10);
-    --brand-tint-strong: rgba(255,49,87,0.18);
-    --radius: 14px;
-    --maxw: 1180px;
-    --ease: cubic-bezier(.16,.84,.44,1);
-  }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HaveStack Technologies | Enterprise systems for institutions</title>
+<meta name="description" content="HaveStack Technologies designs, builds and operates enterprise resource planning, learning platforms and public facing systems for banks, institutions and government bodies in Bangladesh. A subsidiary of Amaze Consortium." />
+<link rel="icon" href="assets/favicon.png" />
+<meta name="color-scheme" content="light dark" />
+<meta name="theme-color" content="#E9EAEB" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0E1012" media="(prefers-color-scheme: dark)" />
 
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth; overflow-x:hidden; width:100%;}
-  body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Inter',system-ui,-apple-system,sans-serif;
-    font-size:16px;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
-    overflow-x:hidden;
-    width:100%;
-    position:relative;
-  }
-  img{display:block; max-width:100%;}
-  a{color:inherit; text-decoration:none;}
-  ul{list-style:none;}
-  button{font-family:inherit; cursor:pointer;}
-  input, textarea, select{font-family:inherit;}
+<meta property="og:type" content="website" />
+<meta property="og:title" content="HaveStack Technologies | Enterprise systems for institutions" />
+<meta property="og:description" content="Institutions run on systems. HaveStack builds them. Engagements begin with a meeting." />
+<meta property="og:image" content="assets/logo-mark.png" />
+<meta name="twitter:card" content="summary_large_image" />
 
-  ::selection{background:var(--brand); color:#0a0a0a;}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css" />
 
-  .wrap{
-    max-width:var(--maxw);
-    margin:0 auto;
-    padding:0 32px;
-    width:100%;
-  }
-
-  @media (max-width: 640px){
-    .wrap{padding:0 20px;}
-  }
-
-  /* ---------- focus ---------- */
-  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
-    outline:2px solid var(--brand);
-    outline-offset:3px;
-    border-radius:4px;
-  }
-
-  /* ---------- utility: checker glyph ---------- */
-  .chk{
-    display:inline-grid;
-    grid-template-columns:repeat(2,1fr);
-    grid-template-rows:repeat(2,1fr);
-    width:10px; height:10px;
-    flex:none;
-    gap:1px;
-  }
-  .chk span{background:var(--brand);}
-  .chk-a span:nth-child(1),.chk-a span:nth-child(4){background:var(--brand);}
-  .chk-a span:nth-child(2),.chk-a span:nth-child(3){background:transparent;}
-  .chk-b span:nth-child(2),.chk-b span:nth-child(3){background:var(--brand);}
-  .chk-b span:nth-child(1),.chk-b span:nth-child(4){background:transparent;}
-  .chk-c span:nth-child(1),.chk-c span:nth-child(2){background:var(--brand);}
-  .chk-c span:nth-child(3),.chk-c span:nth-child(4){background:transparent;}
-  .chk-d span:nth-child(1){background:var(--brand);}
-  .chk-d span:nth-child(2),.chk-d span:nth-child(3),.chk-d span:nth-child(4){background:transparent;}
-
-  .eyebrow{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-size:12px;
-    font-weight:600;
-    letter-spacing:0.16em;
-    text-transform:uppercase;
-    color:var(--brand);
-    margin-bottom:18px;
-  }
-
-  .section-head{
-    max-width:640px;
-    margin-bottom:56px;
-  }
-  .section-head h2{
-    font-size:clamp(28px,4vw,42px);
-    font-weight:800;
-    letter-spacing:-0.02em;
-    line-height:1.15;
-    margin-bottom:16px;
-  }
-  .section-head p{
-    color:var(--text-dim);
-    font-size:17px;
-    line-height:1.6;
-    max-width:520px;
-  }
-
-  section{
-    position:relative;
-    padding:120px 0;
-    border-top:1px solid var(--line-soft);
-  }
-  @media (max-width: 760px){
-    section{padding:80px 0;}
-  }
-
-  /* ---------- buttons ---------- */
-  .btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    padding:14px 26px;
-    border-radius:999px;
-    font-size:14.5px;
-    font-weight:600;
-    letter-spacing:0.01em;
-    transition:transform .25s var(--ease), background .25s ease, border-color .25s ease, color .25s ease;
-    white-space:nowrap;
-  }
-  .btn-primary{
-    background:var(--brand);
-    color:#0a0508;
-    border:1px solid var(--brand);
-  }
-  .btn-primary:hover{ transform:translateY(-2px); background:var(--brand-2); border-color:var(--brand-2); }
-  .btn-ghost{
-    background:transparent;
-    color:var(--text);
-    border:1px solid var(--line);
-  }
-  .btn-ghost:hover{ transform:translateY(-2px); border-color:#3a3a40; background:var(--surface); }
-  .btn-arrow{ transition:transform .25s var(--ease); }
-  .btn:hover .btn-arrow{ transform:translateX(3px); }
-
-  /* ---------- nav ---------- */
-  header{
-    position:fixed;
-    top:0; left:0; right:0;
-    z-index:100;
-    padding:18px 0;
-    background:rgba(5,5,6,0.6);
-    backdrop-filter:blur(14px);
-    -webkit-backdrop-filter:blur(14px);
-    border-bottom:1px solid transparent;
-    transition:border-color .3s ease, background .3s ease, padding .3s ease;
-  }
-  header.scrolled{
-    border-bottom-color:var(--line-soft);
-    padding:13px 0;
-    background:rgba(5,5,6,0.85);
-  }
-  header .wrap{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:24px;
-  }
-  .brand{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-weight:800;
-    font-size:18px;
-    letter-spacing:-0.01em;
-  }
-  .brand img{ width:28px; height:28px; }
-  .brand .sub{
-    display:block;
-    font-size:9px;
-    font-weight:600;
-    letter-spacing:0.18em;
-    color:var(--text-faint);
-    margin-top:1px;
-  }
-  nav.primary{
-    display:flex;
-    align-items:center;
-    gap:36px;
-  }
-  nav.primary a{
-    font-size:14px;
-    font-weight:500;
-    color:var(--text-dim);
-    transition:color .2s ease;
-    position:relative;
-  }
-  nav.primary a:hover{ color:var(--text); }
-  .nav-cta{ display:flex; align-items:center; gap:18px; }
-  .nav-toggle{
-    display:none;
-    width:38px; height:38px;
-    align-items:center; justify-content:center;
-    background:transparent; border:1px solid var(--line); border-radius:9px;
-    color:var(--text);
-  }
-  .nav-toggle svg{ width:16px; height:16px; }
-
-  @media (max-width: 900px){
-    nav.primary{
-      position:fixed; top:64px; left:16px; right:16px;
-      flex-direction:column; align-items:flex-start;
-      background:var(--surface);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:22px 24px;
-      gap:4px;
-      transform:translateY(-12px);
-      opacity:0;
-      pointer-events:none;
-      transition:all .25s var(--ease);
+<script>
+  /* Set theme and the js flag before first paint so there is no flash and no
+     animation state is visible to a reader without scripting. */
+  (function () {
+    var r = document.documentElement;
+    r.classList.add('js');
+    try {
+      var s = localStorage.getItem('hs-theme');
+      if (s === 'light' || s === 'dark') r.setAttribute('data-theme', s);
+      else r.setAttribute('data-theme', matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    } catch (e) {
+      r.setAttribute('data-theme', 'light');
     }
-    nav.primary.open{ transform:translateY(0); opacity:1; pointer-events:auto; }
-    nav.primary a{ padding:11px 0; width:100%; border-bottom:1px solid var(--line-soft); font-size:15px;}
-    nav.primary a:last-child{border-bottom:none;}
-    .nav-cta .btn-ghost{ display:none; }
-    .nav-toggle{ display:flex; }
-  }
 
-  /* ---------- hero ---------- */
-  .hero{
-    position:relative;
-    padding:190px 0 120px;
-    border-top:none;
-    overflow:hidden;
-    max-width:100vw;
-  }
-  .grid-field{
-    position:absolute;
-    top:-10%; bottom:-10%; left:0; right:0;
-    z-index:0;
-    display:grid;
-    grid-template-columns:repeat(16, 1fr);
-    grid-template-rows:repeat(10, 1fr);
-    mask-image:radial-gradient(ellipse 70% 60% at 62% 38%, #000 0%, transparent 72%);
-    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 62% 38%, #000 0%, transparent 72%);
-    pointer-events:none;
-  }
-  .grid-field i{
-    background:var(--brand);
-    opacity:0;
-    animation:flicker 7s ease-in-out infinite;
-    animation-delay:calc(var(--d) * 1s);
-  }
-  @keyframes flicker{
-    0%, 100%{ opacity:0; }
-    50%{ opacity:.16; }
-  }
-  .hero .wrap{ position:relative; z-index:1; }
-  .hero-inner{
-    max-width:760px;
-  }
-  .hero h1{
-    font-size:clamp(38px, 7vw, 84px);
-    font-weight:800;
-    letter-spacing:-0.035em;
-    line-height:1.05;
-    margin-bottom:26px;
-    overflow-wrap:break-word;
-  }
-  .hero h1 em{
-    font-style:normal;
-    color:var(--brand);
-  }
-  .hero p.lead{
-    font-size:19px;
-    color:var(--text-dim);
-    max-width:560px;
-    line-height:1.65;
-    margin-bottom:40px;
-  }
-  .hero-ctas{
-    display:flex;
-    align-items:center;
-    gap:16px;
-    flex-wrap:wrap;
-    margin-bottom:56px;
-  }
-  .hero-proof{
-    display:flex;
-    align-items:center;
-    flex-wrap:wrap;
-    row-gap:10px;
-    gap:14px;
-    font-size:13px;
-    color:var(--text-faint);
-  }
-  .hero-proof .divider{ width:1px; height:14px; background:var(--line); }
-  .hero-proof strong{ color:var(--text-dim); font-weight:600; }
+    /* Measure the classic scrollbar so full bleed elements can subtract it
+       rather than overrunning the page by its width. */
+    function gutter() {
+      r.style.setProperty('--sbw', (window.innerWidth - r.clientWidth) + 'px');
+    }
+    gutter();
+    window.addEventListener('resize', gutter);
 
-  /* ---------- marquee ---------- */
-  .marquee-section{
-    padding:26px 0;
-    border-top:1px solid var(--line-soft);
-    border-bottom:1px solid var(--line-soft);
-    overflow:hidden;
-    background:var(--bg-alt);
-  }
-  .marquee-track{
-    display:flex;
-    align-items:center;
-    width:max-content;
-    animation:scroll-left 32s linear infinite;
-  }
-  .marquee-track span.item{
-    font-size:13px;
-    font-weight:600;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:var(--text-faint);
-    padding:0 30px;
-    white-space:nowrap;
-    display:flex;
-    align-items:center;
-    gap:14px;
-  }
-  @keyframes scroll-left{
-    from{ transform:translateX(0); }
-    to{ transform:translateX(-50%); }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .marquee-track{ animation:none; }
-    .grid-field i{ animation:none; opacity:.06; }
-  }
+    /* The hero entrance is released here, in the head, so that an error in any
+       later script cannot leave the statement stranded in its hidden state. */
+    function release() {
+      var hero = document.querySelector('.hero');
+      if (hero) hero.classList.add('lit');
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      requestAnimationFrame(release);
+    });
+    window.setTimeout(release, 1200);
+  })();
+</script>
 
-  /* ---------- reveal ---------- */
-  .reveal{
-    opacity:0;
-    transform:translateY(22px);
-    transition:opacity .7s var(--ease), transform .7s var(--ease);
-  }
-  .reveal.in{ opacity:1; transform:translateY(0); }
+<style>
+/* ==========================================================================
+   HaveStack Technologies
 
-  /* ---------- about ---------- */
-  .about-grid{
-    display:grid;
-    grid-template-columns:1.15fr 0.85fr;
-    gap:80px;
-    align-items:start;
-  }
-  .about-copy p{
-    color:var(--text-dim);
-    font-size:16.5px;
-    line-height:1.75;
-    margin-bottom:20px;
-    max-width:520px;
-  }
-  .about-copy p strong{ color:var(--text); font-weight:600; }
-  .principles{
-    display:flex;
-    flex-direction:column;
-    gap:1px;
-    background:var(--line-soft);
-    border:1px solid var(--line-soft);
-    border-radius:var(--radius);
-    overflow:hidden;
-  }
-  .principle{
-    background:var(--surface);
-    padding:26px 26px;
-    display:flex;
-    gap:16px;
-    align-items:flex-start;
-  }
-  .principle .chk{ margin-top:6px; }
-  .principle h3{ font-size:15.5px; font-weight:700; margin-bottom:6px; letter-spacing:-0.01em; }
-  .principle p{ font-size:14px; color:var(--text-dim); line-height:1.6; }
+   SHAPE
+   The logo mark is a 2x2 quadrant: two solid squares on one diagonal, two
+   quarter arcs on the other. Every rectangle on this page therefore cuts two
+   opposite corners, top right and bottom left, and stays sharp on the other
+   diagonal. Panels 28px, buttons 12px, inputs 10px, schematic nodes 4px.
+   No other corner treatment appears anywhere.
 
-  @media (max-width: 860px){
-    .about-grid{ grid-template-columns:1fr; gap:44px; }
-  }
+   COLOUR
+   Cool monochrome ground, one accent held to a very small share of the
+   surface. Light and dark ship from the same variables.
+   ========================================================================== */
 
-  /* ---------- services ---------- */
-  .services-grid{
-    display:grid;
-    grid-template-columns:repeat(3, 1fr);
-    gap:1px;
-    background:var(--line-soft);
-    border:1px solid var(--line-soft);
-    border-radius:var(--radius);
-    overflow:hidden;
-  }
-  .service-card{
-    background:var(--surface);
-    padding:36px 30px;
-    transition:background .3s ease;
-    position:relative;
-  }
-  .service-card:hover{ background:var(--surface-2); }
-  .service-card .chk{ width:22px; height:22px; gap:2px; margin-bottom:22px; }
-  .service-card .chk span{ border-radius:2px; }
-  .service-card h3{
-    font-size:18px;
-    font-weight:700;
-    letter-spacing:-0.01em;
-    margin-bottom:10px;
-  }
-  .service-card p{
-    font-size:14.5px;
-    color:var(--text-dim);
-    line-height:1.65;
-  }
-  .service-card .tag{
-    display:inline-block;
-    margin-top:18px;
-    font-size:11px;
-    font-weight:600;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color:var(--text-faint);
-    border:1px solid var(--line);
-    padding:5px 10px;
-    border-radius:999px;
-  }
-  @media (max-width: 860px){
-    .services-grid{ grid-template-columns:1fr; }
-  }
-  @media (min-width:861px) and (max-width:1080px){
-    .services-grid{ grid-template-columns:repeat(2,1fr); }
-  }
+:root{
+  --bg:#E9EAEB;
+  --raise:#F5F6F6;
+  --sink:#DFE1E2;
+  --ink:#0F1113;
+  --ink-2:#4C5257;
+  --ink-3:#6C7378;
+  --rule:#C9CCCE;
+  --rule-2:#D9DBDC;
+  --signal:#D91F35;
+  --signal-deep:#AF1729;
+  --on-signal:#FFFFFF;
 
-  /* ---------- process ---------- */
-  .process-list{
-    display:flex;
-    flex-direction:column;
-  }
-  .process-item{
-    display:grid;
-    grid-template-columns:90px 1fr;
-    gap:32px;
-    padding:34px 0;
-    border-top:1px solid var(--line-soft);
-    align-items:baseline;
-  }
-  .process-item:last-child{ border-bottom:1px solid var(--line-soft); }
-  .process-num{
-    font-size:14px;
-    font-weight:700;
-    color:var(--brand);
-    letter-spacing:0.05em;
-    font-variant-numeric:tabular-nums;
-  }
-  .process-body h3{
-    font-size:20px;
-    font-weight:700;
-    letter-spacing:-0.01em;
-    margin-bottom:8px;
-  }
-  .process-body p{
-    color:var(--text-dim);
-    font-size:15px;
-    max-width:560px;
-    line-height:1.65;
-  }
-  @media (max-width:640px){
-    .process-item{ grid-template-columns:1fr; gap:8px; }
-  }
+  --cp-28:polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 28px 100%, 0 calc(100% - 28px));
+  --cp-16:polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  --cp-14:polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  --cp-12:polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  --cp-10:polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  --cp-8:polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  --cp-4:polygon(0 0, calc(100% - 4px) 0, 100% 4px, 100% 100%, 4px 100%, 0 calc(100% - 4px));
+  --cp-3:polygon(0 0, calc(100% - 3px) 0, 100% 3px, 100% 100%, 3px 100%, 0 calc(100% - 3px));
 
-  /* ---------- clients / partners ---------- */
-  .partner-feature{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:32px;
-    flex-wrap:wrap;
-    background:var(--surface);
-    border:1px solid var(--line-soft);
-    border-radius:var(--radius);
-    padding:36px 40px;
-    margin-bottom:56px;
-  }
-  .partner-feature .left{ display:flex; align-items:center; gap:18px; }
-  .partner-feature .mark{
-    width:46px; height:46px;
-    border-radius:11px;
-    background:var(--brand-tint);
-    display:flex; align-items:center; justify-content:center;
-    flex:none;
-  }
-  .partner-feature .mark .chk{ width:16px; height:16px; }
-  .partner-feature h3{ font-size:17px; font-weight:700; margin-bottom:4px; }
-  .partner-feature p{ font-size:14px; color:var(--text-dim); max-width:420px; }
-  .partner-feature .btn{ flex:none; }
+  --maxw:1320px;
+  --gut:clamp(20px,4vw,56px);
+  --pad:clamp(84px,10vw,130px);
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  /* width of the classic scrollbar, measured once by script. Full bleed
+     elements subtract it so 100vw does not overrun the visible page. */
+  --sbw:0px;
 
-  .sector-label{
-    font-size:12px;
-    font-weight:600;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    color:var(--text-faint);
-    margin-bottom:20px;
-  }
-  .sector-grid{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    gap:1px;
-    background:var(--line-soft);
-    border:1px solid var(--line-soft);
-    border-radius:var(--radius);
-    overflow:hidden;
-  }
-  .sector{
-    background:var(--surface);
-    padding:22px 16px;
-    text-align:center;
-    font-size:13.5px;
-    font-weight:600;
-    color:var(--text-dim);
-    transition:background .25s ease, color .25s ease;
-  }
-  .sector:hover{ background:var(--surface-2); color:var(--text); }
-  @media (max-width:860px){
-    .sector-grid{ grid-template-columns:repeat(3,1fr); }
-    .partner-feature{ padding:28px; }
-  }
-  @media (max-width:520px){
-    .sector-grid{ grid-template-columns:repeat(2,1fr); }
-  }
+  --sans:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',monospace;
 
-  /* ---------- book a meeting ---------- */
-  .book-section{
-    background:
-      radial-gradient(ellipse 60% 90% at 20% 0%, rgba(255,49,87,0.08), transparent 60%),
-      var(--bg-alt);
-  }
-  .book-grid{
-    display:grid;
-    grid-template-columns:0.9fr 1.1fr;
-    gap:70px;
-  }
-  .book-copy p{
-    color:var(--text-dim);
-    font-size:16.5px;
-    line-height:1.7;
-    margin-bottom:28px;
-    max-width:460px;
-  }
-  .contact-line{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:16px 0;
-    border-top:1px solid var(--line-soft);
-    font-size:14.5px;
-  }
-  .contact-line:last-of-type{ border-bottom:1px solid var(--line-soft); }
-  .contact-line .label{ color:var(--text-faint); width:110px; flex:none; font-weight:600; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; }
-  .contact-line a{ color:var(--text); font-weight:500; }
-  .contact-line a:hover{ color:var(--brand); }
+  color-scheme:light;
+}
 
-  .form-card{
-    background:var(--surface);
-    border:1px solid var(--line-soft);
-    border-radius:var(--radius);
-    padding:34px;
-  }
-  .form-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
-  .field{ display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
-  .field label{ font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--text-faint); }
-  .field input, .field select, .field textarea{
-    background:var(--bg);
-    border:1px solid var(--line);
-    border-radius:9px;
-    padding:12px 14px;
-    color:var(--text);
-    font-size:14.5px;
-    transition:border-color .2s ease;
-  }
-  .field input:focus, .field select:focus, .field textarea:focus{
-    border-color:var(--brand);
-    outline:none;
-  }
-  .field textarea{ resize:vertical; min-height:96px; }
-  .form-card .btn-primary{ width:100%; margin-top:6px; padding:15px 26px; }
-  .form-note{ font-size:12px; color:var(--text-faint); margin-top:14px; text-align:center; }
-  @media (max-width:860px){
-    .book-grid{ grid-template-columns:1fr; gap:44px; }
-    .form-row{ grid-template-columns:1fr; }
-  }
+html[data-theme="dark"]{
+  --bg:#0E1012;
+  --raise:#16191B;
+  --sink:#0A0C0D;
+  --ink:#E9EAEA;
+  --ink-2:#A0A6AA;
+  --ink-3:#848A8E;
+  --rule:#272B2E;
+  --rule-2:#1E2124;
+  --signal:#FF3A50;
+  --signal-deep:#FF6274;
+  --on-signal:#0E1012;
+  --wash:rgba(255,58,80,.10);
+  color-scheme:dark;
+}
 
-  /* ---------- footer ---------- */
-  footer{
-    border-top:1px solid var(--line-soft);
-    padding:64px 0 32px;
-  }
-  .footer-top{
-    display:flex;
-    justify-content:space-between;
-    gap:40px;
-    flex-wrap:wrap;
-    padding-bottom:48px;
-  }
-  .footer-brand .brand{ margin-bottom:14px; }
-  .footer-brand p{
-    color:var(--text-faint);
-    font-size:14px;
-    max-width:280px;
-    line-height:1.6;
-  }
-  .footer-cols{
-    display:flex;
-    gap:64px;
-    flex-wrap:wrap;
-  }
-  .footer-col h4{
-    font-size:12px;
-    font-weight:600;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color:var(--text-faint);
-    margin-bottom:16px;
-  }
-  .footer-col a, .footer-col span{
-    display:block;
-    font-size:14px;
-    color:var(--text-dim);
-    margin-bottom:12px;
-    transition:color .2s ease;
-  }
-  .footer-col a:hover{ color:var(--brand); }
-  .footer-bottom{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:16px;
-    flex-wrap:wrap;
-    padding-top:28px;
-    border-top:1px solid var(--line-soft);
-    font-size:13px;
-    color:var(--text-faint);
-  }
-  .footer-bottom .motto{ color:var(--text-dim); font-weight:600; }
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:16.5px;line-height:1.62;font-weight:400;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  font-kerning:normal;font-feature-settings:'kern' 1,'liga' 1;
+  overflow-x:hidden;
+}
+p{text-wrap:pretty}
+.mono,[class*="mono"],.f label,.ref,.foot-bar p,.hero-rail p,.fact dt,.track .out{
+  font-variant-numeric:tabular-nums;
+}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration:none}
+ul,ol{list-style:none}
+button,input,select,textarea{font:inherit;color:inherit}
+::selection{background:var(--signal);color:var(--on-signal)}
+:focus-visible{outline:none}
 
-  @media (max-width:640px){
-    .footer-top{ flex-direction:column; }
-    .footer-cols{ gap:36px; }
-  }
+#page{position:relative}
+/* watched by script to know when the page has left the top; laid out at zero
+   cost so it cannot shift anything */
+#anchor{position:absolute;top:0;left:0;width:1px;height:34px;pointer-events:none}
 
-  /* back to top */
-  .top-link{
-    display:inline-flex; align-items:center; gap:6px;
-    color:var(--text-faint);
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding-inline:var(--gut)}
+.sect{padding-block:var(--pad);scroll-margin-top:88px;position:relative}
+.rule-top{border-top:1px solid var(--rule)}
+
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:200;
+  background:var(--ink);color:var(--bg);padding:12px 18px;font-size:14px;font-weight:600;
+  clip-path:var(--cp-10);
+}
+.skip:focus{left:12px;top:12px}
+
+/* ---------- type ---------- */
+.h1{
+  font-size:clamp(31px,4vw,54px);line-height:1.04;font-weight:700;
+  font-variation-settings:'wdth' 116;letter-spacing:-.035em;
+}
+.h2{
+  font-size:clamp(27px,3.35vw,46px);line-height:1.06;font-weight:600;
+  font-variation-settings:'wdth' 112;letter-spacing:-.029em;
+  text-wrap:balance;
+}
+.h3{
+  font-size:clamp(18.5px,1.5vw,22px);line-height:1.22;font-weight:600;
+  font-variation-settings:'wdth' 106;letter-spacing:-.02em;
+}
+.h4{
+  font-size:16.5px;line-height:1.3;font-weight:600;
+  font-variation-settings:'wdth' 104;letter-spacing:-.012em;
+}
+.display{
+  font-size:clamp(23px,2.55vw,35px);line-height:1.08;font-weight:700;
+  font-variation-settings:'wdth' 118;letter-spacing:-.03em;
+}
+.lead{font-size:clamp(17px,1.35vw,20.5px);line-height:1.55;color:var(--ink-2);font-weight:400}
+
+/* ---------- controls ---------- */
+.btn{
+  position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:11px;
+  padding:16px 26px;font-size:14.5px;font-weight:600;letter-spacing:-.008em;
+  font-variation-settings:'wdth' 104;
+  color:var(--on-signal);background:transparent;border:0;cursor:pointer;
+  text-align:left;
+}
+.btn::before{
+  content:'';position:absolute;inset:0;z-index:-1;background:var(--signal);
+  clip-path:var(--cp-12);transition:background .2s var(--ease);
+}
+.btn:hover::before{background:var(--signal-deep)}
+.btn:focus-visible::after{
+  content:'';position:absolute;inset:-4px;z-index:-2;background:var(--ink);clip-path:var(--cp-16);
+}
+.btn[disabled]{cursor:progress}
+.btn i{font-size:16px;line-height:1;transition:transform .32s var(--ease-out)}
+.btn:hover i{transform:translate(3px,-3px)}
+
+.tlink{
+  display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:500;
+  color:var(--ink);padding-bottom:3px;border-bottom:1px solid var(--rule);
+  transition:border-color .2s var(--ease),color .2s var(--ease);
+}
+.tlink:hover{border-color:var(--signal);color:var(--signal)}
+.tlink:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
+.tlink i{font-size:15px;line-height:1;transition:transform .32s var(--ease-out)}
+.tlink:hover i{transform:translateY(3px)}
+
+/* ---------- header ---------- */
+.head{
+  position:sticky;top:0;z-index:90;
+  background:var(--bg);
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:saturate(1.2) blur(14px);-webkit-backdrop-filter:saturate(1.2) blur(14px);
+  border-bottom:1px solid transparent;transition:border-color .25s var(--ease);
+}
+.head.stuck{border-bottom-color:var(--rule)}
+/* The header hairline doubles as the reading position. It fills with scroll
+   depth through a scroll driven animation, so no scroll listener is needed and
+   engines without support simply keep the plain rule. */
+.head::after{
+  content:'';position:absolute;left:0;bottom:-1px;width:100%;height:1px;
+  background:var(--signal);transform:scaleX(0);transform-origin:0 50%;
+  opacity:0;transition:opacity .4s var(--ease);pointer-events:none;
+}
+.head.stuck::after{opacity:.85}
+@supports (animation-timeline:scroll()){
+  .head::after{animation:readpos linear both;animation-timeline:scroll(root block)}
+}
+@keyframes readpos{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.head-in{display:flex;align-items:center;gap:26px;height:74px}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto}
+.brand img{width:21px;height:21px}
+.brand span{
+  font-size:17px;font-weight:700;letter-spacing:-.028em;font-variation-settings:'wdth' 112;
+}
+.brand:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
+.nav{display:flex;align-items:center;gap:26px}
+.nav a{
+  position:relative;font-size:13.8px;font-weight:500;color:var(--ink-2);letter-spacing:-.005em;
+  transition:color .18s var(--ease);
+}
+.nav a::after{
+  content:'';position:absolute;left:0;right:0;bottom:-7px;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .38s var(--ease-out),background .25s var(--ease);
+}
+.nav a:hover{color:var(--ink)}
+.nav a:hover::after{transform:scaleX(1)}
+/* the section the reader is in */
+.nav a[aria-current="true"]{color:var(--ink)}
+.nav a[aria-current="true"]::after{transform:scaleX(1);background:var(--signal)}
+.nav a:focus-visible{outline:2px solid var(--ink);outline-offset:5px}
+.head-act{display:flex;align-items:center;gap:12px}
+.icon-btn{
+  position:relative;isolation:isolate;width:38px;height:38px;display:grid;place-items:center;
+  background:transparent;border:0;cursor:pointer;color:var(--ink);
+}
+.icon-btn::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--rule);clip-path:var(--cp-10)}
+.icon-btn::after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--bg);clip-path:var(--cp-10);transition:background .2s var(--ease)}
+.icon-btn:hover::after{background:var(--sink)}
+/* Focus rings on drawn surfaces grow the frame layer outward instead of using a
+   rectangular outline, so the corner cut holds in the focused state too. */
+.icon-btn:focus-visible::before{inset:-4px;background:var(--ink);clip-path:var(--cp-14)}
+.icon-btn i{font-size:18px;line-height:1}
+html[data-theme="dark"] .th-l{display:none}
+html:not([data-theme="dark"]) .th-d{display:none}
+.burger{display:none}
+.head .btn{padding:12px 20px;font-size:13.5px}
+
+/* mobile menu */
+.mmenu{
+  position:fixed;inset:0;z-index:95;background:var(--bg);
+  display:none;flex-direction:column;padding:26px var(--gut) 40px;
+}
+.mmenu[data-open="true"]{display:flex}
+.mmenu-top{display:flex;align-items:center;height:48px;margin-bottom:34px}
+.mmenu nav{display:flex;flex-direction:column;gap:2px;margin-bottom:34px}
+.mmenu nav a{
+  font-size:27px;font-weight:600;font-variation-settings:'wdth' 108;letter-spacing:-.026em;
+  padding:13px 0;border-bottom:1px solid var(--rule-2);
+}
+.mmenu nav a:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* ==========================================================================
+   1. HERO
+   A schematic of an enterprise system drawn across the full field. The
+   statement is anchored lower left, the entity rail upper right.
+   ========================================================================== */
+.hero{
+  position:relative;min-height:calc(100svh - 74px);
+  display:flex;flex-direction:column;padding-bottom:clamp(44px,5.5vh,72px);
+  overflow:hidden;
+}
+.hero-field{
+  position:relative;z-index:0;pointer-events:none;
+  /* full bleed out of the padded container, less the scrollbar */
+  margin-inline:calc(50% - 50vw + var(--sbw) / 2);
+  height:min(285px,19.8vw);margin-top:clamp(6px,1.6vh,22px);
+}
+.schema{position:absolute;inset:0;width:100%;height:100%}
+.schema .edge,.schema .bleed{
+  fill:none;stroke:var(--rule);stroke-width:1;
+  transition:stroke .28s var(--ease),opacity .28s var(--ease);
+}
+.schema .node-box{
+  fill:none;stroke:var(--rule);stroke-width:1;
+  transform-box:fill-box;transform-origin:center;
+  transition:stroke .28s var(--ease),fill .28s var(--ease),transform .32s var(--ease-out);
+}
+.schema .node.lit .node-box{transform:scale(1.45)}
+.schema .node-box.on{fill:var(--signal);stroke:var(--signal)}
+.schema .node-hit{fill:transparent;stroke:none}
+.schema text{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  fill:var(--ink-3);transition:fill .28s var(--ease);
+}
+.schema .node{pointer-events:auto;cursor:pointer;transition:opacity .28s var(--ease)}
+.schema .node:focus{outline:none}
+.schema .node:focus-visible .focus-ring{opacity:1}
+.focus-ring{fill:none;stroke:var(--ink);stroke-width:1;opacity:0;transition:opacity .15s}
+.schema.hot .edge,.schema.hot .node{opacity:.34}
+.schema.hot .edge.lit,.schema.hot .node.lit{opacity:1}
+.schema .node.lit text{fill:var(--ink)}
+.schema .node.lit .node-box{stroke:var(--ink)}
+.schema .node.lit .node-box.on{stroke:var(--signal)}
+.schema .edge.lit{stroke:var(--ink-2)}
+.schema .pulse{
+  fill:none;stroke:var(--signal);stroke-width:1.6;stroke-linecap:round;
+  stroke-dasharray:70 930;stroke-dashoffset:1000;opacity:.55;
+}
+
+@media (min-width:1024px){
+  html.js .schema .edge,html.js .schema .bleed{animation:draw 1.8s var(--ease) both}
+  html.js .schema .node{animation:nodein .5s var(--ease) both}
+  html.js .schema .pulse{animation:pulse 12s linear 2.4s infinite}
+}
+@keyframes draw{from{stroke-dashoffset:1000}to{stroke-dashoffset:0}}
+@keyframes nodein{from{opacity:0}to{opacity:1}}
+@keyframes pulse{
+  0%{stroke-dashoffset:1000;opacity:0}
+  4%{opacity:.55}
+  46%{opacity:.55}
+  50%{stroke-dashoffset:0;opacity:0}
+  100%{stroke-dashoffset:0;opacity:0}
+}
+
+.hero-rail{
+  position:relative;z-index:2;order:-1;margin-left:auto;text-align:right;
+  padding-top:clamp(24px,4vh,44px);
+}
+.hero-rail p{
+  font-family:var(--mono);font-size:11px;line-height:1.95;letter-spacing:.075em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.hero-rail p b{font-weight:400;color:var(--ink-2)}
+
+.hero-state{position:relative;z-index:2;margin-top:auto;padding-top:clamp(20px,3vh,42px)}
+.hero-state .h1{max-width:min(810px,100%)}
+.hero-sub{margin-top:20px;max-width:48ch}
+.hero-cta{display:flex;align-items:center;gap:26px;flex-wrap:wrap;margin-top:32px}
+
+/* ---- hero entrance ----------------------------------------------------
+   One composed sequence: the entity rail settles, the statement rises line
+   by line from behind its own baseline, then the subtext and the call to
+   action arrive while the schematic is still drawing itself in behind them.
+   Everything below only applies when scripting is on, so a reader without it
+   gets the finished composition immediately.                              */
+.h1 .ln{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
+.h1 .ln > span{display:block}
+
+html.js .hero .h1 .ln > span,
+html.js .hero .hero-rail p,
+html.js .hero .hero-sub,
+html.js .hero .hero-cta{opacity:0}
+html.js .hero .h1 .ln > span{transform:translateY(108%)}
+html.js .hero .hero-rail p{transform:translateY(-6px)}
+html.js .hero .hero-sub,
+html.js .hero .hero-cta{transform:translateY(14px)}
+
+html.js .hero.lit .h1 .ln > span{
+  opacity:1;transform:none;
+  transition:transform 1s var(--ease-out),opacity .5s linear;
+}
+html.js .hero.lit .h1 .ln:nth-child(1) > span{transition-delay:.20s}
+html.js .hero.lit .h1 .ln:nth-child(2) > span{transition-delay:.31s}
+
+html.js .hero.lit .hero-rail p{
+  opacity:1;transform:none;transition:opacity .6s var(--ease),transform .6s var(--ease);
+}
+html.js .hero.lit .hero-rail p:nth-child(1){transition-delay:.06s}
+html.js .hero.lit .hero-rail p:nth-child(2){transition-delay:.13s}
+html.js .hero.lit .hero-rail p:nth-child(3){transition-delay:.20s}
+html.js .hero.lit .hero-rail p:nth-child(4){transition-delay:.27s}
+
+html.js .hero.lit .hero-sub{
+  opacity:1;transform:none;
+  transition:opacity .7s var(--ease) .54s,transform .7s var(--ease-out) .54s;
+}
+html.js .hero.lit .hero-cta{
+  opacity:1;transform:none;
+  transition:opacity .7s var(--ease) .66s,transform .7s var(--ease-out) .66s;
+}
+
+.chain{display:none}
+
+/* ==========================================================================
+   2. MANDATE
+   Stacked statement, then the conditions of engagement as a full width
+   hairline row system.
+   ========================================================================== */
+.mandate-state{max-width:19ch}
+.mandate-state + p{margin-top:26px;max-width:62ch}
+.conds{margin-top:clamp(52px,6vw,82px);border-top:1px solid var(--rule)}
+.cond{
+  display:grid;grid-template-columns:minmax(0,4.2fr) minmax(0,7fr) 52px;
+  gap:clamp(20px,4vw,58px);align-items:start;
+  padding-block:clamp(30px,3.4vw,44px);border-bottom:1px solid var(--rule);
+}
+.cond p{color:var(--ink-2);max-width:56ch}
+.cond i{font-size:26px;line-height:1;color:var(--ink-3);justify-self:end}
+.cond:hover i{color:var(--signal)}
+
+/* ==========================================================================
+   3. CAPABILITIES
+   Sticky section title beside a disclosure list, one panel open at a time.
+   ========================================================================== */
+.cap-grid{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(28px,5vw,80px);align-items:start}
+.cap-stick{position:sticky;top:118px}
+.cap-stick .h2{max-width:11ch}
+.cap-list{border-top:1px solid var(--rule)}
+.cap{border-bottom:1px solid var(--rule)}
+.cap-btn{
+  width:100%;display:flex;align-items:center;gap:20px;justify-content:space-between;
+  background:transparent;border:0;cursor:pointer;text-align:left;
+  padding-block:clamp(20px,2.2vw,28px);color:var(--ink);
+}
+.cap-btn:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+.cap-btn .h3{transition:color .2s var(--ease)}
+.cap-btn:hover .h3{color:var(--signal)}
+.cap-sign{position:relative;flex:0 0 auto;width:15px;height:15px}
+.cap-sign::before,.cap-sign::after{
+  content:'';position:absolute;background:var(--ink-2);transition:transform .32s var(--ease),background .2s
+}
+.cap-sign::before{inset:7px 0 7px 0;height:1px}
+.cap-sign::after{inset:0 7px 0 7px;width:1px}
+.cap[data-open="true"] .cap-sign::after{transform:scaleY(0)}
+.cap[data-open="true"] .cap-sign::before{background:var(--signal)}
+/* A collapsed panel is taken out of the accessibility tree as well as out of
+   view, so a screen reader is not read the content of four shut panels. The
+   visibility change is delayed on close so the height transition still runs. */
+.cap-panel{
+  display:grid;grid-template-rows:0fr;visibility:hidden;
+  transition:grid-template-rows .38s var(--ease),visibility 0s linear .38s;
+}
+.cap[data-open="true"] .cap-panel{
+  grid-template-rows:1fr;visibility:visible;
+  transition:grid-template-rows .38s var(--ease),visibility 0s linear 0s;
+}
+.cap-panel > div{overflow:hidden}
+.cap-inner{padding-bottom:clamp(26px,3vw,38px);max-width:64ch}
+.cap-inner p{color:var(--ink-2)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.tag{
+  position:relative;isolation:isolate;padding:7px 13px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.075em;text-transform:uppercase;
+  color:var(--ink-2);
+  opacity:0;transform:translateY(7px);
+  transition:opacity .45s var(--ease),transform .45s var(--ease-out);
+}
+.cap[data-open="true"] .tag{opacity:1;transform:none}
+.cap[data-open="true"] .tag:nth-child(1){transition-delay:.20s}
+.cap[data-open="true"] .tag:nth-child(2){transition-delay:.26s}
+.cap[data-open="true"] .tag:nth-child(3){transition-delay:.32s}
+.cap[data-open="true"] .tag:nth-child(4){transition-delay:.38s}
+.tag::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--rule);clip-path:var(--cp-8)}
+.tag::after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--bg);clip-path:var(--cp-8)}
+
+/* When a schematic node routes the reader here, the panel it landed on marks
+   itself once so the arrival is visible rather than silent. */
+.cap::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--signal);transform:scaleY(0);transform-origin:50% 0;opacity:0;
+}
+.cap{position:relative}
+.cap.arrived::before{animation:arrive 1.5s var(--ease) forwards}
+@keyframes arrive{
+  0%{transform:scaleY(0);opacity:1}
+  26%{transform:scaleY(1);opacity:1}
+  70%{transform:scaleY(1);opacity:1}
+  100%{transform:scaleY(1);opacity:0}
+}
+
+/* ==========================================================================
+   4. SECTORS
+   Asymmetric mosaic. Two cells carry photography, four are typographic.
+   ========================================================================== */
+.sect-head-wide{max-width:16ch}
+.mosaic{
+  display:grid;grid-template-columns:repeat(12,1fr);gap:14px;
+  margin-top:clamp(40px,5vw,66px);
+}
+.cell{
+  position:relative;isolation:isolate;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:clamp(22px,2.4vw,32px);
+}
+.cell::before{
+  content:'';position:absolute;inset:0;z-index:-2;background:var(--rule);clip-path:var(--cp-28);
+  transition:background .45s var(--ease);
+}
+.cell::after{content:'';position:absolute;inset:1px;z-index:-2;background:var(--raise);clip-path:var(--cp-28)}
+.cell:hover::before{background:var(--ink-3)}
+.cell h3{margin-bottom:9px}
+.cell p{font-size:14.5px;line-height:1.55;color:var(--ink-2);max-width:38ch}
+.cell-a{grid-column:span 7;min-height:340px}
+.cell-b{grid-column:span 5;min-height:340px}
+.cell-c{grid-column:span 4;min-height:270px}
+.cell-d{grid-column:span 3;min-height:270px}
+.cell-e{grid-column:span 5;min-height:270px}
+.cell-f{grid-column:span 12;min-height:180px}
+.cell-b{justify-content:space-between}
+/* the split alignment left a dead centre, so the lower block sits on a rule */
+.cell-b .display{max-width:11ch}
+.cell-b p{border-top:1px solid var(--rule);padding-top:18px;max-width:34ch}
+.cell-f{flex-direction:row;align-items:flex-end;justify-content:space-between;gap:28px;flex-wrap:wrap}
+
+.media{position:absolute;inset:1px;z-index:-1;clip-path:var(--cp-28);overflow:hidden}
+.media img{
+  width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.04);
+  transition:transform 1.4s var(--ease-out);
+}
+.cell:hover .media img{transform:scale(1.045)}
+.media .duo{position:absolute;inset:0;background:var(--signal);mix-blend-mode:color;opacity:.11}
+.media .veil{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(8,10,11,.93) 0%,rgba(8,10,11,.74) 30%,rgba(8,10,11,.3) 64%,rgba(8,10,11,.04) 100%);
+}
+.cell.on-media h3,.cell.on-media p{color:#F2F3F3}
+.cell.on-media p{color:#C8CCCE}
+
+/* ==========================================================================
+   5. DELIVERY
+   Five phases on a horizontal rail. The verb is the label, no numbering.
+   ========================================================================== */
+.rail{margin-top:clamp(44px,5vw,70px)}
+.rail-line{position:relative;height:1px;background:var(--rule);margin-bottom:0}
+.rail-line span{
+  position:absolute;inset:0 auto 0 0;height:1px;background:var(--ink-2);
+  width:0;transition:width 1.5s var(--ease);
+}
+.rail.in .rail-line span{width:100%}
+.tracks{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(14px,2vw,26px)}
+.track{padding-top:0;position:relative}
+.track h3{font-size:19px}
+.mark{position:relative;height:10px;width:10px;margin-top:-5px;margin-bottom:26px}
+.mark::before{content:'';position:absolute;inset:0;background:var(--rule);clip-path:var(--cp-3);transition:background .4s var(--ease)}
+.rail.in .track .mark::before{background:var(--signal)}
+.rail.in .track:nth-child(1) .mark::before{transition-delay:.15s}
+.rail.in .track:nth-child(2) .mark::before{transition-delay:.42s}
+.rail.in .track:nth-child(3) .mark::before{transition-delay:.69s}
+.rail.in .track:nth-child(4) .mark::before{transition-delay:.96s}
+.rail.in .track:nth-child(5) .mark::before{transition-delay:1.23s}
+.track p{font-size:14.8px;line-height:1.56;color:var(--ink-2);margin-top:11px;max-width:30ch}
+.track .out{
+  margin-top:20px;padding-top:13px;border-top:1px solid var(--rule-2);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.075em;text-transform:uppercase;color:var(--ink-3);
+}
+.track .out b{display:block;font-weight:500;color:var(--ink-2);margin-top:4px;letter-spacing:.05em}
+
+/* ==========================================================================
+   6. STANDARDS
+   Three clusters set at full weight. The credibility engine of the page.
+   ========================================================================== */
+.std-open{max-width:20ch}
+.std-open + p{margin-top:24px;max-width:60ch}
+.cluster{padding-block:clamp(44px,5vw,72px);border-top:1px solid var(--rule)}
+.cluster:first-of-type{margin-top:clamp(50px,6vw,80px)}
+.cluster:last-of-type{border-bottom:1px solid var(--rule)}
+.cluster-head{display:flex;align-items:center;gap:16px;margin-bottom:clamp(30px,3.4vw,46px)}
+.cluster-head i{font-size:31px;line-height:1;color:var(--signal)}
+.cluster-head .display{max-width:20ch}
+.commits{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,3vw,46px) clamp(28px,5vw,90px)}
+.commit{border-top:1px solid var(--rule-2);padding-top:18px}
+.commit h4{margin-bottom:8px;font-size:17.5px}
+.commit p{font-size:16px;line-height:1.6;color:var(--ink-2);max-width:48ch}
+
+/* ==========================================================================
+   7. GOVERNANCE
+   Corporate lineage in a single framed panel with a facts strip.
+   ========================================================================== */
+.gov{
+  position:relative;isolation:isolate;padding:clamp(34px,5vw,72px);
+}
+.gov::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--rule);clip-path:var(--cp-28)}
+.gov::after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--raise);clip-path:var(--cp-28)}
+.gov .h2{max-width:17ch}
+.gov-body{margin-top:26px;max-width:66ch;display:grid;gap:17px}
+.gov-body p{color:var(--ink-2)}
+.facts{
+  margin-top:clamp(38px,4.6vw,62px);padding-top:clamp(24px,2.6vw,34px);border-top:1px solid var(--rule);
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;
+}
+.fact dt{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.085em;text-transform:uppercase;color:var(--ink-3);
+}
+.fact dd{margin-top:7px;font-size:16px;font-weight:600;letter-spacing:-.012em;font-variation-settings:'wdth' 104}
+
+/* ==========================================================================
+   8. ENGAGEMENT
+   The form as a formal instrument.
+   ========================================================================== */
+.form-head{max-width:15ch}
+.form-head + p{margin-top:22px;max-width:56ch}
+.form{margin-top:clamp(44px,5vw,66px);display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(18px,2vw,26px)}
+.f{display:flex;flex-direction:column;gap:9px}
+.f-6{grid-column:span 6}
+.f-4{grid-column:span 4}
+.f-12{grid-column:span 12}
+.f label{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.085em;text-transform:uppercase;color:var(--ink-2);
+}
+.f label .req{color:var(--signal);margin-left:4px}
+.ctrl{position:relative;isolation:isolate}
+.ctrl::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--rule);clip-path:var(--cp-10);transition:background .2s var(--ease)}
+.ctrl::after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--bg);clip-path:var(--cp-10)}
+.ctrl:hover::before{background:var(--ink-3)}
+.ctrl input,.ctrl select,.ctrl textarea{
+  width:100%;background:transparent;border:0;padding:15px 16px;font-size:15.5px;line-height:1.5;
+  color:var(--ink);
+}
+.ctrl select{appearance:none;-webkit-appearance:none;padding-right:44px;cursor:pointer}
+.ctrl textarea{resize:vertical;min-height:132px}
+.ctrl input::placeholder,.ctrl textarea::placeholder{color:var(--ink-3);opacity:.7}
+.ctrl .caret{position:absolute;right:15px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ink-3);font-size:15px}
+.ctrl:has(:focus-visible)::before{inset:-4px;background:var(--ink);clip-path:var(--cp-14)}
+.f[data-bad="true"] .ctrl::before{background:var(--signal)}
+.err{
+  display:none;font-size:13px;line-height:1.45;color:var(--signal);font-weight:500;
+  align-items:center;gap:7px;
+}
+.f[data-bad="true"] .err{display:flex}
+.err i{font-size:15px;line-height:1}
+.form-foot{grid-column:span 12;display:flex;align-items:center;gap:26px;flex-wrap:wrap;margin-top:6px}
+.form-foot p{font-size:13.4px;color:var(--ink-3);max-width:44ch;line-height:1.5}
+/* The busy mark is the cut square of the shape system turning on its centre,
+   so no radius is introduced anywhere on the page. */
+.btn .spin{
+  width:12px;height:12px;background:var(--on-signal);opacity:.85;
+  clip-path:var(--cp-4);animation:spin .9s linear infinite;display:none;
+}
+.btn[data-busy="true"] .spin{display:block}
+.btn[data-busy="true"] i{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.done{
+  position:relative;isolation:isolate;margin-top:clamp(44px,5vw,66px);padding:clamp(30px,4vw,54px);display:none;
+}
+.done::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--rule);clip-path:var(--cp-28)}
+.done::after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--raise);clip-path:var(--cp-28)}
+.done[data-show="true"]{display:block}
+.done i.seal{font-size:34px;color:var(--signal);line-height:1}
+.done h3{margin:18px 0 12px}
+.done p{color:var(--ink-2);max-width:52ch}
+.ref{
+  margin-top:26px;padding-top:18px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:11px;letter-spacing:.085em;text-transform:uppercase;color:var(--ink-3);
+}
+.ref b{display:block;margin-top:6px;font-size:19px;letter-spacing:.05em;color:var(--ink);font-weight:500}
+
+/* ---------- footer ---------- */
+.foot{border-top:1px solid var(--rule);padding-block:clamp(52px,6vw,78px) 34px;background:var(--sink)}
+.foot-grid{display:grid;grid-template-columns:minmax(0,2.4fr) repeat(3,minmax(0,1fr));gap:clamp(26px,4vw,54px)}
+.foot-brand{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+.foot-brand img{width:20px;height:20px}
+.foot-brand span{font-size:16px;font-weight:700;letter-spacing:-.026em;font-variation-settings:'wdth' 112}
+.foot-col h4{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.085em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:400;margin-bottom:15px;
+}
+.foot-col li{margin-bottom:9px}
+.foot-col a,.foot-col p{font-size:14.4px;color:var(--ink-2);line-height:1.5}
+.foot-col a{position:relative;display:inline-block;transition:color .18s var(--ease)}
+.foot-col a::after{
+  content:'';position:absolute;left:0;right:0;bottom:1px;height:1px;background:var(--signal);
+  transform:scaleX(0);transform-origin:0 50%;transition:transform .38s var(--ease-out);
+}
+.foot-col a:hover{color:var(--signal)}
+.foot-col a:hover::after{transform:scaleX(1)}
+.foot-col a:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.foot-note{max-width:38ch;font-size:14.4px;color:var(--ink-2)}
+.foot-bar{
+  margin-top:clamp(44px,5vw,70px);padding-top:22px;border-top:1px solid var(--rule);
+  display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
+}
+.foot-bar p{font-family:var(--mono);font-size:10.5px;letter-spacing:.075em;text-transform:uppercase;color:var(--ink-3)}
+
+/* ---------- reveal ---------- */
+.rv{opacity:0;transform:translateY(16px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv.in{opacity:1;transform:none}
+html:not(.js) .rv{opacity:1;transform:none}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+/* The wide schematic scales with viewport width, so its label size is stepped
+   back up in user units to hold the rendered label near 10.5px at every
+   breakpoint. The mobile chain draws at scale 1 and needs no compensation. */
+@media (max-width:1359px){
+  .hero-field .schema text{font-size:11.6px}
+}
+@media (max-width:1159px){
+  .hero-field .schema text{font-size:13.4px}
+}
+@media (max-width:1023px){
+  .nav{display:none}
+  .head-act .btn{display:none}
+  .burger{display:grid}
+  .hero{min-height:0;padding-top:clamp(22px,3.4vh,40px)}
+  .hero-field{display:none}
+  .chain{display:block;order:-1;margin:clamp(16px,2.6vh,30px) 0 clamp(14px,2.2vh,26px);width:100%;max-width:300px}
+  .chain .schema{position:static;width:100%;height:auto}
+  /* the statement reflows as one paragraph, so the per line mask is dropped
+     and the whole block fades in together */
+  .h1 .ln,.h1 .ln > span{display:inline}
+  .h1 .ln{overflow:visible;padding-bottom:0;margin-bottom:0}
+  html.js .hero .h1 .ln > span{transform:none}
+  html.js .hero.lit .h1 .ln:nth-child(2) > span{transition-delay:.20s}
+  .hero-rail{order:-2;text-align:left;margin-left:0;padding-top:0}
+  .hero-rail p{line-height:1.7}
+  .hero-state{margin-top:0}
+  .hero-state .h1{max-width:16ch}
+  .cap-grid{grid-template-columns:1fr}
+  .cap-stick{position:static}
+  .cond{grid-template-columns:minmax(0,1fr) 46px;gap:14px 22px}
+  .cond p{grid-column:1/2}
+  .cond i{grid-row:1/2;grid-column:2/3}
+  .cell-a,.cell-b{grid-column:span 12;min-height:300px}
+  .cell-c,.cell-d,.cell-e{grid-column:span 6;min-height:250px}
+  .cell-d{grid-column:span 12;min-height:200px}
+  .tracks{grid-template-columns:repeat(2,1fr);gap:34px 26px}
+  .rail-line{display:none}
+  .mark{margin-top:0;margin-bottom:18px}
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .foot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:719px){
+  body{font-size:16px}
+  .commits{grid-template-columns:1fr}
+  .cluster-head{align-items:flex-start;gap:13px}
+  .cluster-head i{font-size:25px;margin-top:3px}
+  .cell-c,.cell-d,.cell-e,.cell-f{grid-column:span 12;min-height:220px}
+  /* the wide cell's split alignment leaves a dead gap once it is one column */
+  .cell-b{justify-content:flex-end;min-height:250px}
+  .cell-b .display{max-width:none}
+  .tracks{grid-template-columns:1fr;gap:30px}
+  .track p{max-width:44ch}
+  .f-6,.f-4{grid-column:span 12}
+  .facts{grid-template-columns:1fr;gap:18px}
+  .fact{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid var(--rule-2);padding-bottom:12px}
+  .fact dd{margin-top:0;text-align:right}
+  .foot-grid{grid-template-columns:1fr}
+  .hero-cta{gap:20px}
+  .cond{padding-block:26px}
+}
+
+/* On a short handset the chain would push the statement and its call to action
+   below the fold, so the chain is dropped and the statement carries the hero. */
+@media (max-width:1023px) and (max-height:700px){
+  .chain{display:none}
+}
+
+/* In forced colours the custom rings are dropped by the OS, so restore a plain one. */
+@media (forced-colors:active){
+  :focus-visible{outline:3px solid Highlight;outline-offset:2px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  .schema .edge,.schema .bleed{stroke-dashoffset:0}
+  .schema .node{opacity:1}
+  .schema .node.lit .node-box{transform:none}
+  .schema .pulse{display:none}
+  .rail-line span{width:100%}
+  .rv{opacity:1;transform:none}
+  .head::after{display:none}
+  .cap.arrived::before{display:none}
+  .cell:hover .media img{transform:none}
+  /* the hero arrives composed rather than assembling itself */
+  html.js .hero .h1 .ln > span,
+  html.js .hero .hero-rail p,
+  html.js .hero .hero-sub,
+  html.js .hero .hero-cta,
+  .cap[data-open="true"] .tag{opacity:1;transform:none}
+}
+
+/* ==========================================================================
+   PRINT
+   Procurement panels circulate this page on paper. It resolves to a plain
+   monochrome document: every panel open, no interface furniture.
+   ========================================================================== */
+@media print{
+  :root{
+    --bg:#fff;--raise:#fff;--sink:#fff;--ink:#000;--ink-2:#222;--ink-3:#444;
+    --rule:#999;--rule-2:#bbb;--signal:#000;--on-signal:#fff;
+    --pad:22px;--gut:0px;
   }
-  .top-link:hover{ color:var(--text); }
+  html,body{background:#fff;color:#000;font-size:10.5pt}
+  .head,.mmenu,.skip,.hero-field,.chain,.form,.done,.btn,.tlink,.cond i,.cluster-head i{display:none !important}
+  .hero{min-height:0;padding:0 0 18px}
+  .hero-state{margin-top:0;padding-top:0}
+  .sect{padding-block:22px;break-inside:auto}
+  .cap-panel{grid-template-rows:1fr !important;visibility:visible !important}
+  .cap-sign{display:none}
+  .tag{opacity:1 !important;transform:none !important}
+  .rv{opacity:1 !important;transform:none !important}
+  .media,.mosaic .cell::before,.mosaic .cell::after{display:none}
+  .cell{min-height:0 !important;border-bottom:1px solid #bbb;padding:10px 0}
+  .cell.on-media h3,.cell.on-media p{color:#000}
+  .cluster,.commit,.track,.gov,.cell{break-inside:avoid}
+  .h1{font-size:26pt}.h2{font-size:17pt}.display{font-size:14pt}
+  .foot-bar,.foot{background:#fff}
+  a[href^="http"]::after{content:' (' attr(href) ')';font-size:8pt;color:#555}
+}
 </style>
 </head>
+
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
-<header id="siteHeader">
-  <div class="wrap">
-    <a href="#top" class="brand">
-      <img src="assets/logo-mark.png" alt="HaveStack Technologies logomark">
-      <span>HaveStack<span class="sub">TECHNOLOGIES</span></span>
+<!-- Everything the mobile panel covers lives in one container, so the panel can
+     make the whole of it inert while it is open. -->
+<div id="page">
+<div id="anchor" aria-hidden="true"></div>
+
+<header class="head" id="top">
+  <div class="wrap head-in">
+    <a class="brand" href="#top" aria-label="HaveStack Technologies, back to top">
+      <img src="assets/logo-mark.png" alt="" width="21" height="21" />
+      <span>HaveStack</span>
     </a>
-
-    <nav class="primary" id="primaryNav">
-      <a href="#about">About</a>
-      <a href="#services">Services</a>
-      <a href="#process">Process</a>
-      <a href="#clients">Clients</a>
-      <a href="#book">Contact</a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#about">Mandate</a>
+      <a href="#services">Capabilities</a>
+      <a href="#sectors">Sectors</a>
+      <a href="#process">Delivery</a>
+      <a href="#standards">Standards</a>
+      <a href="#clients">Governance</a>
     </nav>
-
-    <div class="nav-cta">
-      <a href="#book" class="btn btn-ghost" style="padding:10px 20px; font-size:13.5px;">Book a meeting</a>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
-        <svg id="navIconOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-        <svg id="navIconClose" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    <div class="head-act">
+      <button class="icon-btn" id="theme" type="button" aria-label="Switch to dark theme">
+        <i class="ph-light ph-moon th-l" aria-hidden="true"></i>
+        <i class="ph-light ph-sun th-d" aria-hidden="true"></i>
       </button>
+      <button class="icon-btn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mmenu">
+        <i class="ph-light ph-list" aria-hidden="true"></i>
+      </button>
+      <a class="btn" href="#book"><span>Request a meeting</span></a>
     </div>
   </div>
 </header>
 
-<main id="top">
+<main id="main">
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="grid-field" id="gridField" aria-hidden="true"></div>
-    <div class="wrap">
-      <div class="hero-inner">
-        <p class="eyebrow"><span class="chk chk-a"><span></span><span></span><span></span><span></span></span>SOFTWARE STUDIO · BANGLADESH</p>
-        <h1>We build <em>your ideas.</em></h1>
-        <p class="lead">HaveStack Technologies designs and builds portfolios, business websites, ERP systems and LMS platforms for companies across Bangladesh — from first sketch to shipped product.</p>
-        <div class="hero-ctas">
-          <a href="#book" class="btn btn-primary">Book a meeting <span class="btn-arrow">→</span></a>
-          <a href="#services" class="btn btn-ghost">See what we build</a>
-        </div>
-        <div class="hero-proof">
-          <span>Part of <strong>Amaze Consortium</strong></span>
-          <span class="divider"></span>
-          <span>Based in <strong>Bangladesh</strong></span>
-          <span class="divider"></span>
-          <span>Design + engineering, <strong>one team</strong></span>
-        </div>
-      </div>
-    </div>
-  </section>
+<!-- ==========================================================================
+     HERO
+     ========================================================================== -->
+<section class="hero wrap">
 
-  <!-- MARQUEE -->
-  <div class="marquee-section" aria-hidden="true">
-    <div class="marquee-track" id="marqueeTrack">
-      <!-- filled by JS -->
-    </div>
+  <div class="hero-field">
+    <svg class="schema" viewBox="0 60 1440 285" preserveAspectRatio="xMidYMin meet"
+         role="group" aria-label="Schematic of a HaveStack enterprise system. Each node opens a capability.">
+
+      <!-- traces that run off the frame: the system continues past the page -->
+      <path class="bleed" pathLength="1000" style="animation-delay:0s" d="M 0 165 H 143" />
+      <path class="bleed" pathLength="1000" style="animation-delay:.08s" d="M 0 275 H 143" />
+      <path class="bleed" pathLength="1000" style="animation-delay:1.15s" d="M 1240 300 H 1440" />
+
+      <g class="edges">
+        <path class="edge" pathLength="1000" data-link="records procurement" style="animation-delay:.15s" d="M 157 165 H 290 V 220 H 413" />
+        <path class="edge" pathLength="1000" data-link="finance procurement" style="animation-delay:.3s" d="M 157 275 H 420 V 227" />
+        <path class="edge" pathLength="1000" data-link="learning procurement" style="animation-delay:.45s" d="M 420 127 V 213" />
+        <path class="edge" pathLength="1000" data-link="procurement integrations" style="animation-delay:.6s" d="M 427 220 H 703" />
+        <path class="edge" pathLength="1000" data-link="learning portal" style="animation-delay:.75s" d="M 427 120 H 983" />
+        <path class="edge" pathLength="1000" data-link="integrations portal" style="animation-delay:.9s" d="M 710 213 V 170 H 990 V 127" />
+        <path class="edge" pathLength="1000" data-link="integrations operations" style="animation-delay:1.05s" d="M 710 227 V 300 H 983" />
+        <path class="edge" pathLength="1000" data-link="portal operations" style="animation-delay:1.2s" d="M 997 120 H 1240 V 300 H 997" />
+      </g>
+
+      <g class="pulses" aria-hidden="true">
+        <path class="pulse" pathLength="1000" d="M 427 220 H 703" style="animation-delay:2.4s" />
+        <path class="pulse" pathLength="1000" d="M 710 213 V 170 H 990 V 127" style="animation-delay:6.4s" />
+        <path class="pulse" pathLength="1000" d="M 710 227 V 300 H 983" style="animation-delay:9.2s" />
+      </g>
+
+      <g class="node" data-node="records" data-cap="erp" role="button" tabindex="0"
+         aria-label="Records. Opens enterprise resource planning." style="animation-delay:.95s">
+        <rect class="node-hit" x="135" y="150" width="105" height="48" />
+        <polygon class="focus-ring" points="137,152 157,152 163,158 163,178 143,178 137,172" />
+        <polygon class="node-box" points="143,158 153,158 157,162 157,172 147,172 143,168" />
+        <text x="143" y="189">Records</text>
+      </g>
+
+      <g class="node" data-node="finance" data-cap="erp" role="button" tabindex="0"
+         aria-label="Finance. Opens enterprise resource planning." style="animation-delay:1.1s">
+        <rect class="node-hit" x="135" y="260" width="105" height="48" />
+        <polygon class="focus-ring" points="137,262 157,262 163,268 163,288 143,288 137,282" />
+        <polygon class="node-box" points="143,268 153,268 157,272 157,282 147,282 143,278" />
+        <text x="143" y="299">Finance</text>
+      </g>
+
+      <g class="node" data-node="learning" data-cap="learning" role="button" tabindex="0"
+         aria-label="Learning. Opens learning platforms." style="animation-delay:1.25s">
+        <rect class="node-hit" x="336" y="105" width="98" height="34" />
+        <polygon class="focus-ring" points="407,107 427,107 433,113 433,133 413,133 407,127" />
+        <polygon class="node-box" points="413,113 423,113 427,117 427,127 417,127 413,123" />
+        <text x="404" y="124" text-anchor="end">Learning</text>
+      </g>
+
+      <g class="node" data-node="procurement" data-cap="erp" role="button" tabindex="0"
+         aria-label="Procurement. Opens enterprise resource planning." style="animation-delay:1.1s">
+        <rect class="node-hit" x="290" y="205" width="145" height="42" />
+        <polygon class="focus-ring" points="407,207 427,207 433,213 433,233 413,233 407,227" />
+        <polygon class="node-box" points="413,213 423,213 427,217 427,227 417,227 413,223" />
+        <text x="404" y="242" text-anchor="end">Procurement</text>
+      </g>
+
+      <g class="node" data-node="integrations" data-cap="integration" role="button" tabindex="0"
+         aria-label="Integrations. Opens integration and internal tooling." style="animation-delay:1.4s">
+        <rect class="node-hit" x="696" y="207" width="150" height="28" />
+        <polygon class="focus-ring" points="697,207 717,207 723,213 723,233 703,233 697,227" />
+        <polygon class="node-box on" points="703,213 713,213 717,217 717,227 707,227 703,223" />
+        <text x="726" y="224">Integrations</text>
+      </g>
+
+      <g class="node" data-node="portal" data-cap="public" role="button" tabindex="0"
+         aria-label="Public portal. Opens public facing platforms." style="animation-delay:1.55s">
+        <rect class="node-hit" x="978" y="86" width="140" height="48" />
+        <polygon class="focus-ring" points="977,107 997,107 1003,113 1003,133 983,133 977,127" />
+        <polygon class="node-box" points="983,113 993,113 997,117 997,127 987,127 983,123" />
+        <text x="983" y="99">Public portal</text>
+      </g>
+
+      <g class="node" data-node="operations" data-cap="managed" role="button" tabindex="0"
+         aria-label="Operations. Opens managed operations." style="animation-delay:1.7s">
+        <rect class="node-hit" x="978" y="288" width="118" height="46" />
+        <polygon class="focus-ring" points="977,287 997,287 1003,293 1003,313 983,313 977,307" />
+        <polygon class="node-box" points="983,293 993,293 997,297 997,307 987,307 983,303" />
+        <text x="983" y="324">Operations</text>
+      </g>
+    </svg>
   </div>
 
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="wrap">
-      <div class="about-grid">
-        <div class="reveal">
-          <p class="eyebrow"><span class="chk chk-b"><span></span><span></span><span></span><span></span></span>ABOUT US</p>
-          <h2 style="font-size:clamp(26px,3.6vw,38px); font-weight:800; letter-spacing:-0.02em; line-height:1.18; margin-bottom:26px; max-width:520px;">
-            A software studio built to ship, not just pitch.
-          </h2>
-          <div class="about-copy">
-            <p>HaveStack Technologies is a software development company based in Bangladesh, <strong>owned and managed by Amaze Consortium</strong>. We work with founders, operators, and institutions who already have an idea — and need a team that can actually build it.</p>
-            <p>No handoffs between a design agency and a dev shop. One team carries the work from the first sketch to a product your business runs on, then keeps it running.</p>
-            <p>Every engagement starts with the same question: <strong>what does this business actually need to work?</strong> That answer, not a template, is what we build.</p>
-          </div>
-        </div>
+  <div class="hero-rail">
+    <p><b>HaveStack Technologies</b></p>
+    <p>Subsidiary of Amaze Consortium</p>
+    <p>Enterprise software practice</p>
+    <p>Dhaka, Bangladesh</p>
+  </div>
 
-        <div class="principles reveal">
-          <div class="principle">
-            <span class="chk chk-c"><span></span><span></span><span></span><span></span></span>
-            <div>
-              <h3>One team, full stack</h3>
-              <p>Design, engineering and deployment under one roof — no handoffs, no lost context.</p>
+  <!-- mobile: the schematic reduces to a four node chain -->
+  <div class="chain">
+    <svg class="schema" viewBox="0 0 300 224" role="group" aria-label="Simplified schematic. Each node opens a capability.">
+      <path class="bleed" pathLength="1000" d="M 40 0 V 24" />
+      <path class="edge" pathLength="1000" data-link="records finance" d="M 40 38 V 82" />
+      <path class="edge" pathLength="1000" data-link="finance integrations" d="M 40 96 V 140" />
+      <path class="edge" pathLength="1000" data-link="integrations operations" d="M 40 154 V 198" />
+      <path class="bleed" pathLength="1000" d="M 40 212 V 224" />
+
+      <g class="node" data-node="records" data-cap="erp" role="button" tabindex="0" aria-label="Records. Opens enterprise resource planning.">
+        <rect class="node-hit" x="20" y="17" width="240" height="28" />
+        <polygon class="focus-ring" points="27,18 47,18 53,24 53,44 33,44 27,38" />
+        <polygon class="node-box" points="33,24 43,24 47,28 47,38 37,38 33,34" />
+        <text x="60" y="35">Records</text>
+      </g>
+      <g class="node" data-node="finance" data-cap="erp" role="button" tabindex="0" aria-label="Finance. Opens enterprise resource planning.">
+        <rect class="node-hit" x="20" y="75" width="240" height="28" />
+        <polygon class="focus-ring" points="27,76 47,76 53,82 53,102 33,102 27,96" />
+        <polygon class="node-box" points="33,82 43,82 47,86 47,96 37,96 33,92" />
+        <text x="60" y="93">Finance</text>
+      </g>
+      <g class="node" data-node="integrations" data-cap="integration" role="button" tabindex="0" aria-label="Integrations. Opens integration and internal tooling.">
+        <rect class="node-hit" x="20" y="133" width="240" height="28" />
+        <polygon class="focus-ring" points="27,134 47,134 53,140 53,160 33,160 27,154" />
+        <polygon class="node-box on" points="33,140 43,140 47,144 47,154 37,154 33,150" />
+        <text x="60" y="151">Integrations</text>
+      </g>
+      <g class="node" data-node="operations" data-cap="managed" role="button" tabindex="0" aria-label="Operations. Opens managed operations.">
+        <rect class="node-hit" x="20" y="191" width="240" height="28" />
+        <polygon class="focus-ring" points="27,192 47,192 53,198 53,218 33,218 27,212" />
+        <polygon class="node-box" points="33,198 43,198 47,202 47,212 37,212 33,208" />
+        <text x="60" y="209">Operations</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="hero-state">
+    <h1 class="h1"><span class="ln"><span>Institutions run on systems.</span></span> <span class="ln"><span>HaveStack builds them.</span></span></h1>
+    <p class="lead hero-sub">Enterprise resource planning, learning platforms and public facing services for banks, government bodies and institutions in Bangladesh.</p>
+    <div class="hero-cta">
+      <a class="btn" href="#book"><span>Request a meeting</span><i class="ph-light ph-arrow-up-right" aria-hidden="true"></i></a>
+      <a class="tlink" href="#about">Read the mandate<i class="ph-light ph-arrow-down" aria-hidden="true"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     MANDATE
+     ========================================================================== -->
+<section class="sect rule-top" id="about">
+  <div class="wrap">
+    <h2 class="h2 mandate-state rv">HaveStack selects its clients.</h2>
+    <p class="lead rv">The firm holds a limited number of engagements at any time so that every system receives senior attention from the first meeting through to its fifth year in service. Four conditions apply before an engagement opens.</p>
+
+    <div class="conds">
+      <div class="cond rv">
+        <h3 class="h3">Organisations, not individuals</h3>
+        <p>Work is contracted with registered entities: companies, institutions, regulated financial bodies and public offices. Personal projects are declined at enquiry.</p>
+        <i class="ph-light ph-buildings" aria-hidden="true"></i>
+      </div>
+      <div class="cond rv">
+        <h3 class="h3">Systems, not pages</h3>
+        <p>The practice builds operational software that holds records, moves transactions, enforces workflow and reports on all three. Brochure sites fall outside it.</p>
+        <i class="ph-light ph-squares-four" aria-hidden="true"></i>
+      </div>
+      <div class="cond rv">
+        <h3 class="h3">A named owner with sign off authority</h3>
+        <p>One person on the client side carries the decision. That person approves scope, resolves contention between departments and signs acceptance at each stage.</p>
+        <i class="ph-light ph-seal-check" aria-hidden="true"></i>
+      </div>
+      <div class="cond rv">
+        <h3 class="h3">A defined budget</h3>
+        <p>Cost follows scope. Figures are set against a written specification and agreed before work begins. HaveStack publishes no price list and quotes nothing before the scope is known.</p>
+        <i class="ph-light ph-scales" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     CAPABILITIES
+     ========================================================================== -->
+<section class="sect rule-top" id="services">
+  <div class="wrap cap-grid">
+    <div class="cap-stick">
+      <h2 class="h2 rv">Five things the practice builds.</h2>
+    </div>
+
+    <div class="cap-list">
+      <div class="cap rv" data-cap="erp" data-open="true">
+        <h3>
+          <button class="cap-btn" type="button" aria-expanded="true" aria-controls="p-erp" id="b-erp">
+            <span class="h3">Enterprise resource planning</span>
+            <span class="cap-sign" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="cap-panel" id="p-erp" role="region" aria-labelledby="b-erp">
+          <div><div class="cap-inner">
+            <p>A single record of the organisation covering finance, procurement, stores, assets and people, with the approval chain enforced in software rather than in circulated documents. HaveStack builds these to match the way an institution already accounts for itself, then closes the gaps that manual handling created.</p>
+            <div class="tags">
+              <span class="tag">General ledger</span>
+              <span class="tag">Procurement workflow</span>
+              <span class="tag">Inventory and assets</span>
+              <span class="tag">Statutory reporting</span>
             </div>
-          </div>
-          <div class="principle">
-            <span class="chk chk-d"><span></span><span></span><span></span><span></span></span>
-            <div>
-              <h3>Built for Bangladesh</h3>
-              <p>Priced, hosted and supported with the local market in mind — not adapted from somewhere else.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="cap rv" data-cap="learning" data-open="false">
+        <h3>
+          <button class="cap-btn" type="button" aria-expanded="false" aria-controls="p-learning" id="b-learning">
+            <span class="h3">Learning platforms</span>
+            <span class="cap-sign" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="cap-panel" id="p-learning" role="region" aria-labelledby="b-learning">
+          <div><div class="cap-inner">
+            <p>Course delivery, assessment and certification for universities, training authorities and corporate academies, built to carry full cohorts through an academic term without degrading. Attendance, grading and completion records are held to the same audit standard as financial data.</p>
+            <div class="tags">
+              <span class="tag">Course delivery</span>
+              <span class="tag">Assessment engine</span>
+              <span class="tag">Certification</span>
+              <span class="tag">Cohort reporting</span>
             </div>
-          </div>
-          <div class="principle">
-            <span class="chk chk-a"><span></span><span></span><span></span><span></span></span>
-            <div>
-              <h3>Backed by Amaze Consortium</h3>
-              <p>The standards and resources of a larger group, with the focus and speed of a small studio.</p>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="cap rv" data-cap="public" data-open="false">
+        <h3>
+          <button class="cap-btn" type="button" aria-expanded="false" aria-controls="p-public" id="b-public">
+            <span class="h3">Public facing platforms</span>
+            <span class="cap-sign" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="cap-panel" id="p-public" role="region" aria-labelledby="b-public">
+          <div><div class="cap-inner">
+            <p>Systems that a citizen or customer uses directly: service applications, registration, appointment handling, status tracking and payment. These carry unpredictable load and a low tolerance for downtime, so they are built for a known peak and tested against it before release.</p>
+            <div class="tags">
+              <span class="tag">Citizen services</span>
+              <span class="tag">Application intake</span>
+              <span class="tag">Payment gateways</span>
+              <span class="tag">Accessibility</span>
             </div>
-          </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="cap rv" data-cap="integration" data-open="false">
+        <h3>
+          <button class="cap-btn" type="button" aria-expanded="false" aria-controls="p-integration" id="b-integration">
+            <span class="h3">Integration and internal tooling</span>
+            <span class="cap-sign" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="cap-panel" id="p-integration" role="region" aria-labelledby="b-integration">
+          <div><div class="cap-inner">
+            <p>Most institutions already run core software they cannot replace. HaveStack connects those systems, moves data between them under a defined contract, and builds the internal consoles that staff use to operate the result. Legacy platforms are treated as fixed constraints, not as obstacles.</p>
+            <div class="tags">
+              <span class="tag">API layers</span>
+              <span class="tag">Data migration</span>
+              <span class="tag">Admin consoles</span>
+              <span class="tag">Reporting tools</span>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="cap rv" data-cap="managed" data-open="false">
+        <h3>
+          <button class="cap-btn" type="button" aria-expanded="false" aria-controls="p-managed" id="b-managed">
+            <span class="h3">Managed operations</span>
+            <span class="cap-sign" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="cap-panel" id="p-managed" role="region" aria-labelledby="b-managed">
+          <div><div class="cap-inner">
+            <p>A system that has gone live still needs to be run. HaveStack holds monitoring, releases, backups, capacity and a named support route under a written service agreement, so the client keeps one accountable party for the life of the platform.</p>
+            <div class="tags">
+              <span class="tag">Monitoring</span>
+              <span class="tag">Release management</span>
+              <span class="tag">Backup and recovery</span>
+              <span class="tag">Support desk</span>
+            </div>
+          </div></div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- SERVICES -->
-  <section id="services">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="chk chk-c"><span></span><span></span><span></span><span></span></span>WHAT WE BUILD</p>
-        <h2>Five ways we build your idea.</h2>
-        <p>From a single portfolio page to the software that runs your whole operation — we scope it honestly and build it properly.</p>
+<!-- ==========================================================================
+     SECTORS
+     ========================================================================== -->
+<section class="sect rule-top" id="sectors">
+  <div class="wrap">
+    <h2 class="h2 sect-head-wide rv">Where these systems run.</h2>
+
+    <div class="mosaic">
+
+      <!-- TODO commission: interior of a government building, wide frame, structural
+           bays and public counters, no identifiable faces. Deliver at 1600 by 1100. -->
+      <article class="cell cell-a on-media rv">
+        <div class="media">
+          <img src="https://picsum.photos/seed/facade-grid/1200/820?grayscale" alt="Structural interior of a public institution building" loading="lazy" width="1200" height="820" />
+          <div class="duo"></div>
+          <div class="veil"></div>
+        </div>
+        <h3 class="display">Government and public administration</h3>
+        <p>Registries, service delivery and internal administration for offices that answer to the public and to audit.</p>
+      </article>
+
+      <article class="cell cell-b rv">
+        <h3 class="display">Banking and NBFI</h3>
+        <p>Origination, servicing and back office systems built to sit alongside a core banking platform and to satisfy regulatory reporting.</p>
+      </article>
+
+      <article class="cell cell-c rv">
+        <h3 class="h3">Education</h3>
+        <p>Admissions, academic records and learning delivery for universities and training authorities.</p>
+      </article>
+
+      <article class="cell cell-d rv">
+        <h3 class="h3">Healthcare</h3>
+        <p>Patient administration, scheduling and clinical record handling under strict access control.</p>
+      </article>
+
+      <!-- TODO commission: a building envelope under construction or recent handover,
+           hard geometry, overcast light. Deliver at 1200 by 900. -->
+      <article class="cell cell-e on-media rv">
+        <div class="media">
+          <img src="https://picsum.photos/seed/tower-core/900/700?grayscale" alt="Facade of a high rise residential block" loading="lazy" width="900" height="700" />
+          <div class="duo"></div>
+          <div class="veil"></div>
+        </div>
+        <h3 class="h3">Real estate and construction</h3>
+        <p>Project cost control, procurement and handover records across multiple sites.</p>
+      </article>
+
+      <article class="cell cell-f rv">
+        <h3 class="h3">Development and NGO</h3>
+        <p>Programme monitoring, beneficiary records and donor reporting held to grant conditions.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     DELIVERY
+     ========================================================================== -->
+<section class="sect rule-top" id="process">
+  <div class="wrap">
+    <h2 class="h2 sect-head-wide rv">How an engagement runs.</h2>
+
+    <div class="rail" id="rail">
+      <div class="rail-line" aria-hidden="true"><span></span></div>
+      <div class="tracks">
+        <article class="track rv">
+          <div class="mark" aria-hidden="true"></div>
+          <h3 class="h4">Discovery</h3>
+          <p>The practice sits with the people who do the work and records how the organisation actually operates today.</p>
+          <div class="out">Output<b>Scope document</b></div>
+        </article>
+        <article class="track rv">
+          <div class="mark" aria-hidden="true"></div>
+          <h3 class="h4">Architecture</h3>
+          <p>Data model, integration contracts, access rules and hosting are fixed in writing before any code is committed.</p>
+          <div class="out">Output<b>Technical specification</b></div>
+        </article>
+        <article class="track rv">
+          <div class="mark" aria-hidden="true"></div>
+          <h3 class="h4">Build</h3>
+          <p>Delivery runs in reviewable increments, each one demonstrated to the named owner against the agreed scope.</p>
+          <div class="out">Output<b>Accepted release</b></div>
+        </article>
+        <article class="track rv">
+          <div class="mark" aria-hidden="true"></div>
+          <h3 class="h4">Handover</h3>
+          <p>Source, credentials, infrastructure and documentation transfer to the client, with training for the teams who will run it.</p>
+          <div class="out">Output<b>Operations manual</b></div>
+        </article>
+        <article class="track rv">
+          <div class="mark" aria-hidden="true"></div>
+          <h3 class="h4">Operations</h3>
+          <p>The system is monitored and maintained under a service agreement with defined response times and a named contact.</p>
+          <div class="out">Output<b>Service report</b></div>
+        </article>
       </div>
+    </div>
+  </div>
+</section>
 
-      <div class="services-grid reveal">
-        <div class="service-card">
-          <span class="chk chk-a"><span></span><span></span><span></span><span></span></span>
-          <h3>Portfolios</h3>
-          <p>Personal and professional portfolio sites that make your work — not a template — the headline.</p>
-          <span class="tag">Design-led</span>
+<!-- ==========================================================================
+     STANDARDS
+     ========================================================================== -->
+<section class="sect rule-top" id="standards">
+  <div class="wrap">
+    <h2 class="h2 std-open rv">What HaveStack commits to in writing.</h2>
+    <p class="lead rv">These commitments form part of the engagement contract. They are the reason the practice is able to be selective about the work it accepts.</p>
+
+    <div class="cluster rv">
+      <div class="cluster-head">
+        <i class="ph-light ph-file-text" aria-hidden="true"></i>
+        <h3 class="display">Delivery and documentation</h3>
+      </div>
+      <div class="commits">
+        <div class="commit">
+          <h4 class="h4">Written scope before build</h4>
+          <p>No development starts against a verbal brief. The scope document names every module, interface and report, and changes to it are priced and signed as amendments.</p>
         </div>
-        <div class="service-card">
-          <span class="chk chk-b"><span></span><span></span><span></span><span></span></span>
-          <h3>Business Websites</h3>
-          <p>Marketing sites and web presences built to convert visitors into customers, not just look good.</p>
-          <span class="tag">Web</span>
+        <div class="commit">
+          <h4 class="h4">Version control from the first commit</h4>
+          <p>All source sits in a repository with reviewed history. The client is given read access from the first week of the build rather than at handover.</p>
         </div>
-        <div class="service-card">
-          <span class="chk chk-c"><span></span><span></span><span></span><span></span></span>
-          <h3>ERP Systems</h3>
-          <p>Custom ERP software shaped around how your business actually runs — not the other way around.</p>
-          <span class="tag">Custom build</span>
+        <div class="commit">
+          <h4 class="h4">Reproducible environments</h4>
+          <p>Development, staging and production are built from the same configuration, so a release behaves the same way in each of them.</p>
         </div>
-        <div class="service-card">
-          <span class="chk chk-d"><span></span><span></span><span></span><span></span></span>
-          <h3>LMS Platforms</h3>
-          <p>Learning management systems for schools, training centers and corporate teams, built to be actually used.</p>
-          <span class="tag">Education</span>
-        </div>
-        <div class="service-card">
-          <span class="chk chk-a"><span></span><span></span><span></span><span></span></span>
-          <h3>Digital Solutions</h3>
-          <p>Internal tools, integrations and custom software for the specific problems off-the-shelf apps don't solve.</p>
-          <span class="tag">Custom build</span>
-        </div>
-        <div class="service-card">
-          <span class="chk chk-b"><span></span><span></span><span></span><span></span></span>
-          <h3>Ongoing Support</h3>
-          <p>Launch isn't the finish line. We maintain, monitor and extend what we build for you.</p>
-          <span class="tag">Care plans</span>
+        <div class="commit">
+          <h4 class="h4">Acceptance against the specification</h4>
+          <p>Each stage is tested against the written scope in the presence of the named owner. Acceptance is recorded, and defects raised there are fixed at no cost.</p>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- PROCESS -->
-  <section id="process">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="chk chk-d"><span></span><span></span><span></span><span></span></span>HOW WE WORK</p>
-        <h2>From idea to shipped product.</h2>
-        <p>Five stages, one team, no surprises. You always know what's happening and why.</p>
+    <div class="cluster rv">
+      <div class="cluster-head">
+        <i class="ph-light ph-lock-key" aria-hidden="true"></i>
+        <h3 class="display">Security and access</h3>
       </div>
-
-      <div class="process-list reveal">
-        <div class="process-item">
-          <span class="process-num">01</span>
-          <div class="process-body">
-            <h3>Discover</h3>
-            <p>We learn your business, your users, and what "working" actually looks like before a single screen gets designed.</p>
-          </div>
+      <div class="commits">
+        <div class="commit">
+          <h4 class="h4">Least privilege by default</h4>
+          <p>Every account, service and integration receives the narrowest permission that lets it do its job, and permissions are reviewed at each release.</p>
         </div>
-        <div class="process-item">
-          <span class="process-num">02</span>
-          <div class="process-body">
-            <h3>Design</h3>
-            <p>Structure and interface, designed around the real content and workflows — not a generic template.</p>
-          </div>
+        <div class="commit">
+          <h4 class="h4">Encryption in transit and at rest</h4>
+          <p>Traffic runs over current transport security and stored data is encrypted at the storage layer. Secrets are held in a managed store, never in source.</p>
         </div>
-        <div class="process-item">
-          <span class="process-num">03</span>
-          <div class="process-body">
-            <h3>Build</h3>
-            <p>Engineering starts early and stays visible — you see working software throughout, not just at the end.</p>
-          </div>
+        <div class="commit">
+          <h4 class="h4">Audit trail on record changes</h4>
+          <p>Systems that hold financial, academic or citizen records log who changed what and when, and that log cannot be edited from inside the application.</p>
         </div>
-        <div class="process-item">
-          <span class="process-num">04</span>
-          <div class="process-body">
-            <h3>Launch</h3>
-            <p>Deployed, tested, and handed over with documentation your team can actually use.</p>
-          </div>
-        </div>
-        <div class="process-item">
-          <span class="process-num">05</span>
-          <div class="process-body">
-            <h3>Support</h3>
-            <p>We stay on after launch to fix, extend, and grow the product as your business changes.</p>
-          </div>
+        <div class="commit">
+          <h4 class="h4">Access revoked on exit</h4>
+          <p>When a person leaves the engagement on either side, their access is withdrawn the same working day and the removal is recorded.</p>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- CLIENTS & PARTNERS -->
-  <section id="clients">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow"><span class="chk chk-a"><span></span><span></span><span></span><span></span></span>CLIENTS &amp; PARTNERS</p>
-        <h2>Backed by Amaze Consortium, built for Bangladesh.</h2>
-        <p>HaveStack Technologies operates as part of Amaze Consortium and builds for organizations across a range of sectors.</p>
+    <div class="cluster rv">
+      <div class="cluster-head">
+        <i class="ph-light ph-key" aria-hidden="true"></i>
+        <h3 class="display">Ownership and continuity</h3>
       </div>
-
-      <div class="partner-feature reveal">
-        <div class="left">
-          <div class="mark"><span class="chk chk-b"><span></span><span></span><span></span><span></span></span></div>
-          <div>
-            <h3>Amaze Consortium</h3>
-            <p>Our parent company and largest ongoing partner — HaveStack is owned and managed by Amaze Consortium.</p>
-          </div>
+      <div class="commits">
+        <div class="commit">
+          <h4 class="h4">The client owns the code</h4>
+          <p>Intellectual property in commissioned work transfers to the client on final payment. HaveStack retains no licence that would limit the client's use of it.</p>
         </div>
-        <a href="#book" class="btn btn-ghost">Work with us</a>
-      </div>
-
-      <p class="sector-label reveal">Sectors we build for</p>
-      <div class="sector-grid reveal">
-        <div class="sector">Education</div>
-        <div class="sector">Retail &amp; E-commerce</div>
-        <div class="sector">Healthcare</div>
-        <div class="sector">Real Estate</div>
-        <div class="sector">Finance &amp; NBFI</div>
-        <div class="sector">NGO &amp; Development</div>
+        <div class="commit">
+          <h4 class="h4">Credentials transfer at handover</h4>
+          <p>Hosting, domains, certificates, repositories and third party accounts are registered in the client's name and handed over in full.</p>
+        </div>
+        <div class="commit">
+          <h4 class="h4">No dependency on the vendor</h4>
+          <p>Systems are built on established open technology and documented so that another competent team can take them over without rewriting them.</p>
+        </div>
+        <div class="commit">
+          <h4 class="h4">Continuity if the relationship ends</h4>
+          <p>The service agreement sets a notice period and a defined exit process covering data export, knowledge transfer and final documentation.</p>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- BOOK A MEETING -->
-  <section id="book" class="book-section">
-    <div class="wrap">
-      <div class="book-grid">
-        <div class="reveal">
-          <p class="eyebrow"><span class="chk chk-c"><span></span><span></span><span></span><span></span></span>GET STARTED</p>
-          <h2 style="font-size:clamp(28px,3.8vw,40px); font-weight:800; letter-spacing:-0.02em; line-height:1.15; margin-bottom:20px;">
-            Tell us what you're building.
-          </h2>
-          <div class="book-copy">
-            <p>Book a short call and we'll tell you honestly whether we're the right fit — and how we'd approach it if we are. No obligation, no generic sales deck.</p>
-          </div>
-
-          <div class="contact-line">
-            <span class="label">Email</span>
-            <a href="mailto:hello@havestack.tech">hello@havestack.tech</a>
-          </div>
-          <div class="contact-line">
-            <span class="label">Location</span>
-            <span>Bangladesh</span>
-          </div>
-          <div class="contact-line">
-            <span class="label">Company</span>
-            <span>A subsidiary of Amaze Consortium</span>
-          </div>
-        </div>
-
-        <form class="form-card reveal" id="bookForm">
-          <div class="form-row">
-            <div class="field">
-              <label for="name">Name</label>
-              <input type="text" id="name" name="name" placeholder="Your full name" required>
-            </div>
-            <div class="field">
-              <label for="email">Email</label>
-              <input type="email" id="email" name="email" placeholder="you@company.com" required>
-            </div>
-          </div>
-          <div class="field">
-            <label for="project">What are you building?</label>
-            <select id="project" name="project">
-              <option>Portfolio website</option>
-              <option>Business website</option>
-              <option>ERP system</option>
-              <option>LMS platform</option>
-              <option>Something else</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="message">A little more detail</label>
-            <textarea id="message" name="message" placeholder="What's the idea? What stage are you at?"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Request a meeting <span class="btn-arrow">→</span></button>
-          <p class="form-note">We reply within 1–2 business days.</p>
-        </form>
+<!-- ==========================================================================
+     GOVERNANCE
+     ========================================================================== -->
+<section class="sect rule-top" id="clients">
+  <div class="wrap">
+    <div class="gov rv">
+      <h2 class="h2">Owned and governed by Amaze Consortium.</h2>
+      <div class="gov-body">
+        <p>HaveStack Technologies is the software practice of Amaze Consortium. The parent group provides the corporate structure, the financial standing and the governance that institutional clients examine before they place a system with a supplier.</p>
+        <p>That backing is why a contract with HaveStack is held by an established group rather than by a project team. Procurement panels can assess the parent, its record and its obligations as part of their evaluation, and continuity of the engagement does not rest on any individual.</p>
       </div>
+      <dl class="facts">
+        <div class="fact"><dt>Structure</dt><dd>Subsidiary</dd></div>
+        <div class="fact"><dt>Parent</dt><dd>Amaze Consortium</dd></div>
+        <div class="fact"><dt>Base</dt><dd>Dhaka, Bangladesh</dd></div>
+        <div class="fact"><dt>Practice</dt><dd>Enterprise software</dd></div>
+      </dl>
     </div>
-  </section>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     ENGAGEMENT
+     ========================================================================== -->
+<section class="sect rule-top" id="book">
+  <div class="wrap">
+    <h2 class="h2 form-head rv">Request a meeting.</h2>
+    <p class="lead rv">A first meeting runs about forty minutes. It establishes what the organisation needs, whether HaveStack is the right practice for it, and what the next step would be. Cost is discussed once the scope is understood.</p>
+
+    <form class="form rv" id="form" novalidate>
+      <div class="f f-6" data-field="org">
+        <label for="org">Organisation<span class="req" aria-hidden="true">*</span></label>
+        <div class="ctrl"><input id="org" name="org" type="text" autocomplete="organization" aria-describedby="e-org" /></div>
+        <p class="err" id="e-org"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Enter the registered name of the organisation.</span></p>
+      </div>
+
+      <div class="f f-6" data-field="name">
+        <label for="name">Your name<span class="req" aria-hidden="true">*</span></label>
+        <div class="ctrl"><input id="name" name="name" type="text" autocomplete="name" aria-describedby="e-name" /></div>
+        <p class="err" id="e-name"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Enter your full name.</span></p>
+      </div>
+
+      <div class="f f-6" data-field="role">
+        <label for="role">Role<span class="req" aria-hidden="true">*</span></label>
+        <div class="ctrl"><input id="role" name="role" type="text" autocomplete="organization-title" aria-describedby="e-role" /></div>
+        <p class="err" id="e-role"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>State your role, so the meeting is set with the right people.</span></p>
+      </div>
+
+      <div class="f f-6" data-field="email">
+        <label for="email">Work email<span class="req" aria-hidden="true">*</span></label>
+        <div class="ctrl"><input id="email" name="email" type="email" autocomplete="email" aria-describedby="e-email" /></div>
+        <p class="err" id="e-email"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Enter a valid email address.</span></p>
+      </div>
+
+      <div class="f f-4" data-field="sector">
+        <label for="sector">Sector<span class="req" aria-hidden="true">*</span></label>
+        <div class="ctrl">
+          <select id="sector" name="sector" aria-describedby="e-sector">
+            <option value="">Select a sector</option>
+            <option>Government and public administration</option>
+            <option>Banking and NBFI</option>
+            <option>Education</option>
+            <option>Healthcare</option>
+            <option>Real estate and construction</option>
+            <option>Development and NGO</option>
+            <option>Other</option>
+          </select>
+          <i class="ph-light ph-caret-down caret" aria-hidden="true"></i>
+        </div>
+        <p class="err" id="e-sector"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Select the sector the organisation operates in.</span></p>
+      </div>
+
+      <div class="f f-4" data-field="system">
+        <label for="system">System required<span class="req" aria-hidden="true">*</span></label>
+        <div class="ctrl">
+          <select id="system" name="system" aria-describedby="e-system">
+            <option value="">Select a system</option>
+            <option>Enterprise resource planning</option>
+            <option>Learning platform</option>
+            <option>Public facing platform</option>
+            <option>Integration and internal tooling</option>
+            <option>Managed operations</option>
+            <option>Not yet determined</option>
+          </select>
+          <i class="ph-light ph-caret-down caret" aria-hidden="true"></i>
+        </div>
+        <p class="err" id="e-system"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Select the closest description of the system needed.</span></p>
+      </div>
+
+      <div class="f f-4" data-field="start">
+        <label for="start">Intended start<span class="req" aria-hidden="true">*</span></label>
+        <div class="ctrl">
+          <select id="start" name="start" aria-describedby="e-start">
+            <option value="">Select a timeframe</option>
+            <option>Within one month</option>
+            <option>One to three months</option>
+            <option>Three to six months</option>
+            <option>Later than six months</option>
+            <option>Not yet determined</option>
+          </select>
+          <i class="ph-light ph-caret-down caret" aria-hidden="true"></i>
+        </div>
+        <p class="err" id="e-start"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Select an intended start.</span></p>
+      </div>
+
+      <div class="f f-12" data-field="brief">
+        <label for="brief">What the system has to do<span class="req" aria-hidden="true">*</span></label>
+        <div class="ctrl"><textarea id="brief" name="brief" aria-describedby="e-brief" placeholder="The operation it supports, the people who will use it, the systems it has to connect to, and any deadline that is fixed."></textarea></div>
+        <p class="err" id="e-brief"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Describe the requirement in at least twenty characters.</span></p>
+      </div>
+
+      <div class="form-foot">
+        <button class="btn" type="submit" id="submit">
+          <span id="submit-label">Request a meeting</span>
+          <span class="spin" aria-hidden="true"></span>
+          <i class="ph-light ph-arrow-up-right" aria-hidden="true"></i>
+        </button>
+        <p>Requests are answered within two working days. Details shared here are treated as confidential.</p>
+      </div>
+      <p class="err" id="e-form" style="grid-column:span 12"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Check the fields marked above and submit again.</span></p>
+    </form>
+
+    <div class="done" id="done" data-show="false" role="status" aria-live="polite" tabindex="-1">
+      <i class="ph-light ph-seal-check seal" aria-hidden="true"></i>
+      <h3 class="h3">The request has been logged.</h3>
+      <p>Your email client has been opened with the request prepared. Send that message to complete the submission. HaveStack replies within two working days to arrange a time.</p>
+      <div class="ref">Reference<b id="ref">HS</b></div>
+    </div>
+  </div>
+</section>
 
 </main>
 
-<footer>
+<footer class="foot">
   <div class="wrap">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="#top" class="brand">
-          <img src="assets/logo-mark.png" alt="HaveStack Technologies logomark">
-          <span>HaveStack<span class="sub">TECHNOLOGIES</span></span>
-        </a>
-        <p>A software development company based in Bangladesh, owned and managed by Amaze Consortium.</p>
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">
+          <img src="assets/logo-mark.png" alt="" width="20" height="20" />
+          <span>HaveStack Technologies</span>
+        </div>
+        <p class="foot-note">Enterprise resource planning, learning platforms, public facing systems, integration and managed operations for institutions in Bangladesh.</p>
       </div>
 
-      <div class="footer-cols">
-        <div class="footer-col">
-          <h4>Company</h4>
-          <a href="#about">About Us</a>
-          <a href="#process">How We Work</a>
-          <a href="#clients">Clients &amp; Partners</a>
-        </div>
-        <div class="footer-col">
-          <h4>Services</h4>
-          <a href="#services">Portfolios</a>
-          <a href="#services">Business Websites</a>
-          <a href="#services">ERP Systems</a>
-          <a href="#services">LMS Platforms</a>
-        </div>
-        <div class="footer-col">
-          <h4>Contact</h4>
-          <a href="mailto:hello@havestack.tech">hello@havestack.tech</a>
-          <span>Bangladesh</span>
-          <a href="#book">Book a meeting</a>
-        </div>
+      <div class="foot-col">
+        <h4>Capabilities</h4>
+        <ul>
+          <li><a href="#services" data-go="erp">Enterprise resource planning</a></li>
+          <li><a href="#services" data-go="learning">Learning platforms</a></li>
+          <li><a href="#services" data-go="public">Public facing platforms</a></li>
+          <li><a href="#services" data-go="integration">Integration and tooling</a></li>
+          <li><a href="#services" data-go="managed">Managed operations</a></li>
+        </ul>
+      </div>
+
+      <div class="foot-col">
+        <h4>Practice</h4>
+        <ul>
+          <li><a href="#about">Mandate</a></li>
+          <li><a href="#sectors">Sectors</a></li>
+          <li><a href="#process">Delivery</a></li>
+          <li><a href="#standards">Standards</a></li>
+          <li><a href="#clients">Governance</a></li>
+        </ul>
+      </div>
+
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:hello@havestack.tech">hello@havestack.tech</a></li>
+          <li><p>Dhaka, Bangladesh</p></li>
+          <li><a href="#book">Request a meeting</a></li>
+        </ul>
       </div>
     </div>
 
-    <div class="footer-bottom">
-      <span>© <span id="year"></span> HaveStack Technologies. A subsidiary of Amaze Consortium.</span>
-      <span class="motto">We build your ideas.</span>
-      <a href="#top" class="top-link">Back to top ↑</a>
+    <div class="foot-bar">
+      <p>HaveStack Technologies, a subsidiary of Amaze Consortium</p>
+      <p>Copyright 2026 HaveStack Technologies</p>
     </div>
   </div>
 </footer>
 
+</div><!-- /#page -->
+
+<div class="mmenu" id="mmenu" data-open="false" role="dialog" aria-modal="true" aria-label="Site menu">
+  <div class="wrap" style="padding:0">
+    <div class="mmenu-top">
+      <a class="brand" href="#top" style="margin-right:auto">
+        <img src="assets/logo-mark.png" alt="" width="21" height="21" />
+        <span>HaveStack</span>
+      </a>
+      <button class="icon-btn" id="mclose" type="button" aria-label="Close menu">
+        <i class="ph-light ph-x" aria-hidden="true"></i>
+      </button>
+    </div>
+    <nav aria-label="Site">
+      <a href="#about">Mandate</a>
+      <a href="#services">Capabilities</a>
+      <a href="#sectors">Sectors</a>
+      <a href="#process">Delivery</a>
+      <a href="#standards">Standards</a>
+      <a href="#clients">Governance</a>
+    </nav>
+    <a class="btn" href="#book" style="align-self:flex-start"><span>Request a meeting</span></a>
+  </div>
+</div>
+
 <script>
-  // Year
-  document.getElementById('year').textContent = new Date().getFullYear();
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
-  // Header scroll state
-  const header = document.getElementById('siteHeader');
-  window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 10);
-  }, { passive:true });
-
-  // Mobile nav toggle
-  const navToggle = document.getElementById('navToggle');
-  const primaryNav = document.getElementById('primaryNav');
-  const iconOpen = document.getElementById('navIconOpen');
-  const iconClose = document.getElementById('navIconClose');
-  navToggle.addEventListener('click', () => {
-    const isOpen = primaryNav.classList.toggle('open');
-    navToggle.setAttribute('aria-expanded', isOpen);
-    iconOpen.style.display = isOpen ? 'none' : 'block';
-    iconClose.style.display = isOpen ? 'block' : 'none';
-  });
-  primaryNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
-    primaryNav.classList.remove('open');
-    iconOpen.style.display = 'block';
-    iconClose.style.display = 'none';
-  }));
-
-  // Hero grid field generation
-  const gridField = document.getElementById('gridField');
-  const COLS = 16, ROWS = 10;
-  const frag = document.createDocumentFragment();
-  for (let i = 0; i < COLS * ROWS; i++) {
-    const cell = document.createElement('i');
-    cell.style.setProperty('--d', (Math.random() * 7).toFixed(2));
-    cell.style.animationDuration = (5 + Math.random() * 5).toFixed(2) + 's';
-    frag.appendChild(cell);
+  /* ---------- theme ---------- */
+  var themeBtn = document.getElementById('theme');
+  function syncTheme() {
+    var dark = root.getAttribute('data-theme') === 'dark';
+    themeBtn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
   }
-  gridField.appendChild(frag);
+  syncTheme();
+  themeBtn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('hs-theme', next); } catch (e) {}
+    syncTheme();
+  });
 
-  // Marquee content
-  const items = ['Portfolios','Business Websites','ERP Systems','LMS Platforms','Digital Solutions'];
-  const track = document.getElementById('marqueeTrack');
-  let html = '';
-  for (let r = 0; r < 2; r++) {
-    items.forEach(t => {
-      html += `<span class="item"><span class="chk chk-a"><span></span><span></span><span></span><span></span></span>${t}</span>`;
+  /* ---------- mobile menu ---------- */
+  var menu = document.getElementById('mmenu');
+  var burger = document.getElementById('burger');
+  var page = document.getElementById('page');
+
+  function menuOpen() { return menu.getAttribute('data-open') === 'true'; }
+
+  /* Focus stays inside the panel while it is open, and the rest of the
+     document is hidden from assistive technology behind it. */
+  function setMenu(open, restore) {
+    menu.setAttribute('data-open', open ? 'true' : 'false');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.style.overflow = open ? 'hidden' : '';
+    page.toggleAttribute('inert', open);
+    if (open) page.setAttribute('aria-hidden', 'true');
+    else page.removeAttribute('aria-hidden');
+    if (open) menu.querySelector('a').focus();
+    else if (restore !== false) burger.focus();
+  }
+
+  burger.addEventListener('click', function () { setMenu(true); });
+  document.getElementById('mclose').addEventListener('click', function () { setMenu(false); });
+  menu.querySelectorAll('a').forEach(function (a) {
+    /* a link is taking the reader somewhere, so focus is left with the
+       destination rather than pulled back to the button that opened the panel */
+    a.addEventListener('click', function () { setMenu(false, false); });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!menuOpen()) return;
+    if (e.key === 'Escape') { setMenu(false); return; }
+    if (e.key !== 'Tab') return;
+    var stops = menu.querySelectorAll('a[href], button');
+    var first = stops[0];
+    var last = stops[stops.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
+
+  /* ---------- header rule appears once the page has moved ----------
+     A short sentinel pinned to the top of the document leaves the viewport
+     after the first few pixels of scroll. Watching the main element instead
+     would never fire, because a full height element stays intersecting. */
+  var head = document.querySelector('.head');
+  new IntersectionObserver(function (rows) {
+    head.classList.toggle('stuck', !rows[0].isIntersecting);
+  }, { threshold: 0 }).observe(document.getElementById('anchor'));
+
+  /* ---------- section marker in the header ---------- */
+  var navMap = {};
+  document.querySelectorAll('.nav a[href^="#"]').forEach(function (a) {
+    navMap[a.getAttribute('href').slice(1)] = a;
+  });
+  var seen = {};
+  function markNav() {
+    var current = null;
+    Object.keys(navMap).forEach(function (id) { if (seen[id]) current = current || id; });
+    Object.keys(navMap).forEach(function (id) {
+      if (id === current) navMap[id].setAttribute('aria-current', 'true');
+      else navMap[id].removeAttribute('aria-current');
     });
   }
-  track.innerHTML = html;
+  var spy = new IntersectionObserver(function (rows) {
+    rows.forEach(function (row) { seen[row.target.id] = row.isIntersecting; });
+    markNav();
+  }, { rootMargin: '-48% 0px -48% 0px', threshold: 0 });
+  Object.keys(navMap).forEach(function (id) {
+    var sec = document.getElementById(id);
+    if (sec) spy.observe(sec);
+  });
 
-  // Scroll reveal
-  const revealEls = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
-    revealEls.forEach(el => io.observe(el));
-  } else {
-    revealEls.forEach(el => el.classList.add('in'));
+  /* ---------- scroll reveals ----------
+     The stagger restarts per section so the rhythm reads as a group arriving,
+     rather than as one running count across the whole document. */
+  var revealer = new IntersectionObserver(function (rows) {
+    rows.forEach(function (row) {
+      if (!row.isIntersecting) return;
+      row.target.classList.add('in');
+      revealer.unobserve(row.target);
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+  document.querySelectorAll('.sect, .hero').forEach(function (section) {
+    section.querySelectorAll('.rv').forEach(function (el, i) {
+      el.style.transitionDelay = (Math.min(i, 5) * 60) + 'ms';
+      revealer.observe(el);
+    });
+  });
+
+  /* ---------- delivery rail ---------- */
+  var rail = document.getElementById('rail');
+  new IntersectionObserver(function (rows, obs) {
+    if (!rows[0].isIntersecting) return;
+    rail.classList.add('in');
+    obs.disconnect();
+  }, { threshold: 0.3 }).observe(rail);
+
+  /* ---------- capabilities accordion ---------- */
+  var caps = Array.prototype.slice.call(document.querySelectorAll('.cap'));
+  function openCap(cap) {
+    caps.forEach(function (c) {
+      var on = c === cap;
+      c.setAttribute('data-open', on ? 'true' : 'false');
+      c.querySelector('.cap-btn').setAttribute('aria-expanded', on ? 'true' : 'false');
+    });
+  }
+  caps.forEach(function (cap) {
+    cap.querySelector('.cap-btn').addEventListener('click', function () {
+      openCap(cap.getAttribute('data-open') === 'true' ? null : cap);
+    });
+  });
+
+  function goToCap(key) {
+    var cap = document.querySelector('.cap[data-cap="' + key + '"]');
+    if (!cap) return;
+    openCap(cap);
+    cap.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'center' });
+    cap.querySelector('.cap-btn').focus({ preventScroll: true });
+    /* mark the arrival so the reader can see which panel answered the click */
+    cap.classList.remove('arrived');
+    void cap.offsetWidth;
+    cap.classList.add('arrived');
   }
 
-  // Form (static demo — wire up to your backend / booking tool)
-  const bookForm = document.getElementById('bookForm');
-  bookForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const btn = bookForm.querySelector('button[type="submit"]');
-    const original = btn.innerHTML;
-    btn.innerHTML = 'Thanks — we\'ll be in touch ✓';
-    btn.style.background = '#1f8f52';
-    btn.style.borderColor = '#1f8f52';
-    setTimeout(() => {
-      btn.innerHTML = original;
-      btn.style.background = '';
-      btn.style.borderColor = '';
-      bookForm.reset();
-    }, 2600);
+  document.querySelectorAll('[data-go]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      goToCap(a.getAttribute('data-go'));
+    });
   });
-</script>
 
+  /* ---------- hero schematic ---------- */
+  document.querySelectorAll('.schema').forEach(function (svg) {
+    var edges = Array.prototype.slice.call(svg.querySelectorAll('.edge'));
+    var nodes = Array.prototype.slice.call(svg.querySelectorAll('.node'));
+
+    function light(node, on) {
+      var id = node.getAttribute('data-node');
+      svg.classList.toggle('hot', on);
+      node.classList.toggle('lit', on);
+      edges.forEach(function (edge) {
+        var linked = edge.getAttribute('data-link').split(' ').indexOf(id) > -1;
+        edge.classList.toggle('lit', on && linked);
+      });
+    }
+
+    nodes.forEach(function (node) {
+      node.addEventListener('mouseenter', function () { light(node, true); });
+      node.addEventListener('mouseleave', function () { light(node, false); });
+      node.addEventListener('focus', function () { light(node, true); });
+      node.addEventListener('blur', function () { light(node, false); });
+      node.addEventListener('click', function () { goToCap(node.getAttribute('data-cap')); });
+      node.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          goToCap(node.getAttribute('data-cap'));
+        }
+      });
+    });
+  });
+
+  /* ---------- engagement form ---------- */
+  var form = document.getElementById('form');
+  var formErr = document.getElementById('e-form');
+  var submit = document.getElementById('submit');
+  var submitLabel = document.getElementById('submit-label');
+  var done = document.getElementById('done');
+  var tried = false;
+
+  var rules = {
+    org:    function (v) { return v.trim().length >= 2; },
+    name:   function (v) { return v.trim().length >= 2; },
+    role:   function (v) { return v.trim().length >= 2; },
+    email:  function (v) { return /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(v.trim()); },
+    sector: function (v) { return v !== ''; },
+    system: function (v) { return v !== ''; },
+    start:  function (v) { return v !== ''; },
+    brief:  function (v) { return v.trim().length >= 20; }
+  };
+
+  function fieldOf(key) { return form.querySelector('[data-field="' + key + '"]'); }
+
+  function check(key) {
+    var input = document.getElementById(key);
+    var wrap = fieldOf(key);
+    var ok = rules[key](input.value);
+    wrap.setAttribute('data-bad', ok ? 'false' : 'true');
+    input.setAttribute('aria-invalid', ok ? 'false' : 'true');
+    return ok;
+  }
+
+  /* the summary clears itself as soon as the last field is put right, rather
+     than waiting for another submit to tell the reader they are done */
+  function refreshSummary() {
+    if (!tried) return;
+    var clean = Object.keys(rules).every(function (key) {
+      return fieldOf(key).getAttribute('data-bad') !== 'true';
+    });
+    formErr.style.display = clean ? '' : 'flex';
+  }
+
+  Object.keys(rules).forEach(function (key) {
+    var input = document.getElementById(key);
+    ['blur', 'input', 'change'].forEach(function (evt) {
+      input.addEventListener(evt, function () {
+        if (!tried) return;
+        check(key);
+        refreshSummary();
+      });
+    });
+  });
+
+  function reference() {
+    var d = new Date();
+    var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+    var stamp = '' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate());
+    var tail = d.getTime().toString(36).slice(-4).toUpperCase();
+    return 'HS-' + stamp + '-' + tail;
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    tried = true;
+
+    var bad = Object.keys(rules).filter(function (key) { return !check(key); });
+    if (bad.length) {
+      formErr.style.display = 'flex';
+      var first = document.getElementById(bad[0]);
+      first.focus();
+      first.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'center' });
+      return;
+    }
+    formErr.style.display = '';
+
+    submit.setAttribute('data-busy', 'true');
+    submit.disabled = true;
+    submitLabel.textContent = 'Sending';
+
+    var ref = reference();
+    var get = function (id) { return document.getElementById(id).value.trim(); };
+
+    /* REPLACE THIS BLOCK WITH A REAL ENDPOINT.
+       Post the same values to the server, for example:
+         fetch('/api/meeting-request', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify(payload)
+         })
+       Until that endpoint exists the request is composed as a mailto to
+       hello@havestack.tech and handed to the visitor's mail client. */
+    var subject = 'Meeting request: ' + get('org') + ' [' + ref + ']';
+    var body = [
+      'Reference: ' + ref,
+      '',
+      'Organisation: ' + get('org'),
+      'Name: ' + get('name'),
+      'Role: ' + get('role'),
+      'Work email: ' + get('email'),
+      'Sector: ' + get('sector'),
+      'System required: ' + get('system'),
+      'Intended start: ' + get('start'),
+      '',
+      'Requirement:',
+      get('brief'),
+      '',
+      'Submitted from havestack.tech'
+    ].join('\r\n');
+
+    var href = 'mailto:hello@havestack.tech'
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(body);
+
+    window.setTimeout(function () {
+      /* The success state is committed first. Handing the mailto to an anchor
+         rather than assigning window.location means a machine with no mail
+         client registered cannot unload or error out of the confirmation. */
+      document.getElementById('ref').textContent = ref;
+      done.setAttribute('data-show', 'true');
+      form.style.display = 'none';
+
+      submit.removeAttribute('data-busy');
+      submit.disabled = false;
+      submitLabel.textContent = 'Request a meeting';
+
+      var post = document.createElement('a');
+      post.href = href;
+      post.rel = 'noopener';
+      post.style.display = 'none';
+      document.body.appendChild(post);
+      post.click();
+      document.body.removeChild(post);
+
+      done.focus();
+    }, 900);
+  });
+})();
+</script>
 </body>
 </html>
