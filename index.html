@@ -6,20 +6,59 @@
 <title>HaveStack Technologies | Enterprise systems for institutions</title>
 <meta name="description" content="HaveStack Technologies designs, builds and operates enterprise resource planning, learning platforms and public facing systems for banks, institutions and government bodies in Bangladesh. A subsidiary of Amaze Consortium." />
 <link rel="icon" href="assets/favicon.png" />
+<link rel="apple-touch-icon" href="assets/favicon.png" />
 <meta name="color-scheme" content="light dark" />
 <meta name="theme-color" content="#E9EAEB" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#0E1012" media="(prefers-color-scheme: dark)" />
 
+<!-- TODO verify the live domain before launch. Social cards and the canonical
+     link need absolute URLs, so every occurrence of https://havestack.tech
+     below has to match the domain the site is actually served from. -->
+<link rel="canonical" href="https://havestack.tech/" />
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="HaveStack Technologies" />
+<meta property="og:url" content="https://havestack.tech/" />
+<meta property="og:locale" content="en_GB" />
 <meta property="og:title" content="HaveStack Technologies | Enterprise systems for institutions" />
 <meta property="og:description" content="Institutions run on systems. HaveStack builds them. Engagements begin with a meeting." />
-<meta property="og:image" content="assets/logo-mark.png" />
+<meta property="og:image" content="https://havestack.tech/assets/og-card.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="HaveStack Technologies. Institutions run on systems. HaveStack builds them." />
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="HaveStack Technologies | Enterprise systems for institutions" />
+<meta name="twitter:description" content="Institutions run on systems. HaveStack builds them. Engagements begin with a meeting." />
+<meta name="twitter:image" content="https://havestack.tech/assets/og-card.png" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "HaveStack Technologies",
+  "url": "https://havestack.tech/",
+  "logo": "https://havestack.tech/assets/logo-mark.png",
+  "image": "https://havestack.tech/assets/og-card.png",
+  "description": "HaveStack Technologies designs, builds and operates enterprise resource planning, learning platforms, public facing systems, integrations and managed operations for institutions in Bangladesh.",
+  "email": "hello@havestack.tech",
+  "parentOrganization": { "@type": "Organization", "name": "Amaze Consortium" },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Dhaka",
+    "addressCountry": "BD"
+  },
+  "knowsAbout": [
+    "Enterprise resource planning",
+    "Learning platforms",
+    "Public facing platforms",
+    "Integration and internal tooling",
+    "Managed operations"
+  ]
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/light/style.css" />
 
 <script>
   /* Set theme and the js flag before first paint so there is no flash and no
@@ -78,11 +117,15 @@
   --sink:#DFE1E2;
   --ink:#0F1113;
   --ink-2:#4C5257;
-  --ink-3:#6C7378;
+  /* the quietest ink still clears 4.5:1 on both the page ground and the
+     slightly darker footer ground, so mono captions at 10.5px stay legible */
+  --ink-3:#5A6166;
   --rule:#C9CCCE;
   --rule-2:#D9DBDC;
   --signal:#D91F35;
   --signal-deep:#AF1729;
+  /* red as small text needs to be darker than red as a surface */
+  --signal-text:#AF1729;
   --on-signal:#FFFFFF;
 
   --cp-28:polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 28px 100%, 0 calc(100% - 28px));
@@ -120,13 +163,24 @@ html[data-theme="dark"]{
   --rule-2:#1E2124;
   --signal:#FF3A50;
   --signal-deep:#FF6274;
+  --signal-text:#FF6274;
   --on-signal:#0E1012;
-  --wash:rgba(255,58,80,.10);
   color-scheme:dark;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+html{
+  -webkit-text-size-adjust:100%;scroll-behavior:smooth;
+  scrollbar-color:var(--rule) var(--sink);
+}
+/* Applied only for the length of a theme switch, so the page changes register
+   as one considered move rather than a snap. Removed again straight after, so
+   it never interferes with hover or focus timing. */
+html.theming,html.theming *,html.theming *::before,html.theming *::after{
+  transition:background-color .3s var(--ease),color .3s var(--ease),
+             border-color .3s var(--ease),fill .3s var(--ease),
+             stroke .3s var(--ease),opacity .3s var(--ease) !important;
+}
 body{
   background:var(--bg);color:var(--ink);font-family:var(--sans);
   font-size:16.5px;line-height:1.62;font-weight:400;
@@ -139,6 +193,13 @@ p{text-wrap:pretty}
   font-variant-numeric:tabular-nums;
 }
 img{display:block;max-width:100%;height:auto}
+/* Phosphor icons, inlined as symbols. Sized by font-size so the existing type
+   scale drives them, coloured by currentColor like the glyphs they replace. */
+.sprite{position:absolute;width:0;height:0;overflow:hidden}
+.ic{
+  width:1em;height:1em;display:block;flex:0 0 auto;
+  fill:currentColor;font-size:1em;overflow:visible;
+}
 a{color:inherit;text-decoration:none}
 ul,ol{list-style:none}
 button,input,select,textarea{font:inherit;color:inherit}
@@ -202,8 +263,8 @@ button,input,select,textarea{font:inherit;color:inherit}
   content:'';position:absolute;inset:-4px;z-index:-2;background:var(--ink);clip-path:var(--cp-16);
 }
 .btn[disabled]{cursor:progress}
-.btn i{font-size:16px;line-height:1;transition:transform .32s var(--ease-out)}
-.btn:hover i{transform:translate(3px,-3px)}
+.btn .ic{font-size:16px;line-height:1;transition:transform .32s var(--ease-out)}
+.btn:hover .ic{transform:translate(3px,-3px)}
 
 .tlink{
   display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:500;
@@ -212,8 +273,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 }
 .tlink:hover{border-color:var(--signal);color:var(--signal)}
 .tlink:focus-visible{outline:2px solid var(--ink);outline-offset:4px}
-.tlink i{font-size:15px;line-height:1;transition:transform .32s var(--ease-out)}
-.tlink:hover i{transform:translateY(3px)}
+.tlink .ic{font-size:15px;line-height:1;transition:transform .32s var(--ease-out)}
+.tlink:hover .ic{transform:translateY(3px)}
 
 /* ---------- header ---------- */
 .head{
@@ -271,7 +332,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 /* Focus rings on drawn surfaces grow the frame layer outward instead of using a
    rectangular outline, so the corner cut holds in the focused state too. */
 .icon-btn:focus-visible::before{inset:-4px;background:var(--ink);clip-path:var(--cp-14)}
-.icon-btn i{font-size:18px;line-height:1}
+.icon-btn .ic{font-size:18px}
 html[data-theme="dark"] .th-l{display:none}
 html:not([data-theme="dark"]) .th-d{display:none}
 .burger{display:none}
@@ -427,8 +488,8 @@ html.js .hero.lit .hero-cta{
   padding-block:clamp(30px,3.4vw,44px);border-bottom:1px solid var(--rule);
 }
 .cond p{color:var(--ink-2);max-width:56ch}
-.cond i{font-size:26px;line-height:1;color:var(--ink-3);justify-self:end}
-.cond:hover i{color:var(--signal)}
+.cond .ic{font-size:26px;line-height:1;color:var(--ink-3);justify-self:end}
+.cond:hover .ic{color:var(--signal)}
 
 /* ==========================================================================
    3. CAPABILITIES
@@ -440,11 +501,17 @@ html.js .hero.lit .hero-cta{
 .cap-list{border-top:1px solid var(--rule)}
 .cap{border-bottom:1px solid var(--rule)}
 .cap-btn{
+  position:relative;isolation:isolate;
   width:100%;display:flex;align-items:center;gap:20px;justify-content:space-between;
   background:transparent;border:0;cursor:pointer;text-align:left;
   padding-block:clamp(20px,2.2vw,28px);color:var(--ink);
 }
-.cap-btn:focus-visible{outline:2px solid var(--ink);outline-offset:-2px}
+/* the row carries no surface of its own, so the focus ring supplies one and
+   keeps the same cut as every other control on the page */
+.cap-btn::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--bg)}
+.cap-btn:focus-visible::after{
+  content:'';position:absolute;inset:-4px;z-index:-2;background:var(--ink);clip-path:var(--cp-12);
+}
 .cap-btn .h3{transition:color .2s var(--ease)}
 .cap-btn:hover .h3{color:var(--signal)}
 .cap-sign{position:relative;flex:0 0 auto;width:15px;height:15px}
@@ -587,7 +654,7 @@ html.js .hero.lit .hero-cta{
 .cluster:first-of-type{margin-top:clamp(50px,6vw,80px)}
 .cluster:last-of-type{border-bottom:1px solid var(--rule)}
 .cluster-head{display:flex;align-items:center;gap:16px;margin-bottom:clamp(30px,3.4vw,46px)}
-.cluster-head i{font-size:31px;line-height:1;color:var(--signal)}
+.cluster-head .ic{font-size:31px;line-height:1;color:var(--signal)}
 .cluster-head .display{max-width:20ch}
 .commits{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,3vw,46px) clamp(28px,5vw,90px)}
 .commit{border-top:1px solid var(--rule-2);padding-top:18px}
@@ -629,7 +696,7 @@ html.js .hero.lit .hero-cta{
 .f label{
   font-family:var(--mono);font-size:10.5px;letter-spacing:.085em;text-transform:uppercase;color:var(--ink-2);
 }
-.f label .req{color:var(--signal);margin-left:4px}
+.f label .req{color:var(--signal-text);margin-left:4px}
 .ctrl{position:relative;isolation:isolate}
 .ctrl::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--rule);clip-path:var(--cp-10);transition:background .2s var(--ease)}
 .ctrl::after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--bg);clip-path:var(--cp-10)}
@@ -640,16 +707,16 @@ html.js .hero.lit .hero-cta{
 }
 .ctrl select{appearance:none;-webkit-appearance:none;padding-right:44px;cursor:pointer}
 .ctrl textarea{resize:vertical;min-height:132px}
-.ctrl input::placeholder,.ctrl textarea::placeholder{color:var(--ink-3);opacity:.7}
+.ctrl input::placeholder,.ctrl textarea::placeholder{color:var(--ink-3);opacity:1}
 .ctrl .caret{position:absolute;right:15px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ink-3);font-size:15px}
 .ctrl:has(:focus-visible)::before{inset:-4px;background:var(--ink);clip-path:var(--cp-14)}
 .f[data-bad="true"] .ctrl::before{background:var(--signal)}
 .err{
-  display:none;font-size:13px;line-height:1.45;color:var(--signal);font-weight:500;
+  display:none;font-size:13px;line-height:1.45;color:var(--signal-text);font-weight:500;
   align-items:center;gap:7px;
 }
 .f[data-bad="true"] .err{display:flex}
-.err i{font-size:15px;line-height:1}
+.err .ic{font-size:15px}
 .form-foot{grid-column:span 12;display:flex;align-items:center;gap:26px;flex-wrap:wrap;margin-top:6px}
 .form-foot p{font-size:13.4px;color:var(--ink-3);max-width:44ch;line-height:1.5}
 /* The busy mark is the cut square of the shape system turning on its centre,
@@ -659,7 +726,7 @@ html.js .hero.lit .hero-cta{
   clip-path:var(--cp-4);animation:spin .9s linear infinite;display:none;
 }
 .btn[data-busy="true"] .spin{display:block}
-.btn[data-busy="true"] i{display:none}
+.btn[data-busy="true"] .ic{display:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 .done{
@@ -668,7 +735,7 @@ html.js .hero.lit .hero-cta{
 .done::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--rule);clip-path:var(--cp-28)}
 .done::after{content:'';position:absolute;inset:1px;z-index:-1;background:var(--raise);clip-path:var(--cp-28)}
 .done[data-show="true"]{display:block}
-.done i.seal{font-size:34px;color:var(--signal);line-height:1}
+.done .seal{font-size:34px;color:var(--signal);line-height:1}
 .done h3{margin:18px 0 12px}
 .done p{color:var(--ink-2);max-width:52ch}
 .ref{
@@ -687,11 +754,13 @@ html.js .hero.lit .hero-cta{
   font-family:var(--mono);font-size:10.5px;letter-spacing:.085em;text-transform:uppercase;
   color:var(--ink-3);font-weight:400;margin-bottom:15px;
 }
-.foot-col li{margin-bottom:9px}
+.foot-col li{margin-bottom:4px}
 .foot-col a,.foot-col p{font-size:14.4px;color:var(--ink-2);line-height:1.5}
-.foot-col a{position:relative;display:inline-block;transition:color .18s var(--ease)}
+.foot-col p{padding-block:5px}
+/* padded to clear the 24px minimum target size on touch */
+.foot-col a{position:relative;display:inline-block;padding-block:5px;transition:color .18s var(--ease)}
 .foot-col a::after{
-  content:'';position:absolute;left:0;right:0;bottom:1px;height:1px;background:var(--signal);
+  content:'';position:absolute;left:0;right:0;bottom:6px;height:1px;background:var(--signal);
   transform:scaleX(0);transform-origin:0 50%;transition:transform .38s var(--ease-out);
 }
 .foot-col a:hover{color:var(--signal)}
@@ -757,7 +826,7 @@ html:not(.js) .rv{opacity:1;transform:none}
   body{font-size:16px}
   .commits{grid-template-columns:1fr}
   .cluster-head{align-items:flex-start;gap:13px}
-  .cluster-head i{font-size:25px;margin-top:3px}
+  .cluster-head .ic{font-size:25px;margin-top:3px}
   .cell-c,.cell-d,.cell-e,.cell-f{grid-column:span 12;min-height:220px}
   /* the wide cell's split alignment leaves a dead gap once it is one column */
   .cell-b{justify-content:flex-end;min-height:250px}
@@ -782,6 +851,15 @@ html:not(.js) .rv{opacity:1;transform:none}
 /* In forced colours the custom rings are dropped by the OS, so restore a plain one. */
 @media (forced-colors:active){
   :focus-visible{outline:3px solid Highlight;outline-offset:2px}
+}
+
+/* Readers who ask the system for more contrast get firmer rules and a fuller
+   ink on secondary text, without changing the layout or the palette. */
+@media (prefers-contrast:more){
+  :root{--ink-2:#31363A;--ink-3:#41464A;--rule:#9DA2A5;--rule-2:#B4B8BA}
+  html[data-theme="dark"]{--ink-2:#C8CDD0;--ink-3:#B2B7BA;--rule:#4A5054;--rule-2:#3A4044}
+  .schema .edge,.schema .bleed,.schema .node-box{stroke-width:1.35}
+  .cell.on-media p{color:#E4E7E8}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -816,7 +894,7 @@ html:not(.js) .rv{opacity:1;transform:none}
     --pad:22px;--gut:0px;
   }
   html,body{background:#fff;color:#000;font-size:10.5pt}
-  .head,.mmenu,.skip,.hero-field,.chain,.form,.done,.btn,.tlink,.cond i,.cluster-head i{display:none !important}
+  .head,.mmenu,.skip,.hero-field,.chain,.form,.done,.btn,.tlink,.cond .ic,.cluster-head .ic{display:none !important}
   .hero{min-height:0;padding:0 0 18px}
   .hero-state{margin-top:0;padding-top:0}
   .sect{padding-block:22px;break-inside:auto}
@@ -836,6 +914,27 @@ html:not(.js) .rv{opacity:1;transform:none}
 </head>
 
 <body>
+<!-- Phosphor icon set, inlined as symbols. Delivered this way rather than as
+     the Phosphor webfont so the page carries 8kb of icons instead of 240kb of
+     render blocking stylesheet and font. -->
+<svg class="sprite" aria-hidden="true"><defs>
+<symbol id="i-moon" viewBox="0 0 256 256"><path d="M232.13,143.64a6,6,0,0,0-6-1.49A90.07,90.07,0,0,1,113.86,29.85a6,6,0,0,0-7.49-7.48A102.88,102.88,0,0,0,54.48,58.68,102,102,0,0,0,197.32,201.52a102.88,102.88,0,0,0,36.31-51.89A6,6,0,0,0,232.13,143.64Zm-42,48.29a90,90,0,0,1-126-126A90.9,90.9,0,0,1,99.65,37.66,102.06,102.06,0,0,0,218.34,156.35,90.9,90.9,0,0,1,190.1,191.93Z"/></symbol>
+<symbol id="i-sun" viewBox="0 0 256 256"><path d="M122,40V16a6,6,0,0,1,12,0V40a6,6,0,0,1-12,0Zm68,88a62,62,0,1,1-62-62A62.07,62.07,0,0,1,190,128Zm-12,0a50,50,0,1,0-50,50A50.06,50.06,0,0,0,178,128ZM59.76,68.24a6,6,0,1,0,8.48-8.48l-16-16a6,6,0,0,0-8.48,8.48Zm0,119.52-16,16a6,6,0,1,0,8.48,8.48l16-16a6,6,0,1,0-8.48-8.48ZM192,70a6,6,0,0,0,4.24-1.76l16-16a6,6,0,0,0-8.48-8.48l-16,16A6,6,0,0,0,192,70Zm4.24,117.76a6,6,0,0,0-8.48,8.48l16,16a6,6,0,0,0,8.48-8.48ZM46,128a6,6,0,0,0-6-6H16a6,6,0,0,0,0,12H40A6,6,0,0,0,46,128Zm82,82a6,6,0,0,0-6,6v24a6,6,0,0,0,12,0V216A6,6,0,0,0,128,210Zm112-88H216a6,6,0,0,0,0,12h24a6,6,0,0,0,0-12Z"/></symbol>
+<symbol id="i-list" viewBox="0 0 256 256"><path d="M222,128a6,6,0,0,1-6,6H40a6,6,0,0,1,0-12H216A6,6,0,0,1,222,128ZM40,70H216a6,6,0,0,0,0-12H40a6,6,0,0,0,0,12ZM216,186H40a6,6,0,0,0,0,12H216a6,6,0,0,0,0-12Z"/></symbol>
+<symbol id="i-x" viewBox="0 0 256 256"><path d="M204.24,195.76a6,6,0,1,1-8.48,8.48L128,136.49,60.24,204.24a6,6,0,0,1-8.48-8.48L119.51,128,51.76,60.24a6,6,0,0,1,8.48-8.48L128,119.51l67.76-67.75a6,6,0,0,1,8.48,8.48L136.49,128Z"/></symbol>
+<symbol id="i-arrow-up-right" viewBox="0 0 256 256"><path d="M198,64V168a6,6,0,0,1-12,0V78.48L68.24,196.24a6,6,0,0,1-8.48-8.48L177.52,70H88a6,6,0,0,1,0-12H192A6,6,0,0,1,198,64Z"/></symbol>
+<symbol id="i-arrow-down" viewBox="0 0 256 256"><path d="M204.24,148.24l-72,72a6,6,0,0,1-8.48,0l-72-72a6,6,0,0,1,8.48-8.48L122,201.51V40a6,6,0,0,1,12,0V201.51l61.76-61.75a6,6,0,0,1,8.48,8.48Z"/></symbol>
+<symbol id="i-buildings" viewBox="0 0 256 256"><path d="M240,210H222V96a14,14,0,0,0-14-14H142V32a14,14,0,0,0-21.77-11.64l-80,53.33A14,14,0,0,0,34,85.34V210H16a6,6,0,0,0,0,12H240a6,6,0,0,0,0-12ZM208,94a2,2,0,0,1,2,2V210H142V94ZM46,85.34a2,2,0,0,1,.89-1.66l80-53.34A2,2,0,0,1,130,32V210H46ZM110,112v16a6,6,0,0,1-12,0V112a6,6,0,0,1,12,0Zm-32,0v16a6,6,0,0,1-12,0V112a6,6,0,0,1,12,0Zm0,56v16a6,6,0,0,1-12,0V168a6,6,0,0,1,12,0Zm32,0v16a6,6,0,0,1-12,0V168a6,6,0,0,1,12,0Z"/></symbol>
+<symbol id="i-squares-four" viewBox="0 0 256 256"><path d="M104,42H56A14,14,0,0,0,42,56v48a14,14,0,0,0,14,14h48a14,14,0,0,0,14-14V56A14,14,0,0,0,104,42Zm2,62a2,2,0,0,1-2,2H56a2,2,0,0,1-2-2V56a2,2,0,0,1,2-2h48a2,2,0,0,1,2,2Zm94-62H152a14,14,0,0,0-14,14v48a14,14,0,0,0,14,14h48a14,14,0,0,0,14-14V56A14,14,0,0,0,200,42Zm2,62a2,2,0,0,1-2,2H152a2,2,0,0,1-2-2V56a2,2,0,0,1,2-2h48a2,2,0,0,1,2,2Zm-98,34H56a14,14,0,0,0-14,14v48a14,14,0,0,0,14,14h48a14,14,0,0,0,14-14V152A14,14,0,0,0,104,138Zm2,62a2,2,0,0,1-2,2H56a2,2,0,0,1-2-2V152a2,2,0,0,1,2-2h48a2,2,0,0,1,2,2Zm94-62H152a14,14,0,0,0-14,14v48a14,14,0,0,0,14,14h48a14,14,0,0,0,14-14V152A14,14,0,0,0,200,138Zm2,62a2,2,0,0,1-2,2H152a2,2,0,0,1-2-2V152a2,2,0,0,1,2-2h48a2,2,0,0,1,2,2Z"/></symbol>
+<symbol id="i-seal-check" viewBox="0 0 256 256"><path d="M224.42,104.2c-3.9-4.07-7.93-8.27-9.55-12.18-1.5-3.63-1.58-9-1.67-14.68-.14-9.38-.3-20-7.42-27.12S188,42.94,178.66,42.8c-5.68-.09-11-.17-14.68-1.67-3.91-1.62-8.11-5.65-12.18-9.55C145.16,25.22,137.64,18,128,18s-17.16,7.22-23.8,13.58c-4.07,3.9-8.27,7.93-12.18,9.55-3.63,1.5-9,1.58-14.68,1.67-9.38.14-20,.3-27.12,7.42S42.94,68,42.8,77.34c-.09,5.68-.17,11-1.67,14.68-1.62,3.91-5.65,8.11-9.55,12.18C25.22,110.84,18,118.36,18,128s7.22,17.16,13.58,23.8c3.9,4.07,7.93,8.27,9.55,12.18,1.5,3.63,1.58,9,1.67,14.68.14,9.38.3,20,7.42,27.12S68,213.06,77.34,213.2c5.68.09,11,.17,14.68,1.67,3.91,1.62,8.11,5.65,12.18,9.55C110.84,230.78,118.36,238,128,238s17.16-7.22,23.8-13.58c4.07-3.9,8.27-7.93,12.18-9.55,3.63-1.5,9-1.58,14.68-1.67,9.38-.14,20-.3,27.12-7.42s7.28-17.74,7.42-27.12c.09-5.68.17-11,1.67-14.68,1.62-3.91,5.65-8.11,9.55-12.18C230.78,145.16,238,137.64,238,128S230.78,110.84,224.42,104.2Zm-8.66,39.3c-4.67,4.86-9.5,9.9-12,15.9-2.38,5.74-2.48,12.52-2.58,19.08-.11,7.44-.23,15.14-3.9,18.82s-11.38,3.79-18.82,3.9c-6.56.1-13.34.2-19.08,2.58-6,2.48-11,7.31-15.91,12-5.25,5-10.68,10.24-15.49,10.24s-10.24-5.21-15.5-10.24c-4.86-4.67-9.9-9.5-15.9-12-5.74-2.38-12.52-2.48-19.08-2.58-7.44-.11-15.14-.23-18.82-3.9s-3.79-11.38-3.9-18.82c-.1-6.56-.2-13.34-2.58-19.08-2.48-6-7.31-11-12-15.91C35.21,138.24,30,132.81,30,128s5.21-10.24,10.24-15.5c4.67-4.86,9.5-9.9,12-15.9,2.38-5.74,2.48-12.52,2.58-19.08.11-7.44.23-15.14,3.9-18.82s11.38-3.79,18.82-3.9c6.56-.1,13.34-.2,19.08-2.58,6-2.48,11-7.31,15.91-12C117.76,35.21,123.19,30,128,30s10.24,5.21,15.5,10.24c4.86,4.67,9.9,9.5,15.9,12,5.74,2.38,12.52,2.48,19.08,2.58,7.44.11,15.14.23,18.82,3.9s3.79,11.38,3.9,18.82c.1,6.56.2,13.34,2.58,19.08,2.48,6,7.31,11,12,15.91,5,5.25,10.24,10.68,10.24,15.49S220.79,138.24,215.76,143.5ZM172.24,99.76a6,6,0,0,1,0,8.48l-56,56a6,6,0,0,1-8.48,0l-24-24a6,6,0,0,1,8.48-8.48L112,151.51l51.76-51.75A6,6,0,0,1,172.24,99.76Z"/></symbol>
+<symbol id="i-scales" viewBox="0 0 256 256"><path d="M237.57,133.77l-32-80h0a6,6,0,0,0-6.86-3.63L134,64.52V40a6,6,0,0,0-12,0V67.19l-67.3,15a6,6,0,0,0-4.27,3.63h0v0l-32,80A6.1,6.1,0,0,0,18,168c0,21.86,23.31,30,38,30s38-8.14,38-30a6.1,6.1,0,0,0-.43-2.23L64.19,92.33,122,79.48V210H104a6,6,0,0,0,0,12h48a6,6,0,0,0,0-12H134V76.81l56.21-12.49-27.78,69.45A6.1,6.1,0,0,0,162,136c0,21.86,23.31,30,38,30s38-8.14,38-30A6.1,6.1,0,0,0,237.57,133.77ZM56,186a36.89,36.89,0,0,1-17.48-4.56c-5.37-3.13-8.15-7.18-8.49-12.37l26-64.91,26,64.91C81.06,182.85,62.58,186,56,186Zm144-32a36.89,36.89,0,0,1-17.48-4.56c-5.37-3.13-8.15-7.18-8.49-12.37l26-64.91,26,64.91C225.06,150.85,206.58,154,200,154Z"/></symbol>
+<symbol id="i-file-text" viewBox="0 0 256 256"><path d="M212.24,83.76l-56-56A6,6,0,0,0,152,26H56A14,14,0,0,0,42,40V216a14,14,0,0,0,14,14H200a14,14,0,0,0,14-14V88A6,6,0,0,0,212.24,83.76ZM158,46.48,193.52,82H158ZM200,218H56a2,2,0,0,1-2-2V40a2,2,0,0,1,2-2h90V88a6,6,0,0,0,6,6h50V216A2,2,0,0,1,200,218Zm-34-82a6,6,0,0,1-6,6H96a6,6,0,0,1,0-12h64A6,6,0,0,1,166,136Zm0,32a6,6,0,0,1-6,6H96a6,6,0,0,1,0-12h64A6,6,0,0,1,166,168Z"/></symbol>
+<symbol id="i-lock-key" viewBox="0 0 256 256"><path d="M208,82H174V56a46,46,0,0,0-92,0V82H48A14,14,0,0,0,34,96V208a14,14,0,0,0,14,14H208a14,14,0,0,0,14-14V96A14,14,0,0,0,208,82ZM94,56a34,34,0,0,1,68,0V82H94ZM210,208a2,2,0,0,1-2,2H48a2,2,0,0,1-2-2V96a2,2,0,0,1,2-2H208a2,2,0,0,1,2,2Zm-82-94a26,26,0,0,0-6,51.29V184a6,6,0,0,0,12,0V165.29A26,26,0,0,0,128,114Zm0,40a14,14,0,1,1,14-14A14,14,0,0,1,128,154Z"/></symbol>
+<symbol id="i-key" viewBox="0 0 256 256"><path d="M215.15,40.85A78,78,0,0,0,86.2,121.31l-56.1,56.1a13.94,13.94,0,0,0-4.1,9.9V216a14,14,0,0,0,14,14H72a6,6,0,0,0,6-6V206H96a6,6,0,0,0,6-6V182h18a6,6,0,0,0,4.24-1.76l10.45-10.44A77.59,77.59,0,0,0,160,174h.1A78,78,0,0,0,215.15,40.85ZM226,98.16c-1.12,35.16-30.67,63.8-65.88,63.84a65.93,65.93,0,0,1-24.51-4.67,6,6,0,0,0-6.64,1.26L117.51,170H96a6,6,0,0,0-6,6v18H72a6,6,0,0,0-6,6v18H40a2,2,0,0,1-2-2V187.31a2,2,0,0,1,.58-1.41l58.83-58.83a6,6,0,0,0,1.26-6.64A65.61,65.61,0,0,1,94,95.92C94,60.71,122.68,31.16,157.83,30A66,66,0,0,1,226,98.16ZM190,76a10,10,0,1,1-10-10A10,10,0,0,1,190,76Z"/></symbol>
+<symbol id="i-caret-down" viewBox="0 0 256 256"><path d="M212.24,100.24l-80,80a6,6,0,0,1-8.48,0l-80-80a6,6,0,0,1,8.48-8.48L128,167.51l75.76-75.75a6,6,0,0,1,8.48,8.48Z"/></symbol>
+<symbol id="i-warning-circle" viewBox="0 0 256 256"><path d="M128,26A102,102,0,1,0,230,128,102.12,102.12,0,0,0,128,26Zm0,192a90,90,0,1,1,90-90A90.1,90.1,0,0,1,128,218Zm-6-82V80a6,6,0,0,1,12,0v56a6,6,0,0,1-12,0Zm16,36a10,10,0,1,1-10-10A10,10,0,0,1,138,172Z"/></symbol>
+</defs></svg>
+
 <a class="skip" href="#main">Skip to content</a>
 
 <!-- Everything the mobile panel covers lives in one container, so the panel can
@@ -846,7 +945,7 @@ html:not(.js) .rv{opacity:1;transform:none}
 <header class="head" id="top">
   <div class="wrap head-in">
     <a class="brand" href="#top" aria-label="HaveStack Technologies, back to top">
-      <img src="assets/logo-mark.png" alt="" width="21" height="21" />
+      <img src="assets/logo-mark-96.png" alt="" width="21" height="21" />
       <span>HaveStack</span>
     </a>
     <nav class="nav" aria-label="Primary">
@@ -859,11 +958,11 @@ html:not(.js) .rv{opacity:1;transform:none}
     </nav>
     <div class="head-act">
       <button class="icon-btn" id="theme" type="button" aria-label="Switch to dark theme">
-        <i class="ph-light ph-moon th-l" aria-hidden="true"></i>
-        <i class="ph-light ph-sun th-d" aria-hidden="true"></i>
+        <svg class="ic th-l" aria-hidden="true" focusable="false"><use href="#i-moon"/></svg>
+        <svg class="ic th-d" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
       </button>
       <button class="icon-btn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mmenu">
-        <i class="ph-light ph-list" aria-hidden="true"></i>
+        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-list"/></svg>
       </button>
       <a class="btn" href="#book"><span>Request a meeting</span></a>
     </div>
@@ -1008,8 +1107,8 @@ html:not(.js) .rv{opacity:1;transform:none}
     <h1 class="h1"><span class="ln"><span>Institutions run on systems.</span></span> <span class="ln"><span>HaveStack builds them.</span></span></h1>
     <p class="lead hero-sub">Enterprise resource planning, learning platforms and public facing services for banks, government bodies and institutions in Bangladesh.</p>
     <div class="hero-cta">
-      <a class="btn" href="#book"><span>Request a meeting</span><i class="ph-light ph-arrow-up-right" aria-hidden="true"></i></a>
-      <a class="tlink" href="#about">Read the mandate<i class="ph-light ph-arrow-down" aria-hidden="true"></i></a>
+      <a class="btn" href="#book"><span>Request a meeting</span><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-arrow-up-right"/></svg></a>
+      <a class="tlink" href="#about">Read the mandate<svg class="ic" aria-hidden="true" focusable="false"><use href="#i-arrow-down"/></svg></a>
     </div>
   </div>
 </section>
@@ -1026,22 +1125,22 @@ html:not(.js) .rv{opacity:1;transform:none}
       <div class="cond rv">
         <h3 class="h3">Organisations, not individuals</h3>
         <p>Work is contracted with registered entities: companies, institutions, regulated financial bodies and public offices. Personal projects are declined at enquiry.</p>
-        <i class="ph-light ph-buildings" aria-hidden="true"></i>
+        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-buildings"/></svg>
       </div>
       <div class="cond rv">
         <h3 class="h3">Systems, not pages</h3>
         <p>The practice builds operational software that holds records, moves transactions, enforces workflow and reports on all three. Brochure sites fall outside it.</p>
-        <i class="ph-light ph-squares-four" aria-hidden="true"></i>
+        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-squares-four"/></svg>
       </div>
       <div class="cond rv">
         <h3 class="h3">A named owner with sign off authority</h3>
         <p>One person on the client side carries the decision. That person approves scope, resolves contention between departments and signs acceptance at each stage.</p>
-        <i class="ph-light ph-seal-check" aria-hidden="true"></i>
+        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-seal-check"/></svg>
       </div>
       <div class="cond rv">
         <h3 class="h3">A defined budget</h3>
         <p>Cost follows scope. Figures are set against a written specification and agreed before work begins. HaveStack publishes no price list and quotes nothing before the scope is known.</p>
-        <i class="ph-light ph-scales" aria-hidden="true"></i>
+        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-scales"/></svg>
       </div>
     </div>
   </div>
@@ -1271,7 +1370,7 @@ html:not(.js) .rv{opacity:1;transform:none}
 
     <div class="cluster rv">
       <div class="cluster-head">
-        <i class="ph-light ph-file-text" aria-hidden="true"></i>
+        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-text"/></svg>
         <h3 class="display">Delivery and documentation</h3>
       </div>
       <div class="commits">
@@ -1296,7 +1395,7 @@ html:not(.js) .rv{opacity:1;transform:none}
 
     <div class="cluster rv">
       <div class="cluster-head">
-        <i class="ph-light ph-lock-key" aria-hidden="true"></i>
+        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-lock-key"/></svg>
         <h3 class="display">Security and access</h3>
       </div>
       <div class="commits">
@@ -1321,7 +1420,7 @@ html:not(.js) .rv{opacity:1;transform:none}
 
     <div class="cluster rv">
       <div class="cluster-head">
-        <i class="ph-light ph-key" aria-hidden="true"></i>
+        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-key"/></svg>
         <h3 class="display">Ownership and continuity</h3>
       </div>
       <div class="commits">
@@ -1379,25 +1478,25 @@ html:not(.js) .rv{opacity:1;transform:none}
       <div class="f f-6" data-field="org">
         <label for="org">Organisation<span class="req" aria-hidden="true">*</span></label>
         <div class="ctrl"><input id="org" name="org" type="text" autocomplete="organization" aria-describedby="e-org" /></div>
-        <p class="err" id="e-org"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Enter the registered name of the organisation.</span></p>
+        <p class="err" id="e-org"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span>Enter the registered name of the organisation.</span></p>
       </div>
 
       <div class="f f-6" data-field="name">
         <label for="name">Your name<span class="req" aria-hidden="true">*</span></label>
         <div class="ctrl"><input id="name" name="name" type="text" autocomplete="name" aria-describedby="e-name" /></div>
-        <p class="err" id="e-name"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Enter your full name.</span></p>
+        <p class="err" id="e-name"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span>Enter your full name.</span></p>
       </div>
 
       <div class="f f-6" data-field="role">
         <label for="role">Role<span class="req" aria-hidden="true">*</span></label>
         <div class="ctrl"><input id="role" name="role" type="text" autocomplete="organization-title" aria-describedby="e-role" /></div>
-        <p class="err" id="e-role"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>State your role, so the meeting is set with the right people.</span></p>
+        <p class="err" id="e-role"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span>State your role, so the meeting is set with the right people.</span></p>
       </div>
 
       <div class="f f-6" data-field="email">
         <label for="email">Work email<span class="req" aria-hidden="true">*</span></label>
         <div class="ctrl"><input id="email" name="email" type="email" autocomplete="email" aria-describedby="e-email" /></div>
-        <p class="err" id="e-email"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Enter a valid email address.</span></p>
+        <p class="err" id="e-email"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span>Enter a valid email address.</span></p>
       </div>
 
       <div class="f f-4" data-field="sector">
@@ -1413,9 +1512,9 @@ html:not(.js) .rv{opacity:1;transform:none}
             <option>Development and NGO</option>
             <option>Other</option>
           </select>
-          <i class="ph-light ph-caret-down caret" aria-hidden="true"></i>
+          <svg class="ic caret" aria-hidden="true" focusable="false"><use href="#i-caret-down"/></svg>
         </div>
-        <p class="err" id="e-sector"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Select the sector the organisation operates in.</span></p>
+        <p class="err" id="e-sector"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span>Select the sector the organisation operates in.</span></p>
       </div>
 
       <div class="f f-4" data-field="system">
@@ -1430,9 +1529,9 @@ html:not(.js) .rv{opacity:1;transform:none}
             <option>Managed operations</option>
             <option>Not yet determined</option>
           </select>
-          <i class="ph-light ph-caret-down caret" aria-hidden="true"></i>
+          <svg class="ic caret" aria-hidden="true" focusable="false"><use href="#i-caret-down"/></svg>
         </div>
-        <p class="err" id="e-system"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Select the closest description of the system needed.</span></p>
+        <p class="err" id="e-system"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span>Select the closest description of the system needed.</span></p>
       </div>
 
       <div class="f f-4" data-field="start">
@@ -1446,30 +1545,30 @@ html:not(.js) .rv{opacity:1;transform:none}
             <option>Later than six months</option>
             <option>Not yet determined</option>
           </select>
-          <i class="ph-light ph-caret-down caret" aria-hidden="true"></i>
+          <svg class="ic caret" aria-hidden="true" focusable="false"><use href="#i-caret-down"/></svg>
         </div>
-        <p class="err" id="e-start"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Select an intended start.</span></p>
+        <p class="err" id="e-start"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span>Select an intended start.</span></p>
       </div>
 
       <div class="f f-12" data-field="brief">
         <label for="brief">What the system has to do<span class="req" aria-hidden="true">*</span></label>
         <div class="ctrl"><textarea id="brief" name="brief" aria-describedby="e-brief" placeholder="The operation it supports, the people who will use it, the systems it has to connect to, and any deadline that is fixed."></textarea></div>
-        <p class="err" id="e-brief"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Describe the requirement in at least twenty characters.</span></p>
+        <p class="err" id="e-brief"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span>Describe the requirement in at least twenty characters.</span></p>
       </div>
 
       <div class="form-foot">
         <button class="btn" type="submit" id="submit">
           <span id="submit-label">Request a meeting</span>
           <span class="spin" aria-hidden="true"></span>
-          <i class="ph-light ph-arrow-up-right" aria-hidden="true"></i>
+          <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-arrow-up-right"/></svg>
         </button>
         <p>Requests are answered within two working days. Details shared here are treated as confidential.</p>
       </div>
-      <p class="err" id="e-form" style="grid-column:span 12"><i class="ph-light ph-warning-circle" aria-hidden="true"></i><span>Check the fields marked above and submit again.</span></p>
+      <p class="err" id="e-form" style="grid-column:span 12"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span>Check the fields marked above and submit again.</span></p>
     </form>
 
     <div class="done" id="done" data-show="false" role="status" aria-live="polite" tabindex="-1">
-      <i class="ph-light ph-seal-check seal" aria-hidden="true"></i>
+      <svg class="ic seal" aria-hidden="true" focusable="false"><use href="#i-seal-check"/></svg>
       <h3 class="h3">The request has been logged.</h3>
       <p>Your email client has been opened with the request prepared. Send that message to complete the submission. HaveStack replies within two working days to arrange a time.</p>
       <div class="ref">Reference<b id="ref">HS</b></div>
@@ -1484,7 +1583,7 @@ html:not(.js) .rv{opacity:1;transform:none}
     <div class="foot-grid">
       <div>
         <div class="foot-brand">
-          <img src="assets/logo-mark.png" alt="" width="20" height="20" />
+          <img src="assets/logo-mark-96.png" alt="" width="20" height="20" />
           <span>HaveStack Technologies</span>
         </div>
         <p class="foot-note">Enterprise resource planning, learning platforms, public facing systems, integration and managed operations for institutions in Bangladesh.</p>
@@ -1535,11 +1634,11 @@ html:not(.js) .rv{opacity:1;transform:none}
   <div class="wrap" style="padding:0">
     <div class="mmenu-top">
       <a class="brand" href="#top" style="margin-right:auto">
-        <img src="assets/logo-mark.png" alt="" width="21" height="21" />
+        <img src="assets/logo-mark-96.png" alt="" width="21" height="21" />
         <span>HaveStack</span>
       </a>
       <button class="icon-btn" id="mclose" type="button" aria-label="Close menu">
-        <i class="ph-light ph-x" aria-hidden="true"></i>
+        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
       </button>
     </div>
     <nav aria-label="Site">
@@ -1567,8 +1666,14 @@ html:not(.js) .rv{opacity:1;transform:none}
     themeBtn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
   }
   syncTheme();
+  var themingTimer;
   themeBtn.addEventListener('click', function () {
     var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    if (!reduce.matches) {
+      root.classList.add('theming');
+      clearTimeout(themingTimer);
+      themingTimer = setTimeout(function () { root.classList.remove('theming'); }, 340);
+    }
     root.setAttribute('data-theme', next);
     try { localStorage.setItem('hs-theme', next); } catch (e) {}
     syncTheme();
