@@ -627,12 +627,14 @@ html:not(.js) .rv{opacity:1;transform:none}
 <!-- ============================ HERO ============================ -->
 <section class="hero">
   <div class="hero-media">
-    <!-- The source film was 124 MB of HEVC, which most browsers will not play
-         in a video element. It is re encoded here to VP9 and H.264 at 720p with
-         no audio, roughly one megabyte, with a poster for the first paint. -->
-    <video id="herovid" autoplay muted loop playsinline preload="metadata"
+    <!-- The complete film, all 36.9 seconds, re encoded from the supplied
+         master to 720p30 H.264 without audio: 3.3 MB. One format rather than
+         two, because a VP9 encode of this footage came out at 8.2 MB, so
+         offering WebM first would have made the download larger, not smaller.
+         H.264 plays in every current browser. The poster carries the first
+         paint and stands in wherever autoplay is refused. -->
+    <video id="herovid" autoplay muted loop playsinline preload="auto"
            poster="assets/hero-poster.jpg" aria-hidden="true" tabindex="-1">
-      <source src="assets/hero.webm" type="video/webm" />
       <source src="assets/hero.mp4" type="video/mp4" />
     </video>
     <div class="hero-scrim"></div>
@@ -1182,9 +1184,34 @@ html:not(.js) .rv{opacity:1;transform:none}
     syncTheme();
   });
 
-  /* the film is decoration: never play it for a reader who asked for stillness */
+  /* ---------- the hero film ----------
+     Decoration, so it never plays for a reader who asked for stillness, it
+     stops decoding once it has scrolled out of the hero, and if a browser
+     refuses autoplay the poster simply stays put. */
   var vid = document.getElementById('herovid');
-  if (vid && reduce.matches) { try { vid.pause(); vid.removeAttribute('autoplay'); } catch (e) {} }
+  if (vid) {
+    if (reduce.matches) {
+      try { vid.pause(); vid.removeAttribute('autoplay'); vid.removeAttribute('preload'); } catch (e) {}
+    } else {
+      var wanted = true;
+      var tryPlay = function () {
+        if (!wanted) return;
+        var r = vid.play();
+        if (r && r.catch) r.catch(function () { /* poster stands in */ });
+      };
+      tryPlay();
+      /* some browsers only release autoplay after the first interaction */
+      ['pointerdown', 'keydown', 'touchstart'].forEach(function (ev) {
+        window.addEventListener(ev, tryPlay, { once: true, passive: true });
+      });
+      /* stop the decoder once the film is off screen, restart when it returns */
+      new IntersectionObserver(function (rows) {
+        wanted = rows[0].isIntersecting;
+        if (wanted) tryPlay();
+        else { try { vid.pause(); } catch (e) {} }
+      }, { threshold: 0 }).observe(vid);
+    }
+  }
 
   /* mobile menu */
   var menu = document.getElementById('mmenu'), burger = document.getElementById('burger'), page = document.getElementById('page');
