@@ -1,0 +1,5 @@
+# Source masters kept locally, not in the repository.
+# The hero film ships as assets/hero.mp4 and assets/hero.webm, re encoded from
+# this file. The original is 124 MB of HEVC, which exceeds GitHub's 100 MB per
+# file limit and would not play in most browsers anyway.
+assets/background video.mp4
