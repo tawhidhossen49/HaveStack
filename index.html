@@ -4,12 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>HaveStack Technologies | Enterprise software for institutions</title>
-<meta name="description" content="HaveStack Technologies builds and maintains enterprise resource planning, learning platforms, public facing systems, integrations, databases and AI services for institutions in Bangladesh. The software practice of Amaze Consortium." />
+<meta name="description" content="HaveStack Technologies builds and maintains enterprise resource planning, learning platforms, public facing systems, integrations, databases and AI services for institutions in Bangladesh." />
 <link rel="icon" href="assets/favicon.png" />
 <link rel="apple-touch-icon" href="assets/favicon.png" />
-<meta name="color-scheme" content="dark light" />
-<meta name="theme-color" content="#F0F0EF" media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#0A0A0B" media="(prefers-color-scheme: dark)" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0A0A0B" />
 
 <!-- TODO confirm the live domain before launch. -->
 <link rel="canonical" href="https://havestack.tech/" />
@@ -31,7 +30,6 @@
   "logo":"https://havestack.tech/assets/logo-mark.png",
   "description":"HaveStack Technologies builds, integrates and maintains enterprise systems for institutions in Bangladesh.",
   "email":"hello@havestack.tech",
-  "parentOrganization":{"@type":"Organization","name":"Amaze Consortium"},
   "address":{"@type":"PostalAddress","addressLocality":"Dhaka","addressCountry":"BD"}
 }
 </script>
@@ -40,13 +38,6 @@
   (function () {
     var r = document.documentElement;
     r.classList.add('js');
-    var t = 'dark';
-    try {
-      var s = localStorage.getItem('hs-theme');
-      if (s === 'light' || s === 'dark') t = s;
-      else if (matchMedia('(prefers-color-scheme: light)').matches) t = 'light';
-    } catch (e) {}
-    r.setAttribute('data-theme', t);
     function gutter(){ r.style.setProperty('--sbw',(window.innerWidth-r.clientWidth)+'px'); }
     gutter(); window.addEventListener('resize', gutter);
     function release(){ var h=document.querySelector('.hero'); if(h) h.classList.add('lit'); }
@@ -66,43 +57,7 @@
    ========================================================================== */
 
 :root{
-  --bg:#F0F0EF;
-  --bg-2:#E7E7E5;
-  --surface:#FFFFFF;
-  --ink:#141416;
-  --ink-2:#4A4A4E;
-  --ink-3:#5C5C61;
-  --line:#D2D2CE;
-  --line-2:#E0E0DD;
-
-  --band:#0A0A0B;
-  --band-2:#151517;
-  --band-ink:#F2F2F0;
-  --band-ink-2:#9A9A9E;
-  --band-line:#2A2A2D;
-
-  --red:#D91F35;
-  --red-deep:#B4162A;
-  --red-text:#AE1527;
-  --on-red:#FFFFFF;
-
-  --r:3px;
-  --r-lg:4px;
-
-  --maxw:1360px;
-  --gut:clamp(18px,3.4vw,44px);
-  --pad:clamp(64px,7.5vw,104px);
-  --ease:cubic-bezier(.22,.7,.3,1);
-  --ease-out:cubic-bezier(.16,1,.3,1);
-  --sbw:0px;
-
-  /* Helvetica as specified, with Arial standing in where Helvetica is absent */
-  --sans:'Helvetica Neue',Helvetica,Arial,'Segoe UI',sans-serif;
-  --shadow:0 1px 2px rgba(10,10,11,.06);
-  color-scheme:light;
-}
-
-html[data-theme="dark"]{
+  /* One permanent theme. The site is black; there is no light mode. */
   --bg:#0A0A0B;
   --bg-2:#101012;
   --surface:#131315;
@@ -120,17 +75,29 @@ html[data-theme="dark"]{
 
   --red:#FF3B4E;
   --red-deep:#FF5C6B;
+  /* the accent as it sits on a light surface, ie the button field */
+  --red-on-light:#B4162A;
   --red-text:#FF8792;
   --on-red:#0A0A0B;
+
+  --r:3px;
+  --r-lg:4px;
+
+  --maxw:1360px;
+  --gut:clamp(18px,3.4vw,44px);
+  --pad:clamp(64px,7.5vw,104px);
+  --ease:cubic-bezier(.22,.7,.3,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --sbw:0px;
+
+  /* Helvetica as specified, with Arial standing in where Helvetica is absent */
+  --sans:'Helvetica Neue',Helvetica,Arial,'Segoe UI',sans-serif;
   --shadow:0 1px 2px rgba(0,0,0,.5);
   color-scheme:dark;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scrollbar-color:var(--line) var(--bg-2)}
-html.theming,html.theming *,html.theming *::before,html.theming *::after{
-  transition:background-color .3s var(--ease),color .3s var(--ease),border-color .3s var(--ease),fill .3s var(--ease) !important;
-}
 body{
   background:var(--bg);color:var(--ink);font-family:var(--sans);
   font-size:16px;line-height:1.6;font-weight:400;letter-spacing:-.002em;
@@ -177,20 +144,32 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sect-intro{margin-top:14px}
 
 /* ---- controls ---- */
+/* The call to action.
+   Research on premium positioning is consistent that a loud saturated field
+   works against it: restraint plus high contrast is what reads as expensive.
+   So the accent stops being the whole button and becomes the mark on it. A
+   bone field on the black ground gives the strongest contrast available here,
+   about 18:1, without shouting. Corners are eased to 6px rather than left
+   sharp, because rounding measurably lifts clicks while a small radius keeps
+   the enterprise formality. Set a step above body copy at 16px medium, on a
+   46px minimum height so it clears the touch target floor. */
 .btn{
-  display:inline-flex;align-items:center;gap:9px;border:1px solid var(--red);cursor:pointer;
-  background:var(--red);color:var(--on-red);border-radius:var(--r);
-  padding:13px 20px;font-size:15px;font-weight:500;letter-spacing:-.01em;
-  transition:background .18s var(--ease),border-color .18s var(--ease);
+  display:inline-flex;align-items:center;gap:11px;cursor:pointer;
+  min-height:46px;padding:12px 22px;border-radius:6px;
+  background:var(--ink);color:var(--bg);border:1px solid var(--ink);
+  font-size:16px;font-weight:500;letter-spacing:-.008em;
+  transition:background .2s var(--ease),border-color .2s var(--ease),transform .2s var(--ease);
 }
-.btn:hover{background:var(--red-deep);border-color:var(--red-deep)}
+.btn:hover{background:#FFFFFF;border-color:#FFFFFF;transform:translateY(-1px)}
+.btn:active{transform:none}
 .btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.btn .ar{transition:transform .28s var(--ease-out)}
+.btn .ar{color:var(--red-on-light);transition:transform .28s var(--ease-out)}
 .btn:hover .ar{transform:translate(2px,-2px)}
 .btn-ghost{
-  display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);
-  background:transparent;color:inherit;border-radius:var(--r);
-  padding:13px 20px;font-size:15px;font-weight:500;cursor:pointer;
+  display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);
+  background:transparent;color:inherit;border-radius:6px;
+  min-height:46px;padding:12px 20px;font-size:16px;font-weight:500;cursor:pointer;
+  letter-spacing:-.008em;
   transition:border-color .18s var(--ease),background .18s var(--ease);
 }
 .btn-ghost:hover{border-color:currentColor}
@@ -221,10 +200,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .icon-btn:hover{border-color:currentColor}
 .icon-btn:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 .icon-btn .ic{font-size:17px}
-html[data-theme="dark"] .th-l{display:none}
-html:not([data-theme="dark"]) .th-d{display:none}
 .burger{display:none}
-.head .btn{padding:10px 16px;font-size:14.5px}
+.head .btn{min-height:38px;padding:8px 16px;font-size:15px}
 
 .mmenu{position:fixed;inset:0;z-index:95;background:var(--bg);display:none;flex-direction:column;padding:16px var(--gut) 36px;overflow-y:auto}
 .mmenu[data-open="true"]{display:flex}
@@ -254,7 +231,7 @@ html:not([data-theme="dark"]) .th-d{display:none}
   min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;padding-block:96px 40px;
 }
-.hero-tail{height:106svh}
+.hero-tail{height:50svh}
 .hero h1{color:#fff;max-width:16ch}
 .hero-sub{margin-top:22px;max-width:50ch;color:#C9C9CC;font-size:clamp(15.5px,1.15vw,17.5px);line-height:1.6}
 .hero-cta{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:34px}
@@ -318,8 +295,7 @@ html.js .hero.lit .hero-copy > *:nth-child(4){transition-delay:.26s}
 html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 @keyframes pin{from{opacity:0}to{opacity:1}}
 .panel-media{aspect-ratio:21/8;overflow:hidden;border-bottom:1px solid var(--line);background:var(--bg-2)}
-.panel-media img{width:100%;height:100%;object-fit:cover;filter:saturate(.5) contrast(1.05)}
-html[data-theme="dark"] .panel-media img{filter:saturate(.4) contrast(1.08) brightness(.8)}
+.panel-media img{width:100%;height:100%;object-fit:cover;filter:saturate(.42) contrast(1.06) brightness(.86)}
 .panel-body{padding:clamp(20px,2.2vw,30px)}
 .panel-body p{margin-top:9px;color:var(--ink-2);max-width:60ch;font-size:15.5px}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}
@@ -354,37 +330,31 @@ html[data-theme="dark"] .panel-media img{filter:saturate(.4) contrast(1.08) brig
 /* ==========================================================================
    CLIENTS  logo plates so every mark stays legible whatever the theme
    ========================================================================== */
-/* Flex rather than an auto filling grid: a grid leaves empty tracks painted in
-   the rule colour when the list is shorter than the row, which reads as a
-   broken block. Wrapped flex items with collapsing borders grow cleanly from
-   one entry to any number. */
-.plates{display:flex;flex-wrap:wrap;margin-top:clamp(30px,3.4vw,44px)}
+/* Marks sit directly on the page with no plate behind them. The two darker
+   logos are supplied in lifted variants so they hold against the black without
+   a white field propping them up. */
+.plates{display:flex;flex-wrap:wrap;gap:1px;margin-top:clamp(30px,3.4vw,44px);
+  background:var(--line);border:1px solid var(--line)}
 .plate{
-  flex:0 1 236px;min-width:190px;border:1px solid var(--line);margin:0 -1px -1px 0;
-  background:var(--bg);padding:22px 18px 24px;
-  display:flex;flex-direction:column;align-items:center;gap:14px;
+  flex:1 1 210px;min-width:180px;background:var(--bg);
+  padding:34px 22px 30px;
+  display:flex;flex-direction:column;align-items:center;gap:20px;
   transition:background .3s var(--ease);
 }
-.plate:hover{background:var(--surface)}
-/* every mark sits on its own white field: the set mixes dark and light logos
-   and two of them would otherwise vanish against the black ground */
-.plate-mark{
-  width:100%;height:112px;background:#FFFFFF;border:1px solid var(--line);border-radius:var(--r);
-  display:flex;align-items:center;justify-content:center;padding:16px;overflow:hidden;
-}
-.plate-mark img{width:100%;height:100%;object-fit:contain;min-width:0;min-height:0}
-.plate-text{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center}
-.plate-name{font-size:14.5px;font-weight:500;letter-spacing:-.01em}
+.plate:hover{background:var(--bg-2)}
+.plate-mark{height:76px;display:flex;align-items:center;justify-content:center;width:100%}
+.plate-mark img{max-height:76px;max-width:100%;width:auto;height:auto;object-fit:contain;
+  opacity:.92;transition:opacity .3s var(--ease)}
+.plate:hover .plate-mark img{opacity:1}
+.plate-text{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+.plate-name{font-size:15px;font-weight:500;letter-spacing:-.012em}
 .plate-kind{font-size:12.5px;color:var(--ink-3);line-height:1.4}
 
 /* ==========================================================================
    PARTNERS  deliberately empty until there is something true to put in it
    ========================================================================== */
-.slots{display:flex;flex-wrap:wrap;margin-top:clamp(30px,3.4vw,44px)}
-.slot{flex:0 1 236px;min-width:190px;border:1px solid var(--line);margin:0 -1px -1px 0;
-  background:var(--bg);min-height:158px;display:grid;place-items:center;padding:18px}
 .slot-empty{
-  width:100%;height:100%;min-height:112px;display:grid;place-items:center;
+  width:100%;min-height:118px;display:grid;place-items:center;
   border:1px dashed var(--line);border-radius:var(--r);color:var(--ink-3);font-size:13px;
 }
 
@@ -438,6 +408,7 @@ html[data-theme="dark"] .panel-media img{filter:saturate(.4) contrast(1.08) brig
 .gov-say{padding:clamp(26px,3.2vw,44px);border-right:1px solid var(--band-line)}
 .gov-say p{margin-top:16px;font-size:15.5px;line-height:1.6;max-width:48ch}
 .gov-lineage{padding:clamp(26px,3.2vw,44px);display:flex;flex-direction:column;justify-content:center;gap:0}
+.gov-lineage .kicker{margin-bottom:20px}
 .lin{display:grid;grid-template-columns:26px 1fr;gap:0 14px}
 .lin-node{display:flex;flex-direction:column;align-items:center}
 .lin-dot{width:9px;height:9px;border:1px solid var(--band-ink-2);margin-top:7px}
@@ -511,12 +482,11 @@ html:not(.js) .rv{opacity:1;transform:none}
   .foot-grid{grid-template-columns:1fr}
   .idx-row{grid-template-columns:minmax(0,32px) minmax(0,1fr);gap:12px}
   .idx-state{grid-column:1/-1;justify-self:start}
-  .hero-tail{height:60svh}
+  .hero-tail{height:30svh}
 }
 @media (forced-colors:active){ :focus-visible{outline:3px solid Highlight;outline-offset:2px} }
 @media (prefers-contrast:more){
   :root{--ink-2:#2A2A2E;--ink-3:#38383D;--line:#B6B6B2}
-  html[data-theme="dark"]{--ink-2:#D2D2D6;--ink-3:#BEBEC4;--line:#44444A;--band-ink-2:#CFCFD4}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -610,10 +580,6 @@ html:not(.js) .rv{opacity:1;transform:none}
       <a href="#standards">Standards</a>
     </nav>
     <div class="head-act">
-      <button class="icon-btn" id="theme" type="button" aria-label="Switch to light theme">
-        <svg class="ic th-l" aria-hidden="true" focusable="false"><use href="#i-moon"/></svg>
-        <svg class="ic th-d" aria-hidden="true" focusable="false"><use href="#i-sun"/></svg>
-      </button>
       <button class="icon-btn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mmenu">
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-list"/></svg>
       </button>
@@ -648,7 +614,7 @@ html:not(.js) .rv{opacity:1;transform:none}
         <a class="btn" href="request.html">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></a>
         <a class="btn-ghost" href="#about">Read the mandate <span class="ar" aria-hidden="true">&#8595;</span></a>
       </div>
-      <p class="hero-note">A subsidiary of Amaze Consortium</p>
+      <p class="hero-note">In partnership with Amaze Consortium and ARIES</p>
     </div>
     <div class="hero-tail" aria-hidden="true"></div>
   </div>
@@ -879,15 +845,7 @@ html:not(.js) .rv{opacity:1;transform:none}
     <p class="lead sect-intro rv">Named with their agreement. Further references are available under a non disclosure agreement.</p>
     <div class="plates">
       <div class="plate rv">
-        <div class="plate-mark"><img src="assets/logo-aries.png" alt="ARIES" width="200" height="200" loading="lazy" decoding="async" /></div>
-        <div class="plate-text"><span class="plate-name">ARIES</span><span class="plate-kind">Amaze Research, Innovation and Exploration Society</span></div>
-      </div>
-      <div class="plate rv">
-        <div class="plate-mark"><img src="assets/logo-amaze.png" alt="Amaze Consortium" width="200" height="200" loading="lazy" decoding="async" /></div>
-        <div class="plate-text"><span class="plate-name">Amaze Consortium</span><span class="plate-kind">Parent group</span></div>
-      </div>
-      <div class="plate rv">
-        <div class="plate-mark"><img src="assets/logo-gungchil.png" alt="Gungchil" width="200" height="132" loading="lazy" decoding="async" /></div>
+        <div class="plate-mark"><img src="assets/logo-gungchil-dark.png" alt="Gungchil" width="240" height="154" loading="lazy" decoding="async" /></div>
         <div class="plate-text"><span class="plate-name">Gungchil</span><span class="plate-kind">Client</span></div>
       </div>
     </div>
@@ -903,11 +861,17 @@ html:not(.js) .rv{opacity:1;transform:none}
     <span class="kicker rv">Partners</span>
     <h2 class="h2 sect-head rv">Official partners.</h2>
     <p class="lead sect-intro rv">Organisations and institutions that work alongside the practice. This register opens shortly.</p>
-    <div class="slots">
-      <div class="slot rv"><div class="slot-empty">Partner slot</div></div>
-      <div class="slot rv"><div class="slot-empty">Partner slot</div></div>
-      <div class="slot rv"><div class="slot-empty">Partner slot</div></div>
-      <div class="slot rv"><div class="slot-empty">Partner slot</div></div>
+    <div class="plates">
+      <div class="plate rv">
+        <div class="plate-mark"><img src="assets/logo-amaze-dark.png" alt="Amaze Consortium" width="240" height="240" loading="lazy" decoding="async" /></div>
+        <div class="plate-text"><span class="plate-name">Amaze Consortium</span><span class="plate-kind">Partner</span></div>
+      </div>
+      <div class="plate rv">
+        <div class="plate-mark"><img src="assets/logo-aries-dark.png" alt="ARIES" width="240" height="240" loading="lazy" decoding="async" /></div>
+        <div class="plate-text"><span class="plate-name">ARIES</span><span class="plate-kind">Partner</span></div>
+      </div>
+      <div class="plate rv"><div class="slot-empty">Partner slot</div></div>
+      <div class="plate rv"><div class="slot-empty">Partner slot</div></div>
     </div>
   </div>
 </section>
@@ -1037,37 +1001,38 @@ html:not(.js) .rv{opacity:1;transform:none}
 <section class="sect sect-band" id="clients">
   <div class="wrap">
     <span class="kicker rv">Governance</span>
-    <h2 class="h2 sect-head rv">Owned and governed by Amaze Consortium.</h2>
+    <h2 class="h2 sect-head rv">Governance and standing.</h2>
 
     <div class="gov rv">
       <div class="gov-top">
         <div class="gov-say">
           <h3 class="h3">Corporate standing</h3>
-          <p>HaveStack is the software practice of Amaze Consortium. The parent group provides the corporate structure and financial standing that institutional buyers examine before placing a system.</p>
-          <p>A contract is therefore held by an established group rather than a project team, and continuity does not rest on any one individual.</p>
+          <p>HaveStack is an enterprise software practice working in partnership with Amaze Consortium and with ARIES, its research and exploration society.</p>
+          <p>Those relationships give an institutional buyer more than one organisation to examine, and continuity that does not rest on any one individual.</p>
         </div>
         <div class="gov-lineage">
+          <span class="kicker">Related organisations</span>
           <div class="lin">
-            <div class="lin-item">
-              <div class="lin-node"><span class="lin-dot"></span><span class="lin-line"></span></div>
-              <div class="lin-body"><b>Amaze Consortium</b><span>Parent group</span></div>
-            </div>
             <div class="lin-item is-self">
               <div class="lin-node"><span class="lin-dot"></span><span class="lin-line"></span></div>
               <div class="lin-body"><b>HaveStack Technologies</b><span>Software practice</span></div>
             </div>
             <div class="lin-item">
               <div class="lin-node"><span class="lin-dot"></span><span class="lin-line"></span></div>
-              <div class="lin-body"><b>ARIES</b><span>Research and exploration society</span></div>
+              <div class="lin-body"><b>Amaze Consortium</b><span>Partner</span></div>
+            </div>
+            <div class="lin-item">
+              <div class="lin-node"><span class="lin-dot"></span><span class="lin-line"></span></div>
+              <div class="lin-body"><b>ARIES</b><span>Partner, research and exploration society</span></div>
             </div>
           </div>
         </div>
       </div>
       <dl class="gov-facts">
-        <div class="gov-fact"><dt>Structure</dt><dd>Subsidiary</dd></div>
-        <div class="gov-fact"><dt>Parent</dt><dd>Amaze Consortium</dd></div>
+        <div class="gov-fact"><dt>Practice</dt><dd>Independent</dd></div>
+        <div class="gov-fact"><dt>Partners</dt><dd>Amaze, ARIES</dd></div>
         <div class="gov-fact"><dt>Base</dt><dd>Dhaka, Bangladesh</dd></div>
-        <div class="gov-fact"><dt>Practice</dt><dd>Enterprise software</dd></div>
+        <div class="gov-fact"><dt>Field</dt><dd>Enterprise software</dd></div>
       </dl>
     </div>
   </div>
@@ -1131,7 +1096,7 @@ html:not(.js) .rv{opacity:1;transform:none}
       </div>
     </div>
     <div class="foot-bar">
-      <p>HaveStack Technologies, a subsidiary of Amaze Consortium</p>
+      <p>HaveStack Technologies, in partnership with Amaze Consortium</p>
       <p>Copyright 2026</p>
     </div>
   </div>
@@ -1164,25 +1129,6 @@ html:not(.js) .rv{opacity:1;transform:none}
   'use strict';
   var root = document.documentElement;
   var reduce = matchMedia('(prefers-reduced-motion: reduce)');
-
-  /* theme */
-  var themeBtn = document.getElementById('theme'), tTimer;
-  function syncTheme(){
-    var dark = root.getAttribute('data-theme') === 'dark';
-    themeBtn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
-  }
-  syncTheme();
-  themeBtn.addEventListener('click', function () {
-    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    if (!reduce.matches) {
-      root.classList.add('theming');
-      clearTimeout(tTimer);
-      tTimer = setTimeout(function(){ root.classList.remove('theming'); }, 340);
-    }
-    root.setAttribute('data-theme', next);
-    try { localStorage.setItem('hs-theme', next); } catch (e) {}
-    syncTheme();
-  });
 
   /* ---------- the hero film ----------
      Decoration, so it never plays for a reader who asked for stillness, it
