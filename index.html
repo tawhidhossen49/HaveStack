@@ -156,14 +156,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .btn{
   display:inline-flex;align-items:center;gap:11px;cursor:pointer;
   min-height:46px;padding:12px 22px;border-radius:6px;
-  background:var(--ink);color:var(--bg);border:1px solid var(--ink);
+  background:var(--red);color:var(--on-red);border:1px solid var(--red);
   font-size:16px;font-weight:500;letter-spacing:-.008em;
   transition:background .2s var(--ease),border-color .2s var(--ease),transform .2s var(--ease);
 }
-.btn:hover{background:#FFFFFF;border-color:#FFFFFF;transform:translateY(-1px)}
+.btn:hover{background:var(--red-deep);border-color:var(--red-deep);transform:translateY(-1px)}
 .btn:active{transform:none}
 .btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.btn .ar{color:var(--red-on-light);transition:transform .28s var(--ease-out)}
+.btn .ar{color:currentColor;opacity:.75;transition:transform .28s var(--ease-out)}
 .btn:hover .ar{transform:translate(2px,-2px)}
 .btn-ghost{
   display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);
@@ -333,17 +333,22 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 /* Marks sit directly on the page with no plate behind them. The two darker
    logos are supplied in lifted variants so they hold against the black without
    a white field propping them up. */
-.plates{display:flex;flex-wrap:wrap;gap:1px;margin-top:clamp(30px,3.4vw,44px);
-  background:var(--line);border:1px solid var(--line)}
+/* Fixed tiles rather than stretching ones. With flex grow a single entry
+   spread across the whole row; a fixed basis keeps one mark the same size as
+   twelve, and the row simply fills from the left as the register grows. The
+   container carries no border of its own, so it never draws an empty band
+   past the last tile. */
+.plates{display:flex;flex-wrap:wrap;margin-top:clamp(30px,3.4vw,44px)}
 .plate{
-  flex:1 1 210px;min-width:180px;background:var(--bg);
-  padding:34px 22px 30px;
-  display:flex;flex-direction:column;align-items:center;gap:20px;
+  flex:0 0 196px;width:196px;min-height:196px;background:var(--bg);
+  border:1px solid var(--line);margin:0 -1px -1px 0;
+  padding:26px 18px 22px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
   transition:background .3s var(--ease);
 }
 .plate:hover{background:var(--bg-2)}
-.plate-mark{height:76px;display:flex;align-items:center;justify-content:center;width:100%}
-.plate-mark img{max-height:76px;max-width:100%;width:auto;height:auto;object-fit:contain;
+.plate-mark{height:66px;display:flex;align-items:center;justify-content:center;width:100%}
+.plate-mark img{max-height:66px;max-width:100%;width:auto;height:auto;object-fit:contain;
   opacity:.92;transition:opacity .3s var(--ease)}
 .plate:hover .plate-mark img{opacity:1}
 .plate-text{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
@@ -354,7 +359,7 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
    PARTNERS  deliberately empty until there is something true to put in it
    ========================================================================== */
 .slot-empty{
-  width:100%;min-height:118px;display:grid;place-items:center;
+  width:100%;min-height:120px;display:grid;place-items:center;
   border:1px dashed var(--line);border-radius:var(--r);color:var(--ink-3);font-size:13px;
 }
 
@@ -476,6 +481,7 @@ html:not(.js) .rv{opacity:1;transform:none}
 }
 @media (max-width:719px){
   .cond-grid,.ops,.stages{grid-template-columns:1fr}
+  .plate{flex:0 0 calc(50% + 1px);width:calc(50% + 1px);min-height:172px}
   .sc-c,.sc-d,.sc-e,.sc-f{grid-column:span 12}
   .gov-facts{grid-template-columns:1fr}
   .gov-fact{border-right:0;border-bottom:1px solid var(--band-line)}

@@ -114,13 +114,13 @@ button,input,select,textarea{font:inherit;color:inherit}
 .foot-row p{font-size:13.5px;color:var(--ink-3);max-width:44ch}
 .btn{display:inline-flex;align-items:center;gap:11px;cursor:pointer;
   min-height:46px;padding:12px 24px;border-radius:6px;
-  background:var(--ink);color:var(--bg);border:1px solid var(--ink);
+  background:var(--red);color:var(--on-red);border:1px solid var(--red);
   font-size:16px;font-weight:500;letter-spacing:-.008em;
   transition:background .2s var(--ease),border-color .2s var(--ease),transform .2s var(--ease)}
-.btn:hover{background:#FFFFFF;border-color:#FFFFFF;transform:translateY(-1px)}
+.btn:hover{background:var(--red-deep);border-color:var(--red-deep);transform:translateY(-1px)}
 .btn:active{transform:none}
 .btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.btn .ar{color:var(--red-on-light);transition:transform .28s var(--ease-out)}
+.btn .ar{color:currentColor;opacity:.75;transition:transform .28s var(--ease-out)}
 .btn:hover .ar{transform:translate(2px,-2px)}
 .spin{width:14px;height:14px;border:2px solid rgba(10,10,11,.3);border-top-color:var(--bg);border-radius:50%;animation:spin .8s linear infinite;display:none}
 .btn[data-busy="true"] .spin{display:block}
