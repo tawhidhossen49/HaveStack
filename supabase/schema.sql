@@ -41,7 +41,7 @@ create table public.meeting_requests (
 -- assume the browser was bypassed, so the same rules are enforced again here.
 -- ---------------------------------------------------------------------------
 alter table public.meeting_requests
-  add constraint reference_fmt   check (reference ~ '^HS-[0-9]{8}-[0-9A-Z]{4}$'),
+  add constraint reference_fmt   check (reference ~ '^HS-[0-9]{8}-[0-9A-Z]{4,10}$'),
   add constraint organisation_len check (char_length(organisation) between 2 and 200),
   add constraint full_name_len    check (char_length(full_name)    between 2 and 120),
   add constraint role_len         check (char_length(role)         between 2 and 120),
@@ -79,8 +79,13 @@ create index meeting_requests_status_idx  on public.meeting_requests (status);
 alter table public.meeting_requests enable row level security;
 
 -- Explicit grants alongside RLS. Two independent locks rather than one.
+-- The grant is per column: a blanket insert grant would also let a submitter
+-- set id, created_at, status and your private notes field.
 revoke all on public.meeting_requests from anon;
-grant insert on public.meeting_requests to anon;
+grant insert (
+  reference, organisation, sector, full_name, role, email,
+  named_owner, system_required, intended_start, brief, trap
+) on public.meeting_requests to anon;
 
 -- The only thing the public may do. The with check clause also stops a
 -- submitter setting their own status or smuggling a value into the honeypot.

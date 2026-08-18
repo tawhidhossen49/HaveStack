@@ -84,7 +84,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
 .f{display:flex;flex-direction:column;gap:7px}
-.f-6{grid-column:span 6}.f-4{grid-column:span 4}.f-12{grid-column:span 12}
+.f-6{grid-column:span 6}.f-12{grid-column:span 12}
 .f label{font-size:14px;font-weight:500}
 .f .req{color:var(--red-text);margin-left:3px}
 .hint{font-size:13px;color:var(--ink-3)}
@@ -179,7 +179,7 @@ button,input,select,textarea{font:inherit;color:inherit}
   .lodged-cell{border-right:0;border-bottom:1px solid var(--line)}
 }
 @media (max-width:640px){
-  .f-6,.f-4{grid-column:span 12}
+  .f-6{grid-column:span 12}
 }
 @media (forced-colors:active){ :focus-visible{outline:3px solid Highlight;outline-offset:2px} }
 @media (prefers-reduced-motion:reduce){
@@ -470,9 +470,30 @@ button,input,select,textarea{font:inherit;color:inherit}
     submitLabel.textContent = 'Submitting';
 
     var now = new Date();
-    var ref = 'HS-' + now.getFullYear() + pad(now.getMonth()+1) + pad(now.getDate())
-            + '-' + now.getTime().toString(36).slice(-4).toUpperCase();
     var get = function(id){ return document.getElementById(id).value.trim(); };
+
+    // The tail used to be four characters lifted from the low digits of a
+    // millisecond timestamp. Those cycle every 28 minutes, so a day only held
+    // about 1.7 million possible references and two senders could collide,
+    // which the unique index would reject and the sender would read as a
+    // failure. Six random characters from the crypto source give 2.2 billion
+    // and carry no timing information.
+    function newReference() {
+      var A = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', out = '';
+      var rnd = (window.crypto && window.crypto.getRandomValues)
+        ? function (n) { var b = new Uint8Array(n); window.crypto.getRandomValues(b); return b; }
+        : function (n) { var b = []; for (var i = 0; i < n; i++) b.push(Math.floor(Math.random()*256)); return b; };
+      while (out.length < 6) {
+        var b = rnd(12);
+        for (var i = 0; i < b.length && out.length < 6; i++) {
+          // 252 is the largest multiple of 36 under 256; discarding above it
+          // keeps every character equally likely
+          if (b[i] < 252) out += A.charAt(b[i] % 36);
+        }
+      }
+      return 'HS-' + now.getFullYear() + pad(now.getMonth()+1) + pad(now.getDate()) + '-' + out;
+    }
+    var ref = newReference();
 
     // ---- Supabase ----------------------------------------------------
     // The publishable key is meant to be public. It permits one thing: adding
@@ -481,7 +502,7 @@ button,input,select,textarea{font:inherit;color:inherit}
     var SUPABASE_URL = 'https://dnuqhgrxgthfbatnagbm.supabase.co';
     var SUPABASE_KEY = 'sb_publishable_nTzfhETJm69WQfq_7oicfw_TsJuY99r';
 
-    var payload = {
+    function buildPayload() { return {
       reference:       ref,
       organisation:    get('org'),
       sector:          get('sector'),
@@ -493,7 +514,7 @@ button,input,select,textarea{font:inherit;color:inherit}
       intended_start:  get('start'),
       brief:           get('brief'),
       trap:            get('trap')
-    };
+    }; }
 
     // resets the control only; the message is written by the caller so that
     // a rich fallback is not overwritten by a plain one
@@ -512,16 +533,25 @@ button,input,select,textarea{font:inherit;color:inherit}
 
     document.getElementById('e-send').style.display = '';
 
-    fetch(SUPABASE_URL + '/rest/v1/meeting_requests', {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY,
-        'Content-Type': 'application/json',
-        // there is no read policy, so asking for the row back would fail
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(payload)
+    function send() {
+      return fetch(SUPABASE_URL + '/rest/v1/meeting_requests', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          // there is no read policy, so asking for the row back would fail
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(buildPayload())
+      });
+    }
+
+    send().then(function (res) {
+      // 409 means the reference was already taken. Issue a new one and try
+      // once more rather than telling the sender their brief failed.
+      if (res.status === 409) { ref = newReference(); return send(); }
+      return res;
     }).then(function (res) {
       if (!res.ok) {
         return res.text().then(function (t) { throw new Error(res.status + ' ' + t.slice(0, 160)); });

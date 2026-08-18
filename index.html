@@ -132,7 +132,6 @@ button,input,select,textarea{font:inherit;color:inherit}
 .h1{font-size:clamp(38px,6.6vw,92px);line-height:1.02;font-weight:400;letter-spacing:-.035em}
 .h2{font-size:clamp(28px,3.6vw,46px);line-height:1.08;font-weight:400;letter-spacing:-.028em;text-wrap:balance}
 .h3{font-size:clamp(18px,1.5vw,21px);line-height:1.3;font-weight:500;letter-spacing:-.016em}
-.h4{font-size:16px;line-height:1.35;font-weight:500;letter-spacing:-.01em}
 .lead{font-size:clamp(16px,1.2vw,18px);line-height:1.55;color:var(--ink-2);max-width:56ch}
 /* the one small tracked label the design allows, used as a section marker */
 .kicker{
@@ -231,7 +230,7 @@ button,input,select,textarea{font:inherit;color:inherit}
    ========================================================================== */
 .hero{position:relative;background:var(--band);color:#fff}
 .hero-media{position:sticky;top:0;height:100svh;overflow:hidden;z-index:0}
-.hero-media video,.hero-media img.poster{
+.hero-media video{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   filter:saturate(.7) contrast(1.04) brightness(.86);
 }
@@ -714,7 +713,7 @@ html:not(.js) .rv{opacity:1;transform:none}
       </div>
 
       <div class="panel" id="p-erp" role="tabpanel" aria-labelledby="t-erp" tabindex="0">
-        <div class="panel-media"><img src="assets/cap-erp.jpg" alt="" width="1200" height="457" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/d1/1200/457'" /></div>
+        <div class="panel-media"><img src="assets/cap-erp.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/d1/1200/457'" /></div>
         <div class="panel-body">
           <h3 class="h3">Enterprise resource planning</h3>
           <p>One authoritative record of finance, procurement, inventory and payroll, with approval chains enforced in software.</p>
@@ -722,7 +721,7 @@ html:not(.js) .rv{opacity:1;transform:none}
         </div>
       </div>
       <div class="panel" id="p-learning" role="tabpanel" aria-labelledby="t-learning" tabindex="0" hidden>
-        <div class="panel-media"><img src="assets/cap-learning.jpg" alt="" width="1200" height="457" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k6/1200/457'" /></div>
+        <div class="panel-media"><img src="assets/cap-learning.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k6/1200/457'" /></div>
         <div class="panel-body">
           <h3 class="h3">Learning platforms</h3>
           <p>Course delivery, assessment and certification engineered to carry full cohorts through an academic term.</p>
@@ -730,7 +729,7 @@ html:not(.js) .rv{opacity:1;transform:none}
         </div>
       </div>
       <div class="panel" id="p-public" role="tabpanel" aria-labelledby="t-public" tabindex="0" hidden>
-        <div class="panel-media"><img src="assets/cap-public.jpg" alt="" width="1200" height="457" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k11/1200/457'" /></div>
+        <div class="panel-media"><img src="assets/cap-public.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k11/1200/457'" /></div>
         <div class="panel-body">
           <h3 class="h3">Public facing platforms</h3>
           <p>Citizen facing services provisioned for a defined peak load and proven against it before release.</p>
@@ -738,7 +737,7 @@ html:not(.js) .rv{opacity:1;transform:none}
         </div>
       </div>
       <div class="panel" id="p-integration" role="tabpanel" aria-labelledby="t-integration" tabindex="0" hidden>
-        <div class="panel-media"><img src="assets/cap-integration.jpg" alt="" width="1200" height="457" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k12/1200/457'" /></div>
+        <div class="panel-media"><img src="assets/cap-integration.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k12/1200/457'" /></div>
         <div class="panel-body">
           <h3 class="h3">Integration and internal tooling</h3>
           <p>Interfaces between the platforms an institution already runs, governed by a documented data contract.</p>
@@ -746,7 +745,7 @@ html:not(.js) .rv{opacity:1;transform:none}
         </div>
       </div>
       <div class="panel" id="p-managed" role="tabpanel" aria-labelledby="t-managed" tabindex="0" hidden>
-        <div class="panel-media"><img src="assets/cap-managed.jpg" alt="" width="1200" height="457" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k8/1200/457'" /></div>
+        <div class="panel-media"><img src="assets/cap-managed.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k8/1200/457'" /></div>
         <div class="panel-body">
           <h3 class="h3">Managed operations</h3>
           <p>Monitoring, release management, recovery and a named escalation route under a service agreement.</p>
