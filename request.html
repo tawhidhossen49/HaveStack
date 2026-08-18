@@ -113,57 +113,42 @@ button,input,select,textarea{font:inherit;color:inherit}
 .foot-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:34px;padding-top:24px;border-top:1px solid var(--line)}
 .foot-row p{font-size:13.5px;color:var(--ink-3);max-width:44ch}
 /* ---- the call to action ----
-   Closed it is a white key. On hover the lid hinges back on its bottom edge
-   under real perspective and a deck unfolds beneath it, so the control reads
-   as a laptop opening with the label sitting on the screen. The field turns to
-   the accent as it opens. Near black text is used throughout: it clears 18 to 1
-   on the white and 5.6 to 1 on the red, so the label never dips while the
-   colour changes underneath it. */
+   Adapted from the Uiverse converging circles button by Randdose, retuned for
+   this palette. The original ran a transparent outline with green discs and
+   flipped the label dark on hover. Here the resting state is the white key the
+   brief asks for and the discs that slide in are the accent, which means the
+   label can stay near black throughout: 18 to 1 on the white, 5.6 to 1 once the
+   red arrives. Flipping the label colour instead would have left it black on a
+   still black page for the length of the slide. */
 .btn{
-  position:relative;display:inline-block;border:0;background:transparent;padding:0;
-  cursor:pointer;perspective:760px;
-  -webkit-tap-highlight-color:transparent;
-}
-.btn-lid{
-  position:relative;z-index:2;
-  display:inline-flex;align-items:center;gap:11px;
-  min-height:46px;padding:12px 22px;border-radius:6px 6px 4px 4px;
+  all:unset;
+  position:relative;display:inline-flex;align-items:center;gap:11px;
+  box-sizing:border-box;min-height:46px;padding:12px 22px;
+  border:1px solid #F4F4F2;border-radius:6px;
   background:#F4F4F2;color:#0A0A0B;
-  font-size:16px;font-weight:500;letter-spacing:-.008em;line-height:1.2;
-  transform-origin:50% 100%;backface-visibility:hidden;
-  box-shadow:0 1px 2px rgba(0,0,0,.4);
-  transition:transform .46s cubic-bezier(.2,.85,.25,1),
-             background .34s var(--ease),
-             box-shadow .46s var(--ease);
+  font-family:var(--sans);font-size:16px;font-weight:500;letter-spacing:-.008em;
+  cursor:pointer;overflow:hidden;user-select:none;
+  transition:border-color 300ms var(--ease);
 }
-/* the deck: narrower at the hinge, wider at the front, so it recedes */
-.btn-base{
-  position:absolute;left:50%;top:100%;z-index:1;
-  width:107%;height:14px;
-  background:linear-gradient(to bottom,#C9C9C6,#9E9E9B);
-  clip-path:polygon(4.5% 0,95.5% 0,100% 100%,0 100%);
-  border-radius:0 0 5px 5px;
-  box-shadow:inset 0 -2px 0 rgba(0,0,0,.34);
-  transform:translateX(-50%) scaleY(0);transform-origin:50% 0;
-  opacity:0;
-  transition:transform .46s cubic-bezier(.2,.85,.25,1),
-             opacity .28s var(--ease),background .34s var(--ease);
-}
-.btn:hover .btn-lid,.btn:focus-visible .btn-lid{
+.btn-face{position:relative;z-index:1;display:inline-flex;align-items:center;gap:11px}
+.btn::before,.btn::after{
+  content:"";position:absolute;top:50%;
+  width:9em;aspect-ratio:1;border-radius:50%;
   background:var(--red);
-  transform:rotateX(-22deg) scale(1.055);
-  box-shadow:0 10px 22px rgba(0,0,0,.45);
+  transition:transform 500ms var(--ease),background 300ms var(--ease);
 }
-.btn:hover .btn-base,.btn:focus-visible .btn-base{
-  opacity:1;transform:translateX(-50%) scaleY(1);
-  background:linear-gradient(to bottom,var(--red-deep),#8E1020);
-}
-.btn:active .btn-lid{transform:rotateX(-10deg) scale(1.01)}
-.btn:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:8px}
+.btn::before{left:0;transform:translate(-9.5em,-50%)}
+.btn::after{right:0;transform:translate(9.5em,-50%)}
+.btn:hover::before,.btn:focus-visible::before{transform:translate(-1.2em,-50%)}
+.btn:hover::after,.btn:focus-visible::after{transform:translate(1.2em,-50%)}
+.btn:hover,.btn:focus-visible{border-color:var(--red)}
+.btn:active::before,.btn:active::after{background:var(--red-deep)}
+.btn:active{border-color:var(--red-deep)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .btn[disabled]{cursor:progress}
-.btn .ar{color:currentColor;opacity:.7;transition:transform .3s var(--ease-out)}
+.btn .ar{opacity:.7;transition:transform .3s var(--ease-out)}
 .btn:hover .ar{transform:translate(2px,-2px)}
-.head .btn .btn-lid{min-height:38px;padding:8px 16px;font-size:15px}
+.head .btn{min-height:38px;padding:8px 16px;font-size:15px}
 .spin{width:14px;height:14px;border:2px solid rgba(10,10,11,.3);border-top-color:var(--bg);border-radius:50%;animation:spin .8s linear infinite;display:none}
 .btn[data-busy="true"] .spin{display:block}
 .btn[data-busy="true"] .ar{display:none}
@@ -197,8 +182,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 }
 @media (forced-colors:active){ :focus-visible{outline:3px solid Highlight;outline-offset:2px} }
 @media (prefers-reduced-motion:reduce){
-  .btn:hover .btn-lid,.btn:focus-visible .btn-lid,.btn:active .btn-lid{transform:none}
-  .btn-base{display:none}
+  .btn::before{transform:translate(-1.2em,-50%)}
+  .btn::after{transform:translate(1.2em,-50%)}
+  .btn::before,.btn::after{background:transparent}
+  .btn:hover::before,.btn:hover::after,
+  .btn:focus-visible::before,.btn:focus-visible::after{background:var(--red)}
   *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
 }
 @media print{
@@ -375,9 +363,9 @@ button,input,select,textarea{font:inherit;color:inherit}
       </section>
 
       <div class="foot-row">
-        <button class="btn" type="submit" id="submit"><span class="btn-lid"><span id="submit-label">Submit the brief</span>
+        <button class="btn" type="submit" id="submit"><span class="btn-face"><span id="submit-label">Submit the brief</span>
           <span class="spin" aria-hidden="true"></span>
-          <span class="ar" aria-hidden="true">&#8599;</span></span><span class="btn-base" aria-hidden="true"></span></button>
+          <span class="ar" aria-hidden="true">&#8599;</span></span></button>
         <p>Details shared here are treated as confidential. A reference is issued on submission.</p>
       </div>
       <p class="err" id="e-form" style="margin-top:14px"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span>Check the fields marked above and submit again.</span></p>
