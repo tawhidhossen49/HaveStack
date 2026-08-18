@@ -110,6 +110,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .notice .ic{font-size:18px;color:var(--red);margin-top:2px}
 .notice p{font-size:14px;line-height:1.55;color:var(--ink-2)}
 
+.trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .foot-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:34px;padding-top:24px;border-top:1px solid var(--line)}
 .foot-row p{font-size:13.5px;color:var(--ink-3);max-width:44ch}
 /* ---- the call to action ----
@@ -362,12 +363,22 @@ button,input,select,textarea{font:inherit;color:inherit}
         </div>
       </section>
 
+
+        <!-- Honeypot. Positioned out of sight and hidden from assistive tech,
+             so a person never encounters it. Bots fill every field they find,
+             and a filled trap is refused by the database policy, not just here. -->
+        <div class="trap" aria-hidden="true">
+          <label for="trap">Do not fill this in</label>
+          <input id="trap" name="trap" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
       <div class="foot-row">
         <button class="btn" type="submit" id="submit"><span class="btn-face"><span id="submit-label">Submit the brief</span>
           <span class="spin" aria-hidden="true"></span>
           <span class="ar" aria-hidden="true">&#8599;</span></span></button>
         <p>Details shared here are treated as confidential. A reference is issued on submission.</p>
       </div>
+      <p class="err" id="e-send" style="margin-top:14px"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span></span></p>
       <p class="err" id="e-form" style="margin-top:14px"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-warning-circle"/></svg><span>Check the fields marked above and submit again.</span></p>
     </form>
 
@@ -463,46 +474,84 @@ button,input,select,textarea{font:inherit;color:inherit}
             + '-' + now.getTime().toString(36).slice(-4).toUpperCase();
     var get = function(id){ return document.getElementById(id).value.trim(); };
 
-    /* REPLACE THIS BLOCK WITH A REAL ENDPOINT.
-       Post the same values to the server, for example:
-         fetch('/api/meeting-request', {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify(payload)
-         })
-       Until that endpoint exists the request is composed as a mailto to
-       hello@havestack.tech and handed to the visitor's mail client. */
-    var subject = 'Meeting request: ' + get('org') + ' [' + ref + ']';
-    var body = [
-      'Reference: ' + ref, '',
-      'Organisation: ' + get('org'),
-      'Sector: ' + get('sector'), '',
-      'Name: ' + get('name'),
-      'Role: ' + get('role'),
-      'Work email: ' + get('email'),
-      'Named owner: ' + get('owner'), '',
-      'System required: ' + get('system'),
-      'Intended start: ' + get('start'), '',
-      'Requirement:', get('brief')
-    ].join('\r\n');
-    var href = 'mailto:hello@havestack.tech?subject=' + encodeURIComponent(subject)
-             + '&body=' + encodeURIComponent(body);
+    // ---- Supabase ----------------------------------------------------
+    // The publishable key is meant to be public. It permits one thing: adding
+    // a row to meeting_requests. Reading, updating and deleting are refused by
+    // the row level security policy, so nothing here exposes past submissions.
+    var SUPABASE_URL = 'https://dnuqhgrxgthfbatnagbm.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_nTzfhETJm69WQfq_7oicfw_TsJuY99r';
 
-    window.setTimeout(function(){
+    var payload = {
+      reference:       ref,
+      organisation:    get('org'),
+      sector:          get('sector'),
+      full_name:       get('name'),
+      role:            get('role'),
+      email:           get('email'),
+      named_owner:     get('owner'),
+      system_required: get('system'),
+      intended_start:  get('start'),
+      brief:           get('brief'),
+      trap:            get('trap')
+    };
+
+    // resets the control only; the message is written by the caller so that
+    // a rich fallback is not overwritten by a plain one
+    function releaseButton() {
+      submit.removeAttribute('data-busy');
+      submit.disabled = false;
+      submitLabel.textContent = 'Submit the brief';
+    }
+    function showFailure(html) {
+      releaseButton();
+      var box = document.getElementById('e-send');
+      box.querySelector('span').innerHTML = html;
+      box.style.display = 'flex';
+      box.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'center' });
+    }
+
+    document.getElementById('e-send').style.display = '';
+
+    fetch(SUPABASE_URL + '/rest/v1/meeting_requests', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        // there is no read policy, so asking for the row back would fail
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(payload)
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.text().then(function (t) { throw new Error(res.status + ' ' + t.slice(0, 160)); });
+      }
       document.getElementById('ref').textContent = ref;
       document.getElementById('stamp').textContent = human(now);
-      document.getElementById('due').textContent = human(nextWorkingDays(now,2));
-      lodged.setAttribute('data-show','true');
+      document.getElementById('due').textContent = human(nextWorkingDays(now, 2));
+      lodged.setAttribute('data-show', 'true');
       form.style.display = 'none';
       submit.removeAttribute('data-busy');
       submit.disabled = false;
       submitLabel.textContent = 'Submit the brief';
-
-      var post = document.createElement('a');
-      post.href = href; post.rel = 'noopener'; post.style.display = 'none';
-      document.body.appendChild(post); post.click(); document.body.removeChild(post);
       lodged.focus();
-    }, 900);
+    }).catch(function (err) {
+      // Never show a success screen for something that did not send. The
+      // fallback keeps the brief reachable rather than losing what was typed.
+      var mail = 'mailto:hello@havestack.tech?subject='
+        + encodeURIComponent('Meeting request: ' + get('org') + ' [' + ref + ']')
+        + '&body=' + encodeURIComponent(
+            ['Reference: ' + ref, '',
+             'Organisation: ' + get('org'), 'Sector: ' + get('sector'), '',
+             'Name: ' + get('name'), 'Role: ' + get('role'),
+             'Work email: ' + get('email'), 'Named owner: ' + get('owner'), '',
+             'System required: ' + get('system'), 'Intended start: ' + get('start'), '',
+             'Requirement:', get('brief')].join('\r\n'));
+      showFailure('The brief could not be sent just now. '
+        + '<a href="' + mail + '" style="text-decoration:underline">Send it by email instead</a>'
+        + '. Nothing you typed has been lost.');
+      if (window.console) console.error('meeting request failed:', err);
+    });
   });
 })();
 </script>
