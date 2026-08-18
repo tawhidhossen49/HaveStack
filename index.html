@@ -144,27 +144,58 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sect-intro{margin-top:14px}
 
 /* ---- controls ---- */
-/* The call to action.
-   Research on premium positioning is consistent that a loud saturated field
-   works against it: restraint plus high contrast is what reads as expensive.
-   So the accent stops being the whole button and becomes the mark on it. A
-   bone field on the black ground gives the strongest contrast available here,
-   about 18:1, without shouting. Corners are eased to 6px rather than left
-   sharp, because rounding measurably lifts clicks while a small radius keeps
-   the enterprise formality. Set a step above body copy at 16px medium, on a
-   46px minimum height so it clears the touch target floor. */
+/* ---- the call to action ----
+   Closed it is a white key. On hover the lid hinges back on its bottom edge
+   under real perspective and a deck unfolds beneath it, so the control reads
+   as a laptop opening with the label sitting on the screen. The field turns to
+   the accent as it opens. Near black text is used throughout: it clears 18 to 1
+   on the white and 5.6 to 1 on the red, so the label never dips while the
+   colour changes underneath it. */
 .btn{
-  display:inline-flex;align-items:center;gap:11px;cursor:pointer;
-  min-height:46px;padding:12px 22px;border-radius:6px;
-  background:var(--red);color:var(--on-red);border:1px solid var(--red);
-  font-size:16px;font-weight:500;letter-spacing:-.008em;
-  transition:background .2s var(--ease),border-color .2s var(--ease),transform .2s var(--ease);
+  position:relative;display:inline-block;border:0;background:transparent;padding:0;
+  cursor:pointer;perspective:760px;
+  -webkit-tap-highlight-color:transparent;
 }
-.btn:hover{background:var(--red-deep);border-color:var(--red-deep);transform:translateY(-1px)}
-.btn:active{transform:none}
-.btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.btn .ar{color:currentColor;opacity:.75;transition:transform .28s var(--ease-out)}
+.btn-lid{
+  position:relative;z-index:2;
+  display:inline-flex;align-items:center;gap:11px;
+  min-height:46px;padding:12px 22px;border-radius:6px 6px 4px 4px;
+  background:#F4F4F2;color:#0A0A0B;
+  font-size:16px;font-weight:500;letter-spacing:-.008em;line-height:1.2;
+  transform-origin:50% 100%;backface-visibility:hidden;
+  box-shadow:0 1px 2px rgba(0,0,0,.4);
+  transition:transform .46s cubic-bezier(.2,.85,.25,1),
+             background .34s var(--ease),
+             box-shadow .46s var(--ease);
+}
+/* the deck: narrower at the hinge, wider at the front, so it recedes */
+.btn-base{
+  position:absolute;left:50%;top:100%;z-index:1;
+  width:107%;height:14px;
+  background:linear-gradient(to bottom,#C9C9C6,#9E9E9B);
+  clip-path:polygon(4.5% 0,95.5% 0,100% 100%,0 100%);
+  border-radius:0 0 5px 5px;
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,.34);
+  transform:translateX(-50%) scaleY(0);transform-origin:50% 0;
+  opacity:0;
+  transition:transform .46s cubic-bezier(.2,.85,.25,1),
+             opacity .28s var(--ease),background .34s var(--ease);
+}
+.btn:hover .btn-lid,.btn:focus-visible .btn-lid{
+  background:var(--red);
+  transform:rotateX(-22deg) scale(1.055);
+  box-shadow:0 10px 22px rgba(0,0,0,.45);
+}
+.btn:hover .btn-base,.btn:focus-visible .btn-base{
+  opacity:1;transform:translateX(-50%) scaleY(1);
+  background:linear-gradient(to bottom,var(--red-deep),#8E1020);
+}
+.btn:active .btn-lid{transform:rotateX(-10deg) scale(1.01)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:4px;border-radius:8px}
+.btn[disabled]{cursor:progress}
+.btn .ar{color:currentColor;opacity:.7;transition:transform .3s var(--ease-out)}
 .btn:hover .ar{transform:translate(2px,-2px)}
+.head .btn .btn-lid{min-height:38px;padding:8px 16px;font-size:15px}
 .btn-ghost{
   display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);
   background:transparent;color:inherit;border-radius:6px;
@@ -201,7 +232,6 @@ button,input,select,textarea{font:inherit;color:inherit}
 .icon-btn:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 .icon-btn .ic{font-size:17px}
 .burger{display:none}
-.head .btn{min-height:38px;padding:8px 16px;font-size:15px}
 
 .mmenu{position:fixed;inset:0;z-index:95;background:var(--bg);display:none;flex-direction:column;padding:16px var(--gut) 36px;overflow-y:auto}
 .mmenu[data-open="true"]{display:flex}
@@ -495,6 +525,8 @@ html:not(.js) .rv{opacity:1;transform:none}
   :root{--ink-2:#2A2A2E;--ink-3:#38383D;--line:#B6B6B2}
 }
 @media (prefers-reduced-motion:reduce){
+  .btn:hover .btn-lid,.btn:focus-visible .btn-lid,.btn:active .btn-lid{transform:none}
+  .btn-base{display:none}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
   .rv{opacity:1;transform:none}
@@ -589,7 +621,7 @@ html:not(.js) .rv{opacity:1;transform:none}
       <button class="icon-btn burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mmenu">
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-list"/></svg>
       </button>
-      <a class="btn" href="request.html">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></a>
+      <a class="btn" href="request.html"><span class="btn-lid">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span><span class="btn-base" aria-hidden="true"></span></a>
     </div>
   </div>
 </header>
@@ -617,7 +649,7 @@ html:not(.js) .rv{opacity:1;transform:none}
       <h1 class="h1">Build your ideas</h1>
       <p class="hero-sub">HaveStack builds, integrates and maintains the systems institutions depend on. Enterprise software from Dhaka.</p>
       <div class="hero-cta">
-        <a class="btn" href="request.html">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></a>
+        <a class="btn" href="request.html"><span class="btn-lid">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span><span class="btn-base" aria-hidden="true"></span></a>
         <a class="btn-ghost" href="#about">Read the mandate <span class="ar" aria-hidden="true">&#8595;</span></a>
       </div>
       <p class="hero-note">In partnership with Amaze Consortium and ARIES</p>
@@ -1059,7 +1091,7 @@ html:not(.js) .rv{opacity:1;transform:none}
           <span><span class="ar" aria-hidden="true">&#8594;</span>Meeting scheduled</span>
         </div>
       </div>
-      <a class="btn" href="request.html">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></a>
+      <a class="btn" href="request.html"><span class="btn-lid">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span><span class="btn-base" aria-hidden="true"></span></a>
     </div>
   </div>
 </section>
@@ -1127,7 +1159,7 @@ html:not(.js) .rv{opacity:1;transform:none}
     <a href="#standards">Standards</a>
     <a href="#clients">Governance</a>
   </nav>
-  <a class="btn" href="request.html" style="align-self:flex-start">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></a>
+  <a class="btn" href="request.html" style="align-self:flex-start"><span class="btn-lid">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span><span class="btn-base" aria-hidden="true"></span></a>
 </div>
 
 <script>
