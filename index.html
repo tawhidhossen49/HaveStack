@@ -473,8 +473,8 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
   /* the scrim rides on the image so the heading never sits on bare sky */
   background:
     linear-gradient(to bottom,
-      rgba(5,5,6,.92) 0%, rgba(5,5,6,.90) 34%, rgba(5,5,6,.62) 52%,
-      rgba(5,5,6,.30) 72%, rgba(5,5,6,.18) 100%),
+      rgba(5,5,6,.94) 0%, rgba(5,5,6,.94) 48%, rgba(5,5,6,.18) 62%,
+      rgba(5,5,6,0) 78%, rgba(5,5,6,0) 100%),
     url("assets/ops-systems.jpg") 40% center / cover no-repeat;
   /* the reds in this frame are the brand accent, so it keeps its colour where
      the rest of the photography on the site is pulled to neutral */
@@ -1095,12 +1095,18 @@ html:not(.js) .rv{opacity:1;transform:none}
 </section>
 
 <!-- ============================ MAINTENANCE ============================ -->
-<!-- The five frames in this section are the client's own artwork, graded
-     into the palette at build time from the originals in assets. The four on
-     the right run through a highlight rolloff as well as a darken: a flat
-     brightness cut would have crushed the whole frame to control four
-     specular points, and those points were what pushed the list copy under
-     4.5:1. Every frame is capped at a pixel luminance of 0.047. -->
+<!-- The five frames are the client's own artwork. The facility behind the
+     heading column ships at the brightness it has in the file; the scrim over
+     it is held flat across the text block and then released entirely, so the
+     picture is unmodified everywhere below the last line of type.
+
+     The four on the right cannot do that, because their rows carry text edge
+     to edge: only 6 to 17 per cent of each row is clear of glyphs. They run
+     through a highlight rolloff instead of a flat darken, so the midtones keep
+     their brightness and only the specular points are held down, and each one
+     has its own ceiling rather than a shared one. The wireframe carries far
+     more lit area than the rest, so a shared ceiling was leaving the other
+     three a stop darker than they needed to be. -->
 <!-- Asymmetric split rather than a fourth run of equal columns. The heading
      column is sticky, so the reader keeps the section's subject while the four
      domains scroll past it, and the domains are free to take the height their
