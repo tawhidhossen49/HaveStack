@@ -513,6 +513,32 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 /* ==========================================================================
    PRODUCTS  an index that holds at any number of entries
    ========================================================================== */
+/* a photographic floor under one section.
+   The band gets its own room at the foot of the section rather than being
+   laid behind the copy. Tying its height to the viewport put it under the
+   last two entries at 1920 and wider, where the floor reflection took the
+   body text down to 1.8:1. A fixed height plus matching bottom padding keeps
+   the picture and the words in separate air. */
+#products{position:relative;overflow:hidden;padding-bottom:clamp(190px,19vw,360px)}
+#products > .wrap{position:relative;z-index:1}
+.sect-floor{
+  position:absolute;left:0;right:0;bottom:0;z-index:0;pointer-events:none;
+  height:clamp(250px,28vw,440px);
+  background:url("assets/corridoor.jpg") center 72% / cover no-repeat;
+  /* graded to the same neutral the rest of the photography on this site runs
+     at, so the green does not become a second accent on a page whose accent
+     is red. Enough saturation is left for the strips to read as a cool glow. */
+  filter:saturate(.30) brightness(.56) contrast(1.03);
+  /* no hard top edge: the hall dissolves upward into the page, and the first
+     third of it is gone entirely so nothing can creep under the last row */
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,transparent 22%,rgba(0,0,0,.34) 46%,rgba(0,0,0,.82) 74%,#000 92%);
+          mask-image:linear-gradient(to bottom,transparent 0,transparent 22%,rgba(0,0,0,.34) 46%,rgba(0,0,0,.82) 74%,#000 92%);
+}
+@media (max-width:719px){
+  #products{padding-bottom:clamp(150px,34vw,220px)}
+  .sect-floor{height:clamp(180px,44vw,260px);filter:saturate(.30) brightness(.5) contrast(1.03)}
+}
+
 .idx{
   display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
   gap:var(--space-8) clamp(40px,6vw,104px);
@@ -1137,6 +1163,12 @@ html:not(.js) .rv{opacity:1;transform:none}
      label. Links are intentionally absent until the URLs are supplied: add an
      anchor around the name and the row needs no other change. -->
 <section class="sect" id="products">
+  <!-- The hall is anchored to the floor of the section rather than stretched
+       over it. At 3.2:1 a cover fit would have cropped away everything except
+       the middle of the corridor; sitting it on the bottom edge keeps the whole
+       composition and puts the vanishing point under the content, which is also
+       exactly where this section had dead space. -->
+  <span class="sect-floor" aria-hidden="true"></span>
   <div class="wrap">
     <span class="kicker rv">Products</span>
     <h2 class="h2 sect-head rv">Software we run ourselves.</h2>
