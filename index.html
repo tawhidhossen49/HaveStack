@@ -380,13 +380,42 @@ html.js .hero.lit .hero-copy > *:nth-child(3){transition-delay:.18s}
 .strip{background:var(--band-2);border-top:1px solid var(--band-line);color:var(--band-ink)}
 .strip-in{display:grid;grid-template-columns:repeat(5,1fr)}
 .strip a{
+  position:relative;
   display:flex;align-items:center;gap:var(--space-2);padding:var(--space-4) var(--space-4);font-size:14.5px;font-weight:400;
   border-right:1px solid var(--band-line);color:var(--band-ink);
-  transition:background var(--t-2) var(--ease)}
+  transition:background var(--t-2) var(--ease),transform var(--t-1) var(--ease);
+}
 .strip a:last-child{border-right:0}
-@media (hover:hover) and (pointer:fine){ .strip a:hover{background:rgba(255,255,255,.05)} }
+/* The accent rule draws along the bottom edge in the direction of reading.
+   It is the same gesture the mandate cards and the delivery line already use,
+   and like the nav underline it marks a state rather than decorating: only one
+   is ever lit. Leaving is faster than arriving. */
+.strip a::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:var(--red);
+  transform:scaleX(0);transform-origin:0 50%;
+  transition:transform 300ms var(--ease-in);
+}
+.strip .ic{
+  font-size:19px;color:var(--ink-3);
+  transition:color var(--t-2) var(--ease),transform var(--t-3) var(--ease-out);
+}
+@media (hover:hover) and (pointer:fine){
+  .strip a:hover{background:rgba(255,255,255,.035)}
+  .strip a:hover::after{transform:scaleX(1);transition:transform 520ms var(--ease-out)}
+  /* the mark travels the same way the rule does */
+  .strip a:hover .ic{color:var(--band-ink);transform:translateX(2px)}
+}
+/* keyboard gets the same signal, not just a ring */
 .strip a:focus-visible{outline:2px solid #fff;outline-offset:-3px}
-.strip .ic{font-size:19px;color:var(--ink-3)}
+.strip a:focus-visible::after{transform:scaleX(1)}
+.strip a:focus-visible .ic{color:var(--band-ink)}
+.strip a:active{transform:translateY(1px);background:rgba(255,255,255,.018)}
+@media (prefers-reduced-motion:reduce){
+  .strip a::after{transition:none}
+  .strip a:hover::after,.strip a:focus-visible::after{transition:none}
+  .strip a:hover .ic{transform:none}
+}
 
 /* ==========================================================================
    MANDATE
