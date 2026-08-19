@@ -450,19 +450,45 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
    composition needed; it also lets the four domains take their real heights
    instead of being forced level by a shared grid row.
    ========================================================================== */
-.ops-wrap{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:0 clamp(32px,5vw,88px)}
+.ops-wrap{--ops-gap:clamp(32px,5vw,88px);display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:0 var(--ops-gap)}
 .ops-aside-in{position:sticky;top:var(--space-9)}
 .ops-note{margin-top:var(--space-6);font-size:14px;line-height:1.55;color:var(--band-ink-2);max-width:38ch}
 .ops-aside .tlink{margin-top:var(--space-5);color:var(--band-ink)}
-/* The one permanent frame. It sits under the heading column and does not
-   react to the pointer, which is what makes the four on the right read as
-   something you uncovered rather than as decoration that was always there.
-   Height is capped so the whole aside still fits a viewport and can stick. */
-.ops-shot{margin-top:clamp(26px,2.8vw,38px);overflow:hidden;border:1px solid var(--band-line)}
-.ops-shot img{
-  width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;
-  max-height:min(24vh,250px);
-  filter:brightness(1.06) contrast(1.02);
+/* The heading column stands on the facility rather than carrying a picture
+   inside it. The layer runs left to the viewport edge and stops half way
+   into the column gap, so it never reaches the domains on the right, and it
+   fades out on that side rather than ending on a cut.
+
+   The left bleed is derived, not guessed: .wrap is a centred max-width box
+   with a gutter, so the distance from the viewport edge to its content edge
+   is exactly the expression below. */
+.ops-aside{position:relative}
+.ops-aside-in{position:relative;z-index:1}
+.ops-aside::before{
+  content:'';position:absolute;z-index:0;pointer-events:none;
+  top:calc(-1 * var(--pad-tight));
+  bottom:calc(-1 * var(--pad-tight));
+  left:calc(-1 * ((100vw - var(--sbw) - min(100vw - var(--sbw), var(--maxw))) / 2 + var(--gut)));
+  right:calc(-0.5 * var(--ops-gap));
+  /* the scrim rides on the image so the heading never sits on bare sky */
+  background:
+    linear-gradient(to bottom,
+      rgba(5,5,6,.92) 0%, rgba(5,5,6,.90) 34%, rgba(5,5,6,.62) 52%,
+      rgba(5,5,6,.30) 72%, rgba(5,5,6,.18) 100%),
+    url("assets/ops-systems.jpg") 40% center / cover no-repeat;
+  /* the reds in this frame are the brand accent, so it keeps its colour where
+     the rest of the photography on the site is pulled to neutral */
+  -webkit-mask-image:linear-gradient(to right,#000 0,#000 76%,transparent 100%);
+          mask-image:linear-gradient(to right,#000 0,#000 76%,transparent 100%);
+}
+@media (max-width:1023px){
+  /* stacked: the column is no longer a column, so the layer squares up */
+  .ops-aside::before{
+    left:calc(-1 * var(--gut));right:calc(-1 * var(--gut));
+    bottom:calc(-1 * var(--space-6));
+    -webkit-mask-image:linear-gradient(to bottom,#000 0,#000 72%,transparent 100%);
+            mask-image:linear-gradient(to bottom,#000 0,#000 72%,transparent 100%);
+  }
 }
 .ops{display:flex;flex-direction:column}
 /* one hairline between domains, never a box around each one */
@@ -502,7 +528,7 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
     -webkit-mask-image:linear-gradient(to right,transparent 0,transparent 26%,rgba(0,0,0,.55) 58%,#000 100%);
             mask-image:linear-gradient(to right,transparent 0,transparent 26%,rgba(0,0,0,.55) 58%,#000 100%);
   }
-  .op:hover .op-shot{opacity:.46;transform:none}
+  .op:hover .op-shot{opacity:.58;transform:none}
   .op:hover .op-head .ic{color:var(--band-ink)}
 }
 @media (prefers-reduced-motion:reduce){
@@ -795,7 +821,6 @@ html:not(.js) .rv{opacity:1;transform:none}
   .tab{white-space:nowrap;border-bottom:0;border-right:1px solid var(--line)}
   .ops-wrap{grid-template-columns:1fr;gap:var(--space-7)}
   .ops-aside-in{position:static}
-  .ops-shot img{max-height:min(30vh,260px)}
   .gov-top{grid-template-columns:1fr}
   .gov-say{padding-right:0}
   .gov-lineage{border-left:0;padding-left:0;border-top:1px solid var(--band-line);padding-top:var(--space-6)}
@@ -1070,15 +1095,12 @@ html:not(.js) .rv{opacity:1;transform:none}
 </section>
 
 <!-- ============================ MAINTENANCE ============================ -->
-<!-- Photography in this section is from Unsplash via Lorem Picsum, self hosted
-     and graded into the palette rather than fetched at runtime:
-       ops-systems  Padurariu Alexandru  unsplash.com/photos/ZKBQmgMyf8s
-       ops-ai       Mika Ruusunen        unsplash.com/photos/ypVM8PnygUo
-       ops-data     Steve Richey         unsplash.com/photos/UB7YmsJTEvE
-       ops-infra    Jose Martin          unsplash.com/photos/RxaN6Bbches
-       ops-report   Erez Attias          unsplash.com/photos/KqVHRmHVwwM
-     Swap any of them for real photographs of the practice by replacing the
-     file; nothing in the markup or the stylesheet needs to change. -->
+<!-- The five frames in this section are the client's own artwork, graded
+     into the palette at build time from the originals in assets. The four on
+     the right run through a highlight rolloff as well as a darken: a flat
+     brightness cut would have crushed the whole frame to control four
+     specular points, and those points were what pushed the list copy under
+     4.5:1. Every frame is capped at a pixel luminance of 0.047. -->
 <!-- Asymmetric split rather than a fourth run of equal columns. The heading
      column is sticky, so the reader keeps the section's subject while the four
      domains scroll past it, and the domains are free to take the height their
@@ -1091,9 +1113,6 @@ html:not(.js) .rv{opacity:1;transform:none}
         <p class="lead sect-intro rv">A system does not end at launch. HaveStack keeps the parts that fail quietly in good order.</p>
         <p class="ops-note rv">Maintenance is available on systems HaveStack built and, after a written technical review, on systems it did not.</p>
         <a class="tlink rv" href="request.html">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></a>
-        <figure class="ops-shot rv">
-          <img src="assets/ops-systems.jpg" alt="" width="1100" height="760" loading="lazy" decoding="async" />
-        </figure>
       </div>
     </div>
 
