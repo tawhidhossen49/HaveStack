@@ -454,14 +454,24 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 .ops-aside-in{position:sticky;top:var(--space-9)}
 .ops-note{margin-top:var(--space-6);font-size:14px;line-height:1.55;color:var(--band-ink-2);max-width:38ch}
 .ops-aside .tlink{margin-top:var(--space-5);color:var(--band-ink)}
+/* The one permanent frame. It sits under the heading column and does not
+   react to the pointer, which is what makes the four on the right read as
+   something you uncovered rather than as decoration that was always there.
+   Height is capped so the whole aside still fits a viewport and can stick. */
+.ops-shot{margin-top:clamp(26px,2.8vw,38px);overflow:hidden;border:1px solid var(--band-line)}
+.ops-shot img{
+  width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;
+  max-height:min(24vh,250px);
+  filter:brightness(1.06) contrast(1.02);
+}
 .ops{display:flex;flex-direction:column}
 /* one hairline between domains, never a box around each one */
-.op{padding:var(--space-7) 0;border-top:1px solid var(--band-line)}
+.op{position:relative;padding:var(--space-7) 0;border-top:1px solid var(--band-line)}
 .op:first-child{padding-top:var(--space-1);border-top:0}
-.op-head{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5)}
+.op-head{position:relative;display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5)}
 .op .ic{font-size:20px;color:var(--ink-3);margin:0}
 /* two columns of short lines beats one long column of them */
-.op-list{columns:2;column-gap:var(--space-7)}
+.op-list{position:relative;columns:2;column-gap:var(--space-7)}
 .op li{
   break-inside:avoid;font-size:14px;line-height:1.5;color:var(--band-ink-2);
   padding:var(--space-2) 0 var(--space-2) var(--space-4);position:relative;
@@ -470,6 +480,35 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
   content:'';position:absolute;left:0;top:.72em;width:6px;height:1px;
   background:var(--line-3);
 }
+
+/* One frame per domain, revealed on hover.
+   The frame is declared only inside the pointer query, so a phone never
+   downloads a quarter of a megabyte of imagery it has no way to trigger.
+   It is masked to nothing on the left, where the heading sits, and weighted
+   to the right, so the picture arrives from the empty side of the row rather
+   than sliding under the words. Opacity is the only property animated. */
+.op-shot{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-repeat:no-repeat;background-size:cover;background-position:center;
+  opacity:0;transform:scale(1.035);transform-origin:70% 50%;
+  transition:opacity var(--t-3) var(--ease),transform var(--t-4) var(--ease-out);
+}
+@media (hover:hover) and (pointer:fine){
+  .op-ai     .op-shot{background-image:url("assets/ops-ai.jpg")}
+  .op-data   .op-shot{background-image:url("assets/ops-data.jpg")}
+  .op-infra  .op-shot{background-image:url("assets/ops-infra.jpg")}
+  .op-report .op-shot{background-image:url("assets/ops-report.jpg")}
+  .op-shot{
+    -webkit-mask-image:linear-gradient(to right,transparent 0,transparent 26%,rgba(0,0,0,.55) 58%,#000 100%);
+            mask-image:linear-gradient(to right,transparent 0,transparent 26%,rgba(0,0,0,.55) 58%,#000 100%);
+  }
+  .op:hover .op-shot{opacity:.46;transform:none}
+  .op:hover .op-head .ic{color:var(--band-ink)}
+}
+@media (prefers-reduced-motion:reduce){
+  .op-shot{transition:opacity var(--t-2) var(--ease);transform:none}
+}
+
 
 /* ==========================================================================
    PRODUCTS  an index that holds at any number of entries
@@ -730,6 +769,7 @@ html:not(.js) .rv{opacity:1;transform:none}
   .tab{white-space:nowrap;border-bottom:0;border-right:1px solid var(--line)}
   .ops-wrap{grid-template-columns:1fr;gap:var(--space-7)}
   .ops-aside-in{position:static}
+  .ops-shot img{max-height:min(30vh,260px)}
   .gov-top{grid-template-columns:1fr}
   .gov-say{padding-right:0}
   .gov-lineage{border-left:0;padding-left:0;border-top:1px solid var(--band-line);padding-top:var(--space-6)}
@@ -1004,6 +1044,15 @@ html:not(.js) .rv{opacity:1;transform:none}
 </section>
 
 <!-- ============================ MAINTENANCE ============================ -->
+<!-- Photography in this section is from Unsplash via Lorem Picsum, self hosted
+     and graded into the palette rather than fetched at runtime:
+       ops-systems  Padurariu Alexandru  unsplash.com/photos/ZKBQmgMyf8s
+       ops-ai       Mika Ruusunen        unsplash.com/photos/ypVM8PnygUo
+       ops-data     Steve Richey         unsplash.com/photos/UB7YmsJTEvE
+       ops-infra    Jose Martin          unsplash.com/photos/RxaN6Bbches
+       ops-report   Erez Attias          unsplash.com/photos/KqVHRmHVwwM
+     Swap any of them for real photographs of the practice by replacing the
+     file; nothing in the markup or the stylesheet needs to change. -->
 <!-- Asymmetric split rather than a fourth run of equal columns. The heading
      column is sticky, so the reader keeps the section's subject while the four
      domains scroll past it, and the domains are free to take the height their
@@ -1016,11 +1065,15 @@ html:not(.js) .rv{opacity:1;transform:none}
         <p class="lead sect-intro rv">A system does not end at launch. HaveStack keeps the parts that fail quietly in good order.</p>
         <p class="ops-note rv">Maintenance is available on systems HaveStack built and, after a written technical review, on systems it did not.</p>
         <a class="tlink rv" href="request.html">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></a>
+        <figure class="ops-shot rv">
+          <img src="assets/ops-systems.jpg" alt="" width="1100" height="760" loading="lazy" decoding="async" />
+        </figure>
       </div>
     </div>
 
     <div class="ops">
-      <article class="op rv">
+      <article class="op op-ai rv">
+        <span class="op-shot" aria-hidden="true"></span>
         <div class="op-head">
           <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-brain"/></svg>
           <h3 class="h3">AI and language models</h3>
@@ -1033,7 +1086,8 @@ html:not(.js) .rv{opacity:1;transform:none}
           <li>Retrieval sources re indexed on a schedule</li>
         </ul>
       </article>
-      <article class="op rv">
+      <article class="op op-data rv">
+        <span class="op-shot" aria-hidden="true"></span>
         <div class="op-head">
           <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-hard-drives"/></svg>
           <h3 class="h3">Databases</h3>
@@ -1046,7 +1100,8 @@ html:not(.js) .rv{opacity:1;transform:none}
           <li>Growth watched before storage runs out</li>
         </ul>
       </article>
-      <article class="op rv">
+      <article class="op op-infra rv">
+        <span class="op-shot" aria-hidden="true"></span>
         <div class="op-head">
           <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-cpu"/></svg>
           <h3 class="h3">Backend and infrastructure</h3>
@@ -1059,7 +1114,8 @@ html:not(.js) .rv{opacity:1;transform:none}
           <li>Logs retained for the period the contract sets</li>
         </ul>
       </article>
-      <article class="op rv">
+      <article class="op op-report rv">
+        <span class="op-shot" aria-hidden="true"></span>
         <div class="op-head">
           <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-clock-counter-clockwise"/></svg>
           <h3 class="h3">Response and reporting</h3>
