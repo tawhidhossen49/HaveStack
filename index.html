@@ -454,6 +454,16 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 .ops-aside-in{position:sticky;top:var(--space-9)}
 .ops-note{margin-top:var(--space-6);font-size:14px;line-height:1.55;color:var(--band-ink-2);max-width:38ch}
 .ops-aside .tlink{margin-top:var(--space-5);color:var(--band-ink)}
+/* The aside was a heading over five hundred pixels of nothing while the list
+   scrolled past it. One frame, graded well down so it sits behind the type
+   rather than competing with it, gives the column something to stand on. */
+.ops-shot{margin-top:clamp(26px,2.8vw,38px);overflow:hidden;border:1px solid var(--band-line)}
+.ops-shot img{
+  width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;
+  /* capped so the whole aside still fits a viewport and can therefore stick */
+  max-height:min(27vh,270px);
+  filter:saturate(.18) contrast(1.04) brightness(.42);
+}
 .ops{display:flex;flex-direction:column}
 /* one hairline between domains, never a box around each one */
 .op{padding:var(--space-7) 0;border-top:1px solid var(--band-line)}
@@ -496,32 +506,63 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 .idx-state::before{content:'';width:5px;height:5px;border:1px solid var(--line-3)}
 
 /* ==========================================================================
-   CLIENTS  logo plates so every mark stays legible whatever the theme
+   CLIENTS AND PARTNERS  a running register of marks
+   The marks sit directly on the page. No plate, no border, no fill behind
+   them, because a box around a logo is the thing that makes a logo wall look
+   like a table of contents.
+
+   The track holds the same group of marks twice and travels exactly -50%, so
+   the frame at the end of the cycle is identical to the frame at the start and
+   the join cannot be seen. Speed is set by the track width rather than by a
+   fixed duration, which means adding a mark keeps the pixels-per-second
+   constant instead of quietly speeding the reel up.
    ========================================================================== */
-/* Marks sit directly on the page with no plate behind them. The two darker
-   logos are supplied in lifted variants so they hold against the black without
-   a white field propping them up. */
-/* Fixed tiles rather than stretching ones. With flex grow a single entry
-   spread across the whole row; a fixed basis keeps one mark the same size as
-   twelve, and the row simply fills from the left as the register grows. The
-   container carries no border of its own, so it never draws an empty band
-   past the last tile. */
-.plates{display:flex;flex-wrap:wrap;margin-top:var(--gap-head)}
-.plate{
-  flex:0 0 196px;width:196px;min-height:196px;background:var(--bg);
-  border:1px solid var(--line);margin:0 -1px -1px 0;
-  padding:var(--space-5) var(--space-4) var(--space-5);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-4);
-  transition:background var(--t-3) var(--ease);
+.reel{
+  position:relative;margin-top:clamp(34px,3.8vw,52px);
+  padding-block:clamp(14px,1.6vw,24px);
+  overflow:hidden;
+  /* the band runs to the viewport edge, and the marks fade out into the page
+     rather than being cut off against a hard boundary */
+  width:100vw;margin-inline:calc(50% - 50vw + (var(--sbw) / 2));
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 6%,#000 94%,transparent 100%);
+          mask-image:linear-gradient(to right,transparent 0,#000 6%,#000 94%,transparent 100%);
 }
-@media (hover:hover) and (pointer:fine){ .plate:hover{background:var(--bg-2)} }
-.plate-mark{height:66px;display:flex;align-items:center;justify-content:center;width:100%}
-.plate-mark img{max-height:66px;max-width:100%;width:auto;height:auto;object-fit:contain;
-  opacity:.92;transition:opacity var(--t-3) var(--ease)}
-@media (hover:hover) and (pointer:fine){ .plate:hover .plate-mark img{opacity:1} }
-.plate-text{display:flex;flex-direction:column;align-items:center;gap:var(--space-1);text-align:center}
-.plate-name{font-size:15px;font-weight:500;letter-spacing:-.012em}
-.plate-kind{font-size:12.5px;color:var(--ink-3);line-height:1.4}
+.reel-track{
+  display:flex;align-items:center;width:max-content;
+  /* --reel-dur is written by the script from the measured group width, so the
+     reel travels at a constant speed however many marks are in it */
+  animation:reel var(--reel-dur,26s) linear infinite;
+  will-change:transform;
+}
+@keyframes reel{ from{transform:translate3d(0,0,0)} to{transform:translate3d(-50%,0,0)} }
+.reel-item{
+  flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;
+  padding-inline:clamp(32px,4.8vw,74px);
+}
+.reel-item img{
+  height:clamp(46px,4.4vw,64px);width:auto;max-width:none;
+  /* graded a little so three marks drawn by three different hands read as one
+     row rather than as three separate brands shouting */
+  opacity:.9;filter:saturate(.92);
+  transition:opacity var(--t-2) var(--ease),filter var(--t-2) var(--ease);
+}
+/* Optical, not mathematical. A ring encloses less ink than a solid shield at
+   the same measured height, so matching the boxes leaves the circle looking
+   undersized; these two nudges make the row read level. */
+.reel-item img[src*="aries"]{height:clamp(54px,5.2vw,76px)}
+.reel-item img[src*="gungchil"]{height:clamp(40px,3.8vw,55px)}
+/* the reel is decoration in motion: let a reader stop it to look */
+@media (hover:hover) and (pointer:fine){
+  .reel:hover .reel-track{animation-play-state:paused}
+  .reel:hover .reel-item img{opacity:1;filter:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .reel-track{animation:none;justify-content:center;width:100%;flex-wrap:wrap;gap:var(--space-5) 0}
+  /* with the travel gone the repeats are noise, so only the first group shows */
+  .reel-item[aria-hidden="true"]{display:none}
+  .reel{-webkit-mask-image:none;mask-image:none}
+}
 
 /* ==========================================================================
    SECTORS
@@ -699,6 +740,7 @@ html:not(.js) .rv{opacity:1;transform:none}
   .tab{white-space:nowrap;border-bottom:0;border-right:1px solid var(--line)}
   .ops-wrap{grid-template-columns:1fr;gap:var(--space-7)}
   .ops-aside-in{position:static}
+  .ops-shot{display:none}
   .gov-top{grid-template-columns:1fr}
   .gov-say{padding-right:0}
   .gov-lineage{border-left:0;padding-left:0;border-top:1px solid var(--band-line);padding-top:var(--space-6)}
@@ -712,8 +754,7 @@ html:not(.js) .rv{opacity:1;transform:none}
   .stages{row-gap:var(--space-6)}
   .op-list,.std-list{columns:1}
   .std{grid-template-columns:1fr;gap:var(--space-4)}
-  .plate{flex:0 0 calc(50% + 1px);width:calc(50% + 1px);min-height:172px}
-  .sc-c,.sc-d,.sc-e,.sc-f{grid-column:span 12}
+    .sc-c,.sc-d,.sc-e,.sc-f{grid-column:span 12}
   .gov-facts{grid-template-columns:1fr}
   .foot-grid{grid-template-columns:1fr}
   .idx{grid-template-columns:1fr;gap:var(--space-7)}
@@ -751,12 +792,11 @@ html:not(.js) .rv{opacity:1;transform:none}
   .panel[hidden]{display:block !important}
   .tablist{display:none}
   .tabs{grid-template-columns:1fr}
-  .panel-media,.scard img,.plate-mark{display:none}
-  .scard{color:#000;min-height:0 !important;border:1px solid #ccc}
+  .panel-media,.scard img,  .scard{color:#000;min-height:0 !important;border:1px solid #ccc}
   .scard h3,.scard p,.scard .kicker{color:#000}
   .rv{opacity:1 !important;transform:none !important}
   body::after{display:none}
-  .cond,.op,.std,.stage,.scard,.panel,.plate{break-inside:avoid}
+  .cond,.op,.std,.stage,.scard,.panel,.reel-item{break-inside:avoid}
   a[href^="http"]::after{content:' (' attr(href) ')';font-size:8pt;color:#555}
 }
 </style>
@@ -987,6 +1027,11 @@ html:not(.js) .rv{opacity:1;transform:none}
         <p class="lead sect-intro rv">A system does not end at launch. HaveStack keeps the parts that fail quietly in good order.</p>
         <p class="ops-note rv">Maintenance is available on systems HaveStack built and, after a written technical review, on systems it did not.</p>
         <a class="tlink rv" href="request.html">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></a>
+        <!-- TODO swap in a real photograph of the practice at assets/ops.jpg -->
+        <figure class="ops-shot rv">
+          <img src="assets/ops.jpg" alt="" width="720" height="900" loading="lazy" decoding="async"
+               onerror="this.onerror=null;this.src='https://picsum.photos/seed/havestack-ops/720/900'" />
+        </figure>
       </div>
     </div>
 
@@ -1089,34 +1134,54 @@ html:not(.js) .rv{opacity:1;transform:none}
   <div class="wrap">
     <h2 class="h2 sect-head rv">Organisations we build for.</h2>
     <p class="lead sect-intro rv">Named with their agreement. Further references are available under a non disclosure agreement.</p>
-    <div class="plates">
-      <div class="plate rv">
-        <div class="plate-mark"><img src="assets/logo-gungchil-dark.png" alt="Gungchil" width="240" height="154" loading="lazy" decoding="async" /></div>
-        <div class="plate-text"><span class="plate-name">Gungchil</span><span class="plate-kind">Client</span></div>
-      </div>
-    </div>
   </div>
+    <div class="reel" role="group" aria-label="Clients">
+      <ul class="reel-track">
+        <li class="reel-item"><img src="assets/mark-gungchil.png" alt="Gungchil" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
+      </ul>
+    </div>
 </section>
 
 <!-- ============================ PARTNERS ============================
-     TODO add partners by replacing a slot with the same markup used by a
-     client plate. Held open on purpose so the section can be filled later
-     without touching the layout. -->
+     TODO add a partner by appending one <li class="reel-item"> to each of the
+     two groups in the track below. The groups must stay identical, because the
+     loop works by translating the track exactly half its own width. -->
 <section class="sect sect-tight" id="partners">
   <div class="wrap">
     <h2 class="h2 sect-head rv">Official partners.</h2>
-    <p class="lead sect-intro rv">Organisations and institutions that work alongside the practice.</p>
-    <div class="plates">
-      <div class="plate rv">
-        <div class="plate-mark"><img src="assets/logo-amaze-dark.png" alt="Amaze Consortium" width="240" height="240" loading="lazy" decoding="async" /></div>
-        <div class="plate-text"><span class="plate-name">Amaze Consortium</span><span class="plate-kind">Partner</span></div>
-      </div>
-      <div class="plate rv">
-        <div class="plate-mark"><img src="assets/logo-aries-dark.png" alt="ARIES" width="240" height="240" loading="lazy" decoding="async" /></div>
-        <div class="plate-text"><span class="plate-name">ARIES</span><span class="plate-kind">Partner</span></div>
-      </div>
-    </div>
+    <p class="lead sect-intro rv">Organisations and institutions that work alongside the practice. Amaze Consortium and ARIES both work alongside HaveStack as partners.</p>
   </div>
+    <div class="reel" role="group" aria-label="Partners">
+      <ul class="reel-track">
+        <li class="reel-item"><img src="assets/mark-amaze.png" alt="Amaze Consortium" width="160" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item"><img src="assets/mark-aries.png" alt="ARIES" width="162" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
+        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
+      </ul>
+    </div>
 </section>
 
 <!-- ============================ SECTORS ============================ -->
@@ -1488,6 +1553,29 @@ html:not(.js) .rv{opacity:1;transform:none}
   var stages = document.getElementById('stages');
   new IntersectionObserver(function(rows,obs){ if(!rows[0].isIntersecting) return; stages.classList.add('in'); obs.disconnect(); },
     { threshold: .25 }).observe(stages);
+
+  /* logo reels
+     The track holds the same group twice and the keyframe travels -50%, so the
+     duration has to follow the group's own width or the reel changes speed
+     every time a mark is added. 62 pixels a second is the rate that reads as
+     moving without asking to be read. */
+  var reels = document.querySelectorAll('.reel-track');
+  function timeReels(){
+    reels.forEach(function(track){
+      var group = track.scrollWidth / 2;
+      if (!group) return;
+      track.style.setProperty('--reel-dur', (group / 62).toFixed(2) + 's');
+    });
+  }
+  if (reels.length){
+    timeReels();
+    // the marks are lazy, so remeasure once they have real dimensions
+    document.querySelectorAll('.reel-item img').forEach(function(img){
+      if (!img.complete) img.addEventListener('load', timeReels, { once:true });
+    });
+    var rt;
+    addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(timeReels, 180); });
+  }
 
   /* capability tabs */
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
