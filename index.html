@@ -454,16 +454,6 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 .ops-aside-in{position:sticky;top:var(--space-9)}
 .ops-note{margin-top:var(--space-6);font-size:14px;line-height:1.55;color:var(--band-ink-2);max-width:38ch}
 .ops-aside .tlink{margin-top:var(--space-5);color:var(--band-ink)}
-/* The aside was a heading over five hundred pixels of nothing while the list
-   scrolled past it. One frame, graded well down so it sits behind the type
-   rather than competing with it, gives the column something to stand on. */
-.ops-shot{margin-top:clamp(26px,2.8vw,38px);overflow:hidden;border:1px solid var(--band-line)}
-.ops-shot img{
-  width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;
-  /* capped so the whole aside still fits a viewport and can therefore stick */
-  max-height:min(27vh,270px);
-  filter:saturate(.18) contrast(1.04) brightness(.42);
-}
 .ops{display:flex;flex-direction:column}
 /* one hairline between domains, never a box around each one */
 .op{padding:var(--space-7) 0;border-top:1px solid var(--band-line)}
@@ -740,7 +730,6 @@ html:not(.js) .rv{opacity:1;transform:none}
   .tab{white-space:nowrap;border-bottom:0;border-right:1px solid var(--line)}
   .ops-wrap{grid-template-columns:1fr;gap:var(--space-7)}
   .ops-aside-in{position:static}
-  .ops-shot{display:none}
   .gov-top{grid-template-columns:1fr}
   .gov-say{padding-right:0}
   .gov-lineage{border-left:0;padding-left:0;border-top:1px solid var(--band-line);padding-top:var(--space-6)}
@@ -1027,11 +1016,6 @@ html:not(.js) .rv{opacity:1;transform:none}
         <p class="lead sect-intro rv">A system does not end at launch. HaveStack keeps the parts that fail quietly in good order.</p>
         <p class="ops-note rv">Maintenance is available on systems HaveStack built and, after a written technical review, on systems it did not.</p>
         <a class="tlink rv" href="request.html">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></a>
-        <!-- TODO swap in a real photograph of the practice at assets/ops.jpg -->
-        <figure class="ops-shot rv">
-          <img src="assets/ops.jpg" alt="" width="720" height="900" loading="lazy" decoding="async"
-               onerror="this.onerror=null;this.src='https://picsum.photos/seed/havestack-ops/720/900'" />
-        </figure>
       </div>
     </div>
 
