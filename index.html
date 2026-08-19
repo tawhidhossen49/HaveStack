@@ -500,6 +500,7 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 .op-list{position:relative;columns:2;column-gap:var(--space-7)}
 .op li{
   break-inside:avoid;font-size:14px;line-height:1.5;color:var(--band-ink-2);
+  transition:color var(--t-3) var(--ease);
   padding:var(--space-2) 0 var(--space-2) var(--space-4);position:relative;
 }
 .op li::before{
@@ -516,8 +517,14 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 .op-shot{
   position:absolute;inset:0;z-index:0;pointer-events:none;
   background-repeat:no-repeat;background-size:cover;background-position:center;
-  opacity:0;transform:scale(1.035);transform-origin:70% 50%;
-  transition:opacity var(--t-3) var(--ease),transform var(--t-4) var(--ease-out);
+  /* the frame is uncovered from the right edge inward. inset() clips from the
+     left, so animating that side from 100% to 0 sweeps the opening edge
+     leftward across the row. */
+  clip-path:inset(0 0 0 100%);
+  opacity:0;
+  transition:
+    clip-path 460ms var(--ease-in),
+    opacity 200ms var(--ease-in) 120ms;
 }
 @media (hover:hover) and (pointer:fine){
   .op-ai     .op-shot{background-image:url("assets/ops-ai.jpg")}
@@ -528,11 +535,26 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
     -webkit-mask-image:linear-gradient(to right,transparent 0,transparent 26%,rgba(0,0,0,.55) 58%,#000 100%);
             mask-image:linear-gradient(to right,transparent 0,transparent 26%,rgba(0,0,0,.55) 58%,#000 100%);
   }
-  .op:hover .op-shot{opacity:.58;transform:none}
+  .op:hover .op-shot{
+    clip-path:inset(0 0 0 0);opacity:.7;
+    /* the wipe is the whole gesture; opacity only takes the hard edge off the
+       start. Leaving runs at 64% of arriving. */
+    transition:
+      clip-path 720ms var(--ease-out),
+      opacity 220ms var(--ease-out);
+  }
   .op:hover .op-head .ic{color:var(--band-ink)}
+  /* Lifting the copy is what pays for the brightness. Against #9A9AA1 the
+     frame behind it has to stay under a luminance of 0.034; against full ink
+     the ceiling is 0.157, which is 4.7 times the room. */
+  .op:hover .op-list li{color:var(--band-ink)}
 }
 @media (prefers-reduced-motion:reduce){
-  .op-shot{transition:opacity var(--t-2) var(--ease);transform:none}
+  /* no sweep: the frame is simply there or not */
+  .op-shot,.op:hover .op-shot{
+    transition:opacity var(--t-2) var(--ease);clip-path:none;
+  }
+  .op-shot{opacity:0}
 }
 
 
@@ -1100,13 +1122,14 @@ html:not(.js) .rv{opacity:1;transform:none}
      it is held flat across the text block and then released entirely, so the
      picture is unmodified everywhere below the last line of type.
 
-     The four on the right cannot do that, because their rows carry text edge
-     to edge: only 6 to 17 per cent of each row is clear of glyphs. They run
-     through a highlight rolloff instead of a flat darken, so the midtones keep
-     their brightness and only the specular points are held down, and each one
-     has its own ceiling rather than a shared one. The wireframe carries far
-     more lit area than the rest, so a shared ceiling was leaving the other
-     three a stop darker than they needed to be. -->
+     The four on the right carry text edge to edge, so how bright they can go
+     is set by what is legible over them, not by the file. Lifting the list
+     copy to full ink on hover is what buys the brightness: against the resting
+     grey the frame has to stay under a luminance of 0.034, against full ink
+     the ceiling is 0.157, which is 4.7 times the room. That is what let the
+     peak go from 0.047 to between 0.35 and 0.58 and the saturation from 0.30
+     to 0.95. Each frame still has its own ceiling, because the wireframe
+     carries far more lit area than the rest. -->
 <!-- Asymmetric split rather than a fourth run of equal columns. The heading
      column is sticky, so the reader keeps the section's subject while the four
      domains scroll past it, and the domains are free to take the height their
