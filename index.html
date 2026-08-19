@@ -57,42 +57,97 @@
    ========================================================================== */
 
 :root{
-  /* One permanent theme. The site is black; there is no light mode. */
-  --bg:#0A0A0B;
-  --bg-2:#101012;
-  --surface:#131315;
-  --ink:#F2F2F0;
-  --ink-2:#A2A2A7;
-  --ink-3:#8C8C92;
-  --line:#26262A;
-  --line-2:#1C1C1F;
+  /* ----------------------------------------------------------------------
+     One permanent theme. The site is black; there is no light mode.
+     The whole neutral ramp is generated in OKLCH at a single hue (286) so the
+     greys read as one family rather than as unrelated parts. Chroma peaks in
+     the middle of the ramp and falls away at both ends, which is what stops
+     the extremes from looking synthetic.
+     ---------------------------------------------------------------------- */
+  --band:#050506;      /* L .116  recessed plane             */
+  --bg:#0A0A0C;        /* L .145  page ground                */
+  --bg-2:#0F0F12;      /* L .168                             */
+  --surface:#131317;   /* L .190  raised plane               */
+  --line-2:#1C1C20;    /* L .228  quietest rule              */
+  --line:#26262B;      /* L .272  standard rule, 1.3:1       */
+  --line-3:#35353A;    /* L .330  rule under focus           */
+  --ink-3:#8D8D94;     /* L .645  6.0:1                      */
+  --ink-2:#A3A3A9;     /* L .718  7.9:1                      */
+  --ink:#F1F1F4;       /* L .960  17.6:1                     */
 
-  --band:#050506;
-  --band-2:#101012;
-  --band-ink:#F2F2F0;
-  --band-ink-2:#9A9A9E;
-  --band-line:#242428;
+  --band-2:#0F0F12;
+  --band-ink:#F1F1F4;
+  --band-ink-2:#9A9AA1;
+  --band-line:#242429;
 
-  --red:#FF3B4E;
-  --red-deep:#FF5C6B;
-  /* the accent as it sits on a light surface, ie the button field */
-  --red-on-light:#B4162A;
-  --red-text:#FF8792;
-  --on-red:#0A0A0B;
+  /* One accent, held at chroma .200, which is the ceiling before a red starts
+     reading as loud rather than deliberate. Hover and press drop lightness and
+     chroma together, so the surface reads as receiving less light rather than
+     as the same colour turned down. */
+  --red:#E64246;          /* L .620 C .200   4.9:1 on ground  */
+  --red-hover:#D2383D;    /* L .575 C .190                    */
+  --red-press:#BD2F35;    /* L .530 C .178                    */
+  --red-deep:#F36162;
+  --red-text:#FC918E;     /* small accent text, 9.0:1         */
+  --red-on-light:#A92324; /* accent on the button field 6.3:1 */
+  --on-red:#0A0A0C;
 
-  --r:3px;
-  --r-lg:4px;
+  /* ---- geometric spacing scale. Every gap on the page comes from here ---- */
+  --space-1:4px;
+  --space-2:8px;
+  --space-3:12px;
+  --space-4:16px;
+  --space-5:24px;
+  --space-6:32px;
+  --space-7:48px;
+  --space-8:64px;
+  --space-9:96px;
+  --space-10:128px;
+
+  /* Radius is zero, and it is zero everywhere. A selective near square radius
+     is the tell; a total one is a position. */
+  --r:0px;
+  --r-lg:0px;
 
   --maxw:1360px;
   --gut:clamp(18px,3.4vw,44px);
   --pad:clamp(64px,7.5vw,104px);
-  --ease:cubic-bezier(.22,.7,.3,1);
-  --ease-out:cubic-bezier(.16,1,.3,1);
+  --pad-tight:clamp(44px,4.6vw,66px);
+  --pad-wide:clamp(84px,10vw,144px);
+  /* the standing gap between a section header and the block beneath it */
+  --gap-head:clamp(30px,3.4vw,44px);
+
+  /* ---- motion: four curves with jobs, four durations ---- */
+  --ease:cubic-bezier(.22,.7,.3,1);      /* standard, both ends visible */
+  --ease-out:cubic-bezier(.16,1,.3,1);   /* entering, decelerating      */
+  --ease-in:cubic-bezier(.55,0,1,.45);   /* leaving                     */
+  --t-1:90ms;    /* press, the fastest thing on the page */
+  --t-2:180ms;   /* hover and state                      */
+  --t-3:320ms;   /* entering elements                    */
+  --t-4:560ms;   /* long travel, the button discs        */
+  --t-5:1100ms;  /* scenery: image scale, rules drawing in */
+
   --sbw:0px;
 
   /* Helvetica as specified, with Arial standing in where Helvetica is absent */
   --sans:'Helvetica Neue',Helvetica,Arial,'Segoe UI',sans-serif;
-  --shadow:0 1px 2px rgba(0,0,0,.5);
+
+  /* Layered and tinted to the page hue rather than one pure black drop.
+     Contact, key and ambient, with a single light source always from above. */
+  --elev-1:
+    0 1px 2px rgba(9,8,13,.44),
+    0 2px 6px -2px rgba(9,8,13,.34);
+  --elev-2:
+    0 1px 2px rgba(9,8,13,.40),
+    0 6px 14px -4px rgba(9,8,13,.42),
+    0 18px 36px -14px rgba(9,8,13,.36);
+  --elev-3:
+    0 2px 4px rgba(9,8,13,.40),
+    0 12px 26px -8px rgba(9,8,13,.46),
+    0 34px 64px -22px rgba(9,8,13,.44);
+  --shadow:var(--elev-1);
+  /* the lit top edge of a physical object, the cheapest depth cue on dark UI */
+  --lit:inset 0 1px 0 rgba(255,255,255,.055);
   color-scheme:dark;
 }
 
@@ -103,6 +158,16 @@ body{
   font-size:16px;line-height:1.6;font-weight:400;letter-spacing:-.002em;
   -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
+/* A flat vector surface reads as digital-sterile. Roughly 4% of film grain over
+   the whole page, video included, is the cheapest way to give a very dark
+   design some material. It is static, so it costs one composited layer. */
+body::after{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  opacity:.042;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:140px 140px;
+}
+@media (forced-colors:active){ body::after{display:none} }
 p{text-wrap:pretty}
 img{display:block;max-width:100%;height:auto}
 a{color:inherit;text-decoration:none}
@@ -116,7 +181,11 @@ button,input,select,textarea{font:inherit;color:inherit}
 #page{position:relative}
 #anchor{position:absolute;top:0;left:0;width:1px;height:30px;pointer-events:none}
 .wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding-inline:var(--gut)}
-.sect{padding-block:var(--pad);position:relative;scroll-margin-top:70px;border-top:1px solid var(--line)}
+.sect{padding-block:var(--pad);position:relative;scroll-margin-top:var(--space-8);border-top:1px solid var(--line)}
+/* sections are deliberately not all the same height; a page where every band
+   measures the same reads as a template rather than as a composition */
+.sect-tight{padding-block:var(--pad-tight)}
+.sect-wide{padding-block:var(--pad-wide)}
 .sect-band{
   background:var(--band);color:var(--band-ink);border-top-color:var(--band-line);
   /* the band stays dark in both themes, so text red is re scoped here rather
@@ -125,103 +194,154 @@ button,input,select,textarea{font:inherit;color:inherit}
 }
 .sect-band .lead,.sect-band p{color:var(--band-ink-2)}
 
-.skip{position:absolute;left:-9999px;top:0;z-index:200;background:var(--ink);color:var(--bg);padding:12px 18px;font-size:15px;font-weight:500;border-radius:var(--r)}
-.skip:focus{left:12px;top:12px}
+.skip{position:absolute;left:-9999px;top:0;z-index:200;background:var(--ink);color:var(--bg);padding:var(--space-3) var(--space-4);font-size:15px;font-weight:500;border-radius:var(--r)}
+.skip:focus{left:var(--space-3);top:var(--space-3)}
 
-/* ---- type: one grotesque, regular weight even at display size ---- */
-.h1{font-size:clamp(38px,6.6vw,92px);line-height:1.02;font-weight:400;letter-spacing:-.035em}
-.h2{font-size:clamp(28px,3.6vw,46px);line-height:1.08;font-weight:400;letter-spacing:-.028em;text-wrap:balance}
-.h3{font-size:clamp(18px,1.5vw,21px);line-height:1.3;font-weight:500;letter-spacing:-.016em}
-.lead{font-size:clamp(16px,1.2vw,18px);line-height:1.55;color:var(--ink-2);max-width:56ch}
-/* the one small tracked label the design allows, used as a section marker */
+/* ---- type ----------------------------------------------------------------
+   Two ratios rather than one. The UI band (caption to lead) runs at 1.15, which
+   is tight enough that adjacent sizes stay in the same register; the display
+   band (h3 to h1) runs at roughly 1.4, which is what gives a heading somewhere
+   to go. Tracking is inversely proportional to size throughout, and leading
+   tightens as size grows.
+   -------------------------------------------------------------------------- */
+.h1{font-size:clamp(38px,6.6vw,92px);line-height:1.02;font-weight:400;letter-spacing:-.035em;text-wrap:balance}
+.h2{font-size:clamp(28px,3.6vw,46px);line-height:1.08;font-weight:400;letter-spacing:-.026em;text-wrap:balance}
+.h3{font-size:clamp(18px,1.5vw,21px);line-height:1.28;font-weight:500;letter-spacing:-.014em;text-wrap:balance}
+.h4{font-size:16px;line-height:1.35;font-weight:500;letter-spacing:-.006em}
+.lead{font-size:clamp(16px,1.2vw,18px);line-height:1.55;color:var(--ink-2);max-width:56ch;text-wrap:pretty}
+.small{font-size:14px;line-height:1.5;letter-spacing:.002em}
+/* the one small tracked label the design allows. Capitals were drawn to sit
+   inside lowercase words, so run in sequence they need the space back. */
 .kicker{
   display:inline-block;font-size:11.5px;font-weight:500;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--ink-3);margin-bottom:18px;
+  text-transform:uppercase;color:var(--ink-3);margin-bottom:var(--space-4);
+  font-variant-ligatures:no-common-ligatures;
 }
 .sect-band .kicker{color:var(--band-ink-2)}
 .sect-head{max-width:20ch}
-.sect-intro{margin-top:14px}
+/* heading to its own body is a closer relationship than heading to what came
+   before it, so the bottom margin is deliberately smaller than the top */
+.sect-intro{margin-top:var(--space-3)}
+.tnum{font-variant-numeric:tabular-nums}
 
-/* ---- controls ---- */
-/* ---- the call to action ----
-   Adapted from the Uiverse converging circles button by Randdose, retuned for
-   this palette. The original ran a transparent outline with green discs and
-   flipped the label dark on hover. Here the resting state is the white key the
-   brief asks for and the discs that slide in are the accent, which means the
-   label can stay near black throughout: 18 to 1 on the white, 5.6 to 1 once the
-   red arrives. Flipping the label colour instead would have left it black on a
-   still black page for the length of the slide. */
+/* ---- controls -------------------------------------------------------------
+   The converging discs come from the Uiverse button by Randdose, retuned here.
+   Everything around them is rebuilt to the craft rules: optical rather than
+   mathematical padding (the cap height sits above the baseline, so the top
+   pad is set 1px larger than the bottom to make the label look centred), a lit
+   top edge so the key reads as a physical object catching light from above,
+   and a press that is faster than the hover and actually sinks. Hover travel
+   is long and slow because it is a large translation; the press is 90ms
+   because a physical thing responds instantly to being pushed.
+   -------------------------------------------------------------------------- */
 .btn{
   all:unset;
-  position:relative;display:inline-flex;align-items:center;gap:11px;
-  box-sizing:border-box;min-height:46px;padding:12px 22px;
-  border:1px solid #F4F4F2;border-radius:6px;
-  background:#F4F4F2;color:#0A0A0B;
+  position:relative;display:inline-flex;align-items:center;gap:var(--space-3);
+  box-sizing:border-box;min-height:46px;padding:var(--space-3) var(--space-5) var(--space-3);
+  border:1px solid var(--ink);border-radius:var(--r);
+  background:var(--ink);color:var(--on-red);
+  box-shadow:var(--elev-1),inset 0 1px 0 rgba(255,255,255,.7);
   font-family:var(--sans);font-size:16px;font-weight:500;letter-spacing:-.008em;
+  line-height:1.1;white-space:nowrap;
   cursor:pointer;overflow:hidden;user-select:none;
-  transition:border-color 300ms var(--ease);
+  transition:border-color var(--t-2) var(--ease),
+             transform var(--t-1) var(--ease),
+             box-shadow var(--t-1) var(--ease);
 }
-.btn-face{position:relative;z-index:1;display:inline-flex;align-items:center;gap:11px}
+.btn-face{position:relative;z-index:1;display:inline-flex;align-items:center;gap:var(--space-3)}
 .btn::before,.btn::after{
   content:"";position:absolute;top:50%;
   width:9em;aspect-ratio:1;border-radius:50%;
   background:var(--red);
-  transition:transform 500ms var(--ease),background 300ms var(--ease);
+  transition:transform var(--t-4) var(--ease),background var(--t-2) var(--ease);
 }
 .btn::before{left:0;transform:translate(-9.5em,-50%)}
 .btn::after{right:0;transform:translate(9.5em,-50%)}
-.btn:hover::before,.btn:focus-visible::before{transform:translate(-1.2em,-50%)}
-.btn:hover::after,.btn:focus-visible::after{transform:translate(1.2em,-50%)}
-.btn:hover,.btn:focus-visible{border-color:var(--red)}
-.btn:active::before,.btn:active::after{background:var(--red-deep)}
-.btn:active{border-color:var(--red-deep)}
-.btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-.btn[disabled]{cursor:progress}
-.btn .ar{opacity:.7;transition:transform .3s var(--ease-out)}
-.btn:hover .ar{transform:translate(2px,-2px)}
-.head .btn{min-height:38px;padding:8px 16px;font-size:15px}
-.btn-ghost{
-  display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);
-  background:transparent;color:inherit;border-radius:6px;
-  min-height:46px;padding:12px 20px;font-size:16px;font-weight:500;cursor:pointer;
-  letter-spacing:-.008em;
-  transition:border-color .18s var(--ease),background .18s var(--ease);
+.btn:focus-visible::before{transform:translate(-1.2em,-50%)}
+.btn:focus-visible::after{transform:translate(1.2em,-50%)}
+.btn:focus-visible{border-color:var(--red);outline:2px solid var(--ink);outline-offset:3px}
+/* pointer states only where there is a pointer, so a tap does not leave a
+   phone stuck in the hover state */
+@media (hover:hover) and (pointer:fine){
+  .btn:hover::before{transform:translate(-1.2em,-50%)}
+  .btn:hover::after{transform:translate(1.2em,-50%)}
+  .btn:hover{border-color:var(--red)}
+  .btn:hover .ar{transform:translate(2px,-2px)}
 }
-.btn-ghost:hover{border-color:currentColor}
+.btn:active{
+  transform:translateY(1px);
+  box-shadow:0 0 0 rgba(0,0,0,0),inset 0 1px 2px rgba(9,8,13,.30);
+  border-color:var(--red-press);
+}
+.btn:active::before,.btn:active::after{background:var(--red-press)}
+.btn[disabled]{cursor:progress}
+.btn .ar{opacity:.7;transition:transform var(--t-2) var(--ease-out)}
+.head .btn{min-height:38px;padding:var(--space-2) var(--space-4) var(--space-2);font-size:15px}
+
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:var(--space-3);
+  border:1px solid var(--line);border-radius:var(--r);
+  background:transparent;color:inherit;box-shadow:var(--lit);
+  min-height:46px;padding:var(--space-3) var(--space-4) var(--space-3);font-size:16px;font-weight:500;
+  line-height:1.1;letter-spacing:-.008em;white-space:nowrap;cursor:pointer;
+  transition:border-color var(--t-2) var(--ease),
+             background var(--t-2) var(--ease),
+             transform var(--t-1) var(--ease);
+}
+@media (hover:hover) and (pointer:fine){
+  .btn-ghost:hover{border-color:var(--line-3);background:rgba(255,255,255,.028)}
+}
+.btn-ghost:active{transform:translateY(1px);background:rgba(255,255,255,.015)}
 .btn-ghost:focus-visible{outline:2px solid currentColor;outline-offset:3px}
-.tlink{display:inline-flex;align-items:center;gap:7px;font-size:15px;font-weight:500;border-bottom:1px solid currentColor;padding-bottom:2px}
+
+/* text link: the underline is the affordance, so it grows from the leading
+   edge on hover rather than appearing all at once */
+.tlink{
+  position:relative;display:inline-flex;align-items:center;gap:var(--space-2);
+  font-size:15px;font-weight:500;padding-bottom:3px;
+}
+.tlink::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:currentColor;transform-origin:left;
+  transition:opacity var(--t-2) var(--ease);opacity:.5;
+}
+@media (hover:hover) and (pointer:fine){
+  .tlink:hover::after{opacity:1}
+  .tlink:hover .ar{transform:translate(2px,-2px)}
+}
+.tlink .ar{transition:transform var(--t-2) var(--ease-out)}
 .tlink:focus-visible{outline:2px solid currentColor;outline-offset:4px}
 .ar{font-size:.95em;line-height:1;font-feature-settings:'ss01'}
 
 /* ---- header ---- */
-.head{position:sticky;top:0;z-index:90;background:var(--bg);border-bottom:1px solid transparent;transition:border-color .2s var(--ease)}
+.head{position:sticky;top:0;z-index:90;background:var(--bg);border-bottom:1px solid transparent;transition:border-color var(--t-2) var(--ease)}
 .head.stuck{border-bottom-color:var(--line)}
-.head-in{display:flex;align-items:center;gap:16px;height:66px}
-.brand{display:flex;align-items:center;gap:9px;margin-right:auto;padding:4px;border-radius:var(--r)}
+.head-in{display:flex;align-items:center;gap:var(--space-4);height:66px}
+.brand{display:flex;align-items:center;gap:var(--space-2);margin-right:auto;padding:var(--space-1);border-radius:var(--r)}
 .brand img{width:23px;height:23px}
 .brand span{font-size:17px;font-weight:500;letter-spacing:-.03em}
 .brand:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 .nav{display:flex;align-items:center;gap:0}
-.nav a{position:relative;font-size:14.5px;font-weight:400;color:var(--ink-2);padding:8px 11px;border-radius:var(--r);transition:color .16s var(--ease)}
-.nav a:hover{color:var(--ink)}
+.nav a{position:relative;font-size:14.5px;font-weight:400;color:var(--ink-2);padding:var(--space-2) var(--space-3);border-radius:var(--r);transition:color var(--t-2) var(--ease)}
+@media (hover:hover) and (pointer:fine){ .nav a:hover{color:var(--ink)} }
 .nav a[aria-current="true"]{color:var(--ink)}
-.nav a[aria-current="true"]::after{content:'';position:absolute;left:11px;right:11px;bottom:1px;height:1px;background:var(--red)}
+.nav a[aria-current="true"]::after{content:'';position:absolute;left:var(--space-3);right:var(--space-3);bottom:1px;height:1px;background:var(--red)}
 .nav a:focus-visible{outline:2px solid currentColor;outline-offset:0}
-.head-act{display:flex;align-items:center;gap:8px}
+.head-act{display:flex;align-items:center;gap:var(--space-2)}
 .icon-btn{
   width:36px;height:36px;display:grid;place-items:center;border-radius:var(--r);
   border:1px solid var(--line);background:transparent;color:inherit;cursor:pointer;
-  transition:border-color .18s var(--ease)}
-.icon-btn:hover{border-color:currentColor}
+  transition:border-color var(--t-2) var(--ease)}
+@media (hover:hover) and (pointer:fine){ .icon-btn:hover{border-color:currentColor} }
 .icon-btn:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 .icon-btn .ic{font-size:17px}
 .burger{display:none}
 
 .mmenu{position:fixed;inset:0;z-index:95;background:var(--bg);display:none;flex-direction:column;padding:16px var(--gut) 36px;overflow-y:auto}
 .mmenu[data-open="true"]{display:flex}
-.mmenu-top{display:flex;align-items:center;height:50px;margin-bottom:18px}
-.mmenu nav{display:flex;flex-direction:column;margin-bottom:22px}
-.mmenu nav a{font-size:20px;font-weight:400;letter-spacing:-.02em;padding:14px 0;border-bottom:1px solid var(--line-2)}
+.mmenu-top{display:flex;align-items:center;height:50px;margin-bottom:var(--space-4)}
+.mmenu nav{display:flex;flex-direction:column;margin-bottom:var(--space-5)}
+.mmenu nav a{font-size:20px;font-weight:400;letter-spacing:-.02em;padding:var(--space-3) 0;border-bottom:1px solid var(--line-2)}
 .mmenu nav a:focus-visible{outline:2px solid currentColor;outline-offset:-2px}
 
 /* ==========================================================================
@@ -243,16 +363,16 @@ button,input,select,textarea{font:inherit;color:inherit}
 .hero-inner{position:relative;z-index:2;margin-top:-100svh}
 .hero-copy{
   min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding-block:96px 40px;
+  text-align:center;padding-block:var(--space-9) 40px;
 }
 .hero-tail{height:50svh}
 .hero h1{color:#fff;max-width:16ch}
-.hero-sub{margin-top:22px;max-width:50ch;color:#C9C9CC;font-size:clamp(15.5px,1.15vw,17.5px);line-height:1.6}
-.hero-cta{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:34px}
+.hero-sub{margin-top:var(--space-5);max-width:50ch;color:#C9C9CC;font-size:clamp(15.5px,1.15vw,17.5px);line-height:1.6}
+.hero-cta{display:flex;align-items:center;justify-content:center;gap:var(--space-4);flex-wrap:wrap;margin-top:var(--space-6)}
 .hero .btn-ghost{border-color:rgba(255,255,255,.34);color:#fff}
-.hero .btn-ghost:hover{border-color:#fff}
+@media (hover:hover) and (pointer:fine){ .hero .btn-ghost:hover{border-color:#fff;background:rgba(255,255,255,.06)} }
 html.js .hero .hero-copy > *{opacity:0;transform:translateY(14px)}
-html.js .hero.lit .hero-copy > *{opacity:1;transform:none;transition:opacity .8s var(--ease),transform .8s var(--ease-out)}
+html.js .hero.lit .hero-copy > *{opacity:1;transform:none;transition:opacity 800ms var(--ease),transform 800ms var(--ease-out)}
 html.js .hero.lit .hero-copy > *:nth-child(2){transition-delay:.10s}
 html.js .hero.lit .hero-copy > *:nth-child(3){transition-delay:.18s}
 
@@ -260,45 +380,50 @@ html.js .hero.lit .hero-copy > *:nth-child(3){transition-delay:.18s}
 .strip{background:var(--band-2);border-top:1px solid var(--band-line);color:var(--band-ink)}
 .strip-in{display:grid;grid-template-columns:repeat(5,1fr)}
 .strip a{
-  display:flex;align-items:center;gap:10px;padding:20px 18px;font-size:14.5px;font-weight:400;
+  display:flex;align-items:center;gap:var(--space-2);padding:var(--space-4) var(--space-4);font-size:14.5px;font-weight:400;
   border-right:1px solid var(--band-line);color:var(--band-ink);
-  transition:background .18s var(--ease)}
+  transition:background var(--t-2) var(--ease)}
 .strip a:last-child{border-right:0}
-.strip a:hover{background:rgba(255,255,255,.05)}
+@media (hover:hover) and (pointer:fine){ .strip a:hover{background:rgba(255,255,255,.05)} }
 .strip a:focus-visible{outline:2px solid #fff;outline-offset:-3px}
-.strip .ic{font-size:19px;color:var(--red)}
+.strip .ic{font-size:19px;color:var(--ink-3)}
 
 /* ==========================================================================
    MANDATE
    ========================================================================== */
-.cond-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:clamp(30px,3.4vw,44px);background:var(--line);border:1px solid var(--line)}
-.cond{position:relative;background:var(--bg);padding:26px 22px 30px;transition:background .3s var(--ease)}
-.cond::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);transform:scaleX(0);transform-origin:0 50%;transition:transform .45s var(--ease-out)}
-.cond:hover{background:var(--surface)}
-.cond:hover::before{transform:scaleX(1)}
-.cond .ic{font-size:22px;color:var(--red);margin-bottom:16px}
-.cond h3{margin-bottom:7px}
-.cond p{font-size:14.5px;line-height:1.55;color:var(--ink-2)}
-.priority{
-  margin-top:26px;display:flex;gap:12px;align-items:flex-start;
-  border:1px solid var(--line);border-left:2px solid var(--red);padding:16px 18px;background:var(--surface);
+.cond-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:var(--gap-head);background:var(--line);border:1px solid var(--line)}
+.cond{position:relative;background:var(--bg);padding:var(--space-5) var(--space-5) var(--space-6);transition:background var(--t-3) var(--ease)}
+.cond::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--red);transform:scaleX(0);transform-origin:0 50%;transition:transform var(--t-4) var(--ease-out)}
+@media (hover:hover) and (pointer:fine){
+  .cond:hover{background:var(--surface)}
+  .cond:hover .ic{color:var(--ink-2)}
+  .cond:hover::before{transform:scaleX(1)}
 }
-.priority .ic{font-size:19px;color:var(--red);margin-top:2px}
+.cond .ic{font-size:22px;color:var(--ink-3);margin-bottom:var(--space-6);transition:color var(--t-2) var(--ease)}
+.cond h3{margin-bottom:var(--space-2)}
+.cond p{font-size:14.5px;line-height:1.55;color:var(--ink-2)}
+/* one rule, not a box. A border plus a fill plus a heavier left edge was three
+   separation devices around a single paragraph. */
+.priority{
+  margin-top:var(--space-7);display:flex;gap:var(--space-4);align-items:flex-start;
+  border-left:1px solid var(--line-3);padding:var(--space-1) 0 var(--space-1) var(--space-5);
+}
+.priority .ic{font-size:19px;color:var(--ink-3);margin-top:3px}
 .priority p{font-size:14.5px;line-height:1.55;color:var(--ink-2);max-width:78ch}
 
 /* ==========================================================================
    CAPABILITIES  tabs
    ========================================================================== */
-.tabs{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:0;margin-top:clamp(30px,3.4vw,44px);border:1px solid var(--line)}
+.tabs{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:0;margin-top:var(--gap-head);border:1px solid var(--line);box-shadow:var(--lit)}
 .tablist{display:flex;flex-direction:column;border-right:1px solid var(--line);background:var(--bg-2)}
 .tab{
-  display:flex;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;
+  display:flex;align-items:center;gap:var(--space-2);width:100%;text-align:left;cursor:pointer;
   background:transparent;border:0;border-bottom:1px solid var(--line);
-  padding:16px 16px;font-size:15px;font-weight:400;color:var(--ink-2);
-  transition:background .18s var(--ease),color .18s var(--ease)}
+  padding:var(--space-4) var(--space-4);font-size:15px;font-weight:400;color:var(--ink-2);
+  transition:background var(--t-2) var(--ease),color var(--t-2) var(--ease)}
 .tab:last-child{border-bottom:0}
-.tab .ic{font-size:18px;color:var(--ink-3);transition:color .18s var(--ease)}
-.tab:hover{color:var(--ink)}
+.tab .ic{font-size:18px;color:var(--ink-3);transition:color var(--t-2) var(--ease)}
+@media (hover:hover) and (pointer:fine){ .tab:hover{color:var(--ink)} }
 .tab[aria-selected="true"]{background:var(--surface);color:var(--ink);font-weight:500;box-shadow:inset 2px 0 0 var(--red)}
 .tab[aria-selected="true"] .ic{color:var(--red)}
 .tab:focus-visible{outline:2px solid currentColor;outline-offset:-3px}
@@ -307,37 +432,68 @@ html.js .hero.lit .hero-copy > *:nth-child(3){transition-delay:.18s}
 html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 @keyframes pin{from{opacity:0}to{opacity:1}}
 .panel-media{aspect-ratio:21/8;overflow:hidden;border-bottom:1px solid var(--line);background:var(--bg-2)}
-.panel-media img{width:100%;height:100%;object-fit:cover;filter:saturate(.42) contrast(1.06) brightness(.86)}
+.panel-media img{
+  width:100%;height:100%;object-fit:cover;
+  /* pulled most of the way to neutral so a warm photograph does not sit in a
+     palette that is cool everywhere else */
+  filter:saturate(.24) contrast(1.05) brightness(.66);
+}
 .panel-body{padding:clamp(20px,2.2vw,30px)}
-.panel-body p{margin-top:9px;color:var(--ink-2);max-width:60ch;font-size:15.5px}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}
-.tag{border:1px solid var(--line);border-radius:var(--r);padding:6px 11px;font-size:13.5px;color:var(--ink-2)}
+.panel-body p{margin-top:var(--space-2);color:var(--ink-2);max-width:60ch;font-size:15.5px}
+.tags{display:flex;flex-wrap:wrap;gap:var(--space-1);margin-top:var(--space-4)}
+.tag{border:1px solid var(--line);border-radius:var(--r);padding:var(--space-1) var(--space-3);font-size:13.5px;color:var(--ink-2)}
 
 /* ==========================================================================
    MAINTENANCE  what stays running after handover
+   A 7/5 split with a sticky heading column. This is the one section on the
+   page whose header is not full width, which is the deliberate asymmetry the
+   composition needed; it also lets the four domains take their real heights
+   instead of being forced level by a shared grid row.
    ========================================================================== */
-.ops{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;margin-top:clamp(30px,3.4vw,44px);background:var(--band-line);border:1px solid var(--band-line)}
-.op{background:var(--band);padding:26px 22px 30px}
-.op .ic{font-size:22px;color:var(--red);margin-bottom:16px}
-.op h3{margin-bottom:12px}
-.op li{display:flex;gap:9px;font-size:14px;line-height:1.5;color:var(--band-ink-2);padding:6px 0}
-.op li .ar{color:var(--red-text);flex:0 0 auto}
-.ops-foot{margin-top:26px;display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center;justify-content:space-between}
-.ops-foot p{font-size:14px;color:var(--band-ink-2);max-width:70ch}
+.ops-wrap{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:0 clamp(32px,5vw,88px)}
+.ops-aside-in{position:sticky;top:var(--space-9)}
+.ops-note{margin-top:var(--space-6);font-size:14px;line-height:1.55;color:var(--band-ink-2);max-width:38ch}
+.ops-aside .tlink{margin-top:var(--space-5);color:var(--band-ink)}
+.ops{display:flex;flex-direction:column}
+/* one hairline between domains, never a box around each one */
+.op{padding:var(--space-7) 0;border-top:1px solid var(--band-line)}
+.op:first-child{padding-top:var(--space-1);border-top:0}
+.op-head{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5)}
+.op .ic{font-size:20px;color:var(--ink-3);margin:0}
+/* two columns of short lines beats one long column of them */
+.op-list{columns:2;column-gap:var(--space-7)}
+.op li{
+  break-inside:avoid;font-size:14px;line-height:1.5;color:var(--band-ink-2);
+  padding:var(--space-2) 0 var(--space-2) var(--space-4);position:relative;
+}
+.op li::before{
+  content:'';position:absolute;left:0;top:.72em;width:6px;height:1px;
+  background:var(--line-3);
+}
 
 /* ==========================================================================
    PRODUCTS  an index that holds at any number of entries
    ========================================================================== */
-.idx{margin-top:clamp(30px,3.4vw,44px);border-top:1px solid var(--line)}
-.idx-row{
-  display:grid;grid-template-columns:minmax(0,52px) minmax(0,1fr) auto;
-  gap:clamp(16px,2.6vw,32px);align-items:center;
-  padding:22px 0;border-bottom:1px solid var(--line);
+.idx{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:var(--space-8) clamp(40px,6vw,104px);
+  margin-top:clamp(38px,4.2vw,56px);
+  padding-top:var(--space-7);border-top:1px solid var(--line);
 }
-.idx-row .ic{font-size:22px;color:var(--red)}
-.idx-main h3{font-size:clamp(19px,1.9vw,25px);font-weight:400;letter-spacing:-.022em}
-.idx-row p{margin-top:5px;font-size:14.5px;line-height:1.55;color:var(--ink-2);max-width:62ch}
-.idx-state{font-size:13px;color:var(--ink-3);border:1px solid var(--line);border-radius:var(--r);padding:5px 10px;white-space:nowrap}
+/* Two columns, no rule under every entry. Five items in one column left the
+   right half of the page empty and put a hairline under each row, which is the
+   laziest way to separate a list; space does the separating here instead. The
+   grid takes any number of entries without the composition changing. */
+.idx-row{display:grid;grid-template-columns:minmax(0,28px) minmax(0,1fr);gap:var(--space-4);align-items:start}
+.idx-row .ic{font-size:20px;color:var(--ink-3);margin-top:var(--space-1);transition:color var(--t-2) var(--ease)}
+.idx-main h3{font-size:clamp(18px,1.5vw,21px);font-weight:500;letter-spacing:-.014em;line-height:1.28}
+.idx-row p{margin-top:var(--space-2);font-size:14.5px;line-height:1.55;color:var(--ink-2);max-width:52ch}
+/* an empty state that reads as deliberate rather than as a broken link */
+.idx-state{
+  display:inline-flex;align-items:center;gap:var(--space-2);
+  margin-top:var(--space-3);font-size:12.5px;letter-spacing:.02em;color:var(--ink-3);
+}
+.idx-state::before{content:'';width:5px;height:5px;border:1px solid var(--line-3)}
 
 /* ==========================================================================
    CLIENTS  logo plates so every mark stays legible whatever the theme
@@ -350,43 +506,49 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
    twelve, and the row simply fills from the left as the register grows. The
    container carries no border of its own, so it never draws an empty band
    past the last tile. */
-.plates{display:flex;flex-wrap:wrap;margin-top:clamp(30px,3.4vw,44px)}
+.plates{display:flex;flex-wrap:wrap;margin-top:var(--gap-head)}
 .plate{
   flex:0 0 196px;width:196px;min-height:196px;background:var(--bg);
   border:1px solid var(--line);margin:0 -1px -1px 0;
-  padding:26px 18px 22px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
-  transition:background .3s var(--ease);
+  padding:var(--space-5) var(--space-4) var(--space-5);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-4);
+  transition:background var(--t-3) var(--ease);
 }
-.plate:hover{background:var(--bg-2)}
+@media (hover:hover) and (pointer:fine){ .plate:hover{background:var(--bg-2)} }
 .plate-mark{height:66px;display:flex;align-items:center;justify-content:center;width:100%}
 .plate-mark img{max-height:66px;max-width:100%;width:auto;height:auto;object-fit:contain;
-  opacity:.92;transition:opacity .3s var(--ease)}
-.plate:hover .plate-mark img{opacity:1}
-.plate-text{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center}
+  opacity:.92;transition:opacity var(--t-3) var(--ease)}
+@media (hover:hover) and (pointer:fine){ .plate:hover .plate-mark img{opacity:1} }
+.plate-text{display:flex;flex-direction:column;align-items:center;gap:var(--space-1);text-align:center}
 .plate-name{font-size:15px;font-weight:500;letter-spacing:-.012em}
 .plate-kind{font-size:12.5px;color:var(--ink-3);line-height:1.4}
 
 /* ==========================================================================
-   PARTNERS  deliberately empty until there is something true to put in it
-   ========================================================================== */
-.slot-empty{
-  width:100%;min-height:120px;display:grid;place-items:center;
-  border:1px dashed var(--line);border-radius:var(--r);color:var(--ink-3);font-size:13px;
-}
-
-/* ==========================================================================
    SECTORS
    ========================================================================== */
-.mosaic{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;margin-top:clamp(30px,3.4vw,44px);background:var(--line);border:1px solid var(--line)}
-.scard{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:22px;min-height:230px;color:#fff;background:var(--band)}
-.scard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(.42) contrast(1.06) brightness(.62);transition:transform 1.1s var(--ease-out)}
-.mosaic .scard:hover img{transform:scale(1.05)}
-.scard-veil{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,6,7,.92) 0%,rgba(6,6,7,.5) 50%,rgba(6,6,7,.2) 100%)}
+.mosaic{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;margin-top:var(--gap-head);background:var(--line);border:1px solid var(--line)}
+.scard{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:var(--space-5);min-height:230px;color:#fff;background:var(--band)}
+.scard img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  /* graded into the page rather than dropped on top of it. At .62 the frames
+     read as holes punched in a black page and the captions measured 1.5:1. */
+  filter:saturate(.30) contrast(1.06) brightness(.32);
+  transition:transform var(--t-5) var(--ease-out),filter var(--t-3) var(--ease);
+}
+@media (hover:hover) and (pointer:fine){
+  .mosaic .scard:hover img{transform:scale(1.04);filter:saturate(.34) contrast(1.08) brightness(.46)}
+}
+.scard-veil{
+  position:absolute;inset:0;
+  /* tinted to the page hue, weighted to the bottom third where the caption
+     actually sits. Measured: 12.9:1 on the title, 6.8:1 on the body. */
+  background:linear-gradient(to top,
+    rgba(8,7,11,.97) 0%, rgba(8,7,11,.93) 40%, rgba(8,7,11,.58) 74%, rgba(8,7,11,.36) 100%);
+}
 .scard > *{position:relative}
-.scard .kicker{color:#9A9A9E;margin-bottom:8px}
+.scard .kicker{color:#9A9A9E;margin-bottom:var(--space-2)}
 .scard h3{color:#fff}
-.scard p{margin-top:5px;font-size:14px;line-height:1.5;color:#C4C4C8;max-width:34ch}
+.scard p{margin-top:var(--space-2);font-size:14px;line-height:1.5;color:#D9D9DE;max-width:34ch}
 .sc-a{grid-column:span 6;min-height:300px}
 .sc-b{grid-column:span 6;min-height:300px}
 .sc-c,.sc-d,.sc-e,.sc-f{grid-column:span 3}
@@ -394,79 +556,127 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 /* ==========================================================================
    DELIVERY
    ========================================================================== */
-.stages{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;margin-top:clamp(30px,3.4vw,44px);background:var(--line);border:1px solid var(--line)}
-.stage{background:var(--bg);padding:24px 20px 28px}
-.stage .ic{font-size:21px;color:var(--ink-3);margin-bottom:16px;transition:color .4s var(--ease)}
-.stages.in .stage .ic{color:var(--red)}
-.stages.in .stage:nth-child(2) .ic{transition-delay:.1s}
-.stages.in .stage:nth-child(3) .ic{transition-delay:.2s}
-.stages.in .stage:nth-child(4) .ic{transition-delay:.3s}
-.stages.in .stage:nth-child(5) .ic{transition-delay:.4s}
-.stage p{margin-top:7px;font-size:14px;line-height:1.5;color:var(--ink-2)}
-.stage-out{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-3)}
-.stage-out b{display:block;color:var(--ink);font-weight:500;margin-top:2px}
+.stages{
+  position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:0 clamp(18px,2.4vw,40px);margin-top:clamp(44px,5vw,64px);
+}
+/* the rule is drawn once, and it draws itself in when the section arrives */
+.stages-rule{
+  position:absolute;left:0;right:0;top:var(--space-1);height:1px;background:var(--line);
+  transform:scaleX(0);transform-origin:0 50%;
+  transition:transform var(--t-5) var(--ease-out);
+}
+.stages.in .stages-rule{transform:scaleX(1)}
+.stage{
+  /* node, icon, title, body, output. 1fr on the body pins Output to the
+     bottom so all five land on one line. */
+  display:grid;grid-template-rows:auto auto auto 1fr auto;
+  padding:0 0 var(--space-1);
+}
+.stage-node{
+  width:11px;height:11px;border:1px solid var(--line-3);background:var(--bg);
+  margin-bottom:var(--space-6);
+  opacity:0;transform:scale(.4);
+  transition:opacity var(--t-3) var(--ease-out),transform var(--t-3) var(--ease-out);
+}
+.stages.in .stage-node{opacity:1;transform:none}
+.stages.in .stage:nth-child(3) .stage-node{transition-delay:80ms}
+.stages.in .stage:nth-child(4) .stage-node{transition-delay:160ms}
+.stages.in .stage:nth-child(5) .stage-node{transition-delay:240ms}
+.stages.in .stage:nth-child(6) .stage-node{transition-delay:320ms}
+.stage .ic{font-size:21px;color:var(--ink-3);margin-bottom:var(--space-4)}
+.stage p{margin-top:var(--space-2);font-size:14px;line-height:1.5;color:var(--ink-2);padding-right:var(--space-4)}
+.stage-out{
+  margin-top:var(--space-6);padding-top:var(--space-3);
+  border-top:1px solid var(--line-2);font-size:13px;color:var(--ink-3);
+}
+.stage-out b{display:block;color:var(--ink);font-weight:500;margin-top:2px;font-size:14px}
 
 /* ==========================================================================
    STANDARDS
    ========================================================================== */
-.std-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:clamp(30px,3.4vw,44px);background:var(--line);border:1px solid var(--line)}
-.std{background:var(--bg);padding:26px 22px 28px}
-.std-head{display:flex;align-items:center;gap:10px;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:4px}
-.std-head .ic{font-size:20px;color:var(--red)}
-.std li{display:flex;gap:9px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line-2);font-size:14.5px;line-height:1.5}
-.std li:last-child{border-bottom:0}
-.std li .ar{color:var(--red-text);flex:0 0 auto}
+.std-grid{margin-top:var(--gap-head);border-top:1px solid var(--line)}
+.std{
+  display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);
+  gap:var(--space-5) clamp(32px,5vw,88px);
+  padding:var(--space-7) 0;border-bottom:1px solid var(--line);
+}
+.std-head{display:flex;align-items:flex-start;gap:var(--space-3)}
+.std-head .ic{font-size:20px;color:var(--ink-3);margin-top:2px}
+.std-list{columns:2;column-gap:clamp(24px,3vw,56px)}
+.std li{
+  break-inside:avoid;position:relative;
+  padding:var(--space-2) 0 var(--space-2) var(--space-4);
+  font-size:14.5px;line-height:1.5;color:var(--ink-2);
+}
+.std li::before{content:'';position:absolute;left:0;top:.72em;width:6px;height:1px;background:var(--line-3)}
 
 /* ==========================================================================
    GOVERNANCE  a record card rather than a paragraph beside a photograph
    ========================================================================== */
-.gov{margin-top:clamp(30px,3.4vw,44px);border:1px solid var(--band-line)}
-.gov-top{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
-.gov-say{padding:clamp(26px,3.2vw,44px);border-right:1px solid var(--band-line)}
-.gov-say p{margin-top:16px;font-size:15.5px;line-height:1.6;max-width:48ch}
-.gov-lineage{padding:clamp(26px,3.2vw,44px);display:flex;flex-direction:column;justify-content:center;gap:0}
-.gov-lineage .kicker{margin-bottom:20px}
-.lin{display:grid;grid-template-columns:26px 1fr;gap:0 14px}
-.lin-node{display:flex;flex-direction:column;align-items:center}
-.lin-dot{width:9px;height:9px;border:1px solid var(--band-ink-2);margin-top:7px}
-.lin-item:last-child .lin-line{display:none}
-.lin-line{flex:1;width:1px;background:var(--band-line);min-height:26px}
+/* The outer box, the internal fills and the cell rules were three separation
+   strategies doing one job. One vertical rule is left, and the fact row runs
+   as a caption rather than as a fifth grid of equal cells. */
+.gov{margin-top:var(--gap-head)}
+.gov-top{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(32px,5vw,80px)}
+.gov-say{padding-right:clamp(0px,3vw,48px)}
+.gov-say p{margin-top:var(--space-4);font-size:15.5px;line-height:1.6;max-width:48ch}
+.gov-lineage{border-left:1px solid var(--band-line);padding-left:clamp(24px,3.4vw,52px)}
+.lin-title{color:var(--band-ink-2);margin-bottom:var(--space-5)}
+/* Three peers. The one filled mark says which organisation this site belongs
+   to; nothing connects them, because nothing does. */
+.lin{display:grid;grid-template-columns:auto 1fr;gap:var(--space-5) var(--space-4)}
 .lin-item{display:contents}
-.lin-body{padding-bottom:22px}
+.lin-dot{width:9px;height:9px;border:1px solid var(--band-ink-2);margin-top:var(--space-2)}
 .lin-body b{display:block;font-size:15.5px;font-weight:500}
 .lin-body span{font-size:13.5px;color:var(--band-ink-2)}
 .lin-item.is-self .lin-dot{background:var(--red);border-color:var(--red)}
-.gov-facts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--band-line)}
-.gov-fact{padding:20px 22px;border-right:1px solid var(--band-line)}
-.gov-fact:last-child{border-right:0}
+.gov-facts{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:var(--space-5);margin-top:clamp(40px,4.4vw,60px);
+  padding-top:var(--space-5);border-top:1px solid var(--band-line);
+}
 .gov-fact dt{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--band-ink-2)}
-.gov-fact dd{margin-top:6px;font-size:16px;font-weight:500}
+.gov-fact dd{margin-top:var(--space-2);font-size:16px;font-weight:500}
 
 /* ==========================================================================
-   ENGAGEMENT  a short prompt that hands over to the request page
+   ENGAGEMENT  the page's one loud moment
+   The plane runs to the viewport edge rather than sitting inset inside the
+   container, which is the single deliberate container break on the page, and
+   it keeps the heading on the same left edge as every other section.
    ========================================================================== */
-.cta-band{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:32px;align-items:center;margin-top:clamp(28px,3vw,40px);border:1px solid var(--line);padding:clamp(26px,3.2vw,44px);background:var(--surface)}
-.cta-band p{margin-top:12px;font-size:15.5px;color:var(--ink-2);max-width:56ch}
-.cta-steps{display:flex;gap:26px;flex-wrap:wrap;margin-top:22px;font-size:13.5px;color:var(--ink-3)}
-.cta-steps span{display:flex;gap:8px}
-.cta-steps .ar{color:var(--red-text)}
+.cta-sect{
+  background:var(--surface);
+  border-top:2px solid var(--red);
+  box-shadow:var(--lit);
+}
+.cta-band{
+  display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+  gap:clamp(32px,5vw,88px);align-items:end;
+  margin-top:var(--gap-head);
+}
+.cta-say p{margin-top:var(--space-5);font-size:15.5px;line-height:1.6;color:var(--ink-2);max-width:52ch}
+.cta-act{display:flex;flex-direction:column;align-items:flex-start;gap:var(--space-6)}
+.cta-steps{font-size:13.5px;color:var(--ink-3);line-height:1.5}
+.cta-steps li{position:relative;padding:var(--space-2) 0 var(--space-2) var(--space-4)}
+.cta-steps li::before{content:'';position:absolute;left:0;top:.85em;width:6px;height:1px;background:var(--line-3)}
 
 /* ---- footer ---- */
 .foot{--red-text:#FF8792;background:var(--band);color:var(--band-ink-2);padding-block:clamp(44px,5vw,64px) 26px;border-top:1px solid var(--band-line)}
 .foot-grid{display:grid;grid-template-columns:minmax(0,2fr) repeat(3,minmax(0,1fr));gap:clamp(22px,3vw,40px)}
-.foot-brand{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.foot-brand{display:flex;align-items:center;gap:var(--space-2);margin-bottom:var(--space-3)}
 .foot-brand img{width:23px;height:23px}
 .foot-brand span{font-size:16px;font-weight:500;color:var(--band-ink);letter-spacing:-.02em}
 .foot p{font-size:14.5px;color:var(--band-ink-2);max-width:34ch;line-height:1.55}
-.foot h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9A9AA2;margin-bottom:12px;font-weight:400}
-.foot-col a{display:inline-block;padding:5px 0;font-size:14.5px;color:var(--band-ink-2);transition:color .16s var(--ease)}
-.foot-col a:hover{color:var(--band-ink)}
+.foot h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#9A9AA2;margin-bottom:var(--space-3);font-weight:400}
+.foot-col a{display:inline-block;padding:var(--space-1) 0;font-size:14.5px;color:var(--band-ink-2);transition:color var(--t-2) var(--ease)}
+@media (hover:hover) and (pointer:fine){ .foot-col a:hover{color:var(--band-ink)} }
 .foot-col a:focus-visible{outline:2px solid var(--band-ink);outline-offset:2px}
-.foot-bar{margin-top:clamp(34px,4vw,54px);padding-top:20px;border-top:1px solid var(--band-line);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.foot-bar{margin-top:clamp(34px,4vw,54px);padding-top:var(--space-4);border-top:1px solid var(--band-line);display:flex;justify-content:space-between;gap:var(--space-3);flex-wrap:wrap}
 .foot-bar p{font-size:13.5px;color:#9A9AA2;max-width:none}
 
 /* ---- reveal ---- */
-.rv{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease),transform .6s var(--ease-out)}
+.rv{opacity:0;transform:translateY(14px);transition:opacity 560ms var(--ease),transform 560ms var(--ease-out)}
 .rv.in{opacity:1;transform:none}
 html:not(.js) .rv{opacity:1;transform:none}
 
@@ -474,8 +684,11 @@ html:not(.js) .rv{opacity:1;transform:none}
    RESPONSIVE
    ========================================================================== */
 @media (max-width:1180px){
-  .cond-grid,.ops,.stages{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .std-grid{grid-template-columns:1fr}
+  .cond-grid,.stages{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stages{row-gap:var(--space-7)}
+  .stages-rule{display:none}
+  .stage{border-top:1px solid var(--line);padding-top:var(--space-5)}
+  .stage-node{display:none}
   .gov-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:1023px){
@@ -484,22 +697,26 @@ html:not(.js) .rv{opacity:1;transform:none}
   .tabs{grid-template-columns:1fr}
   .tablist{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
   .tab{white-space:nowrap;border-bottom:0;border-right:1px solid var(--line)}
+  .ops-wrap{grid-template-columns:1fr;gap:var(--space-7)}
+  .ops-aside-in{position:static}
   .gov-top{grid-template-columns:1fr}
-  .gov-say{border-right:0;border-bottom:1px solid var(--band-line)}
+  .gov-say{padding-right:0}
+  .gov-lineage{border-left:0;padding-left:0;border-top:1px solid var(--band-line);padding-top:var(--space-6)}
   .sc-a,.sc-b{grid-column:span 12;min-height:250px}
   .sc-c,.sc-d,.sc-e,.sc-f{grid-column:span 6}
   .strip-in{grid-template-columns:repeat(5,minmax(146px,1fr));overflow-x:auto}
-  .cta-band{grid-template-columns:1fr;gap:24px}
+  .cta-band{grid-template-columns:1fr;gap:var(--space-7);align-items:start}
 }
 @media (max-width:719px){
-  .cond-grid,.ops,.stages{grid-template-columns:1fr}
+  .cond-grid,.stages{grid-template-columns:1fr}
+  .stages{row-gap:var(--space-6)}
+  .op-list,.std-list{columns:1}
+  .std{grid-template-columns:1fr;gap:var(--space-4)}
   .plate{flex:0 0 calc(50% + 1px);width:calc(50% + 1px);min-height:172px}
   .sc-c,.sc-d,.sc-e,.sc-f{grid-column:span 12}
   .gov-facts{grid-template-columns:1fr}
-  .gov-fact{border-right:0;border-bottom:1px solid var(--band-line)}
   .foot-grid{grid-template-columns:1fr}
-  .idx-row{grid-template-columns:minmax(0,32px) minmax(0,1fr);gap:12px}
-  .idx-state{grid-column:1/-1;justify-self:start}
+  .idx{grid-template-columns:1fr;gap:var(--space-7)}
   .hero-tail{height:30svh}
 }
 @media (forced-colors:active){ :focus-visible{outline:3px solid Highlight;outline-offset:2px} }
@@ -518,7 +735,8 @@ html:not(.js) .rv{opacity:1;transform:none}
   html.js .hero .hero-copy > *{opacity:1;transform:none}
   .hero-media video{display:none}
   .hero-tail{height:0}
-  .stages .stage .ic{color:var(--red)}
+  .stages-rule{transform:none}
+  .stage-node{opacity:1;transform:none}
   .mosaic .scard:hover img{transform:none}
   .cond::before{display:none}
 }
@@ -529,7 +747,7 @@ html:not(.js) .rv{opacity:1;transform:none}
   .hero{background:#fff;color:#000}
   .hero h1,.hero-sub{color:#000}
   .hero-inner{margin-top:0}
-  .hero-copy{min-height:0;padding:0 0 14px}
+  .hero-copy{min-height:0;padding:0 0 var(--space-3)}
   .panel[hidden]{display:block !important}
   .tablist{display:none}
   .tabs{grid-template-columns:1fr}
@@ -537,6 +755,7 @@ html:not(.js) .rv{opacity:1;transform:none}
   .scard{color:#000;min-height:0 !important;border:1px solid #ccc}
   .scard h3,.scard p,.scard .kicker{color:#000}
   .rv{opacity:1 !important;transform:none !important}
+  body::after{display:none}
   .cond,.op,.std,.stage,.scard,.panel,.plate{break-inside:avoid}
   a[href^="http"]::after{content:' (' attr(href) ')';font-size:8pt;color:#555}
 }
@@ -694,7 +913,6 @@ html:not(.js) .rv{opacity:1;transform:none}
 <!-- ============================ CAPABILITIES ============================ -->
 <section class="sect" id="services">
   <div class="wrap">
-    <span class="kicker rv">Capabilities</span>
     <h2 class="h2 sect-head rv">What the practice builds.</h2>
     <p class="lead sect-intro rv">Five practice areas, each carried from specification to live service.</p>
 
@@ -757,62 +975,74 @@ html:not(.js) .rv{opacity:1;transform:none}
 </section>
 
 <!-- ============================ MAINTENANCE ============================ -->
-<section class="sect sect-band" id="maintenance">
-  <div class="wrap">
-    <span class="kicker rv">Maintenance</span>
-    <h2 class="h2 sect-head rv">Systems under management.</h2>
-    <p class="lead sect-intro rv">A system does not end at launch. HaveStack keeps the parts that fail quietly in good order.</p>
+<!-- Asymmetric split rather than a fourth run of equal columns. The heading
+     column is sticky, so the reader keeps the section's subject while the four
+     domains scroll past it, and the domains are free to take the height their
+     content actually needs. -->
+<section class="sect sect-band sect-tight" id="maintenance">
+  <div class="wrap ops-wrap">
+    <div class="ops-aside">
+      <div class="ops-aside-in">
+        <h2 class="h2 rv">Systems under management.</h2>
+        <p class="lead sect-intro rv">A system does not end at launch. HaveStack keeps the parts that fail quietly in good order.</p>
+        <p class="ops-note rv">Maintenance is available on systems HaveStack built and, after a written technical review, on systems it did not.</p>
+        <a class="tlink rv" href="request.html">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></a>
+      </div>
+    </div>
 
     <div class="ops">
       <article class="op rv">
-        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-brain"/></svg>
-        <h3 class="h3">AI and language models</h3>
-        <ul>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Model versions pinned, upgrades tested before they land</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Prompt and output checked against a fixed evaluation set</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Token spend tracked with a monthly ceiling</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Fallback routing when a provider degrades</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Retrieval sources re indexed on a schedule</li>
+        <div class="op-head">
+          <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-brain"/></svg>
+          <h3 class="h3">AI and language models</h3>
+        </div>
+        <ul class="op-list">
+          <li>Model versions pinned, upgrades tested before they land</li>
+          <li>Prompt and output checked against a fixed evaluation set</li>
+          <li>Token spend tracked with a monthly ceiling</li>
+          <li>Fallback routing when a provider degrades</li>
+          <li>Retrieval sources re indexed on a schedule</li>
         </ul>
       </article>
       <article class="op rv">
-        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-hard-drives"/></svg>
-        <h3 class="h3">Databases</h3>
-        <ul>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Backups taken on schedule and restored in a drill</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Slow queries traced, indexes rebuilt</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Migrations applied with a written rollback</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Replication and failover verified</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Growth watched before storage runs out</li>
+        <div class="op-head">
+          <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-hard-drives"/></svg>
+          <h3 class="h3">Databases</h3>
+        </div>
+        <ul class="op-list">
+          <li>Backups taken on schedule and restored in a drill</li>
+          <li>Slow queries traced, indexes rebuilt</li>
+          <li>Migrations applied with a written rollback</li>
+          <li>Replication and failover verified</li>
+          <li>Growth watched before storage runs out</li>
         </ul>
       </article>
       <article class="op rv">
-        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-cpu"/></svg>
-        <h3 class="h3">Backend and infrastructure</h3>
-        <ul>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Dependencies patched, advisories reviewed weekly</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Certificates and domains renewed ahead of expiry</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Uptime and error rates alerted to a named contact</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Capacity reviewed against measured load</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Logs retained for the period the contract sets</li>
+        <div class="op-head">
+          <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-cpu"/></svg>
+          <h3 class="h3">Backend and infrastructure</h3>
+        </div>
+        <ul class="op-list">
+          <li>Dependencies patched, advisories reviewed weekly</li>
+          <li>Certificates and domains renewed ahead of expiry</li>
+          <li>Uptime and error rates alerted to a named contact</li>
+          <li>Capacity reviewed against measured load</li>
+          <li>Logs retained for the period the contract sets</li>
         </ul>
       </article>
       <article class="op rv">
-        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-clock-counter-clockwise"/></svg>
-        <h3 class="h3">Response and reporting</h3>
-        <ul>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Response times set in the service agreement</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Incidents written up with cause and correction</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Releases scheduled, never applied unannounced</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>A monthly report the client can file</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Access reviewed each quarter</li>
+        <div class="op-head">
+          <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-clock-counter-clockwise"/></svg>
+          <h3 class="h3">Response and reporting</h3>
+        </div>
+        <ul class="op-list">
+          <li>Response times set in the service agreement</li>
+          <li>Incidents written up with cause and correction</li>
+          <li>Releases scheduled, never applied unannounced</li>
+          <li>A monthly report the client can file</li>
+          <li>Access reviewed each quarter</li>
         </ul>
       </article>
-    </div>
-
-    <div class="ops-foot rv">
-      <p>Maintenance is available on systems HaveStack built and, after a written technical review, on systems it did not.</p>
-      <a class="tlink" href="request.html">Discuss a maintenance agreement <span class="ar" aria-hidden="true">&#8599;</span></a>
     </div>
   </div>
 </section>
@@ -829,28 +1059,23 @@ html:not(.js) .rv{opacity:1;transform:none}
     <div class="idx">
       <div class="idx-row rv">
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-database"/></svg>
-        <div class="idx-main"><h3>Resource planning suite</h3><p>Ledger, procurement and stores for mid sized institutions.</p></div>
-        <span class="idx-state">Link to follow</span>
+        <div class="idx-main"><h3>Resource planning suite</h3><p>Ledger, procurement and stores for mid sized institutions.</p><span class="idx-state">Not yet public</span></div>
       </div>
       <div class="idx-row rv">
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-graduation-cap"/></svg>
-        <div class="idx-main"><h3>Learning platform</h3><p>Course delivery, assessment and transcripts for training bodies.</p></div>
-        <span class="idx-state">Link to follow</span>
+        <div class="idx-main"><h3>Learning platform</h3><p>Course delivery, assessment and transcripts for training bodies.</p><span class="idx-state">Not yet public</span></div>
       </div>
       <div class="idx-row rv">
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-globe-hemisphere-west"/></svg>
-        <div class="idx-main"><h3>Service intake portal</h3><p>Application intake and case tracking for public counters.</p></div>
-        <span class="idx-state">Link to follow</span>
+        <div class="idx-main"><h3>Service intake portal</h3><p>Application intake and case tracking for public counters.</p><span class="idx-state">Not yet public</span></div>
       </div>
       <div class="idx-row rv">
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-plugs-connected"/></svg>
-        <div class="idx-main"><h3>Interface layer</h3><p>Moves records between systems under a fixed contract.</p></div>
-        <span class="idx-state">Link to follow</span>
+        <div class="idx-main"><h3>Interface layer</h3><p>Moves records between systems under a fixed contract.</p><span class="idx-state">Not yet public</span></div>
       </div>
       <div class="idx-row rv">
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-gauge"/></svg>
-        <div class="idx-main"><h3>Operations console</h3><p>Monitoring, release and recovery for systems under management.</p></div>
-        <span class="idx-state">Link to follow</span>
+        <div class="idx-main"><h3>Operations console</h3><p>Monitoring, release and recovery for systems under management.</p><span class="idx-state">Not yet public</span></div>
       </div>
     </div>
   </div>
@@ -860,9 +1085,8 @@ html:not(.js) .rv{opacity:1;transform:none}
      TODO add further organisations by copying one plate block. The grid fills
      automatically, so no layout change is needed as the list grows. Each mark
      sits on a white field on purpose: the set mixes dark and light logos. -->
-<section class="sect" id="work">
+<section class="sect sect-tight" id="work">
   <div class="wrap">
-    <span class="kicker rv">Clients</span>
     <h2 class="h2 sect-head rv">Organisations we build for.</h2>
     <p class="lead sect-intro rv">Named with their agreement. Further references are available under a non disclosure agreement.</p>
     <div class="plates">
@@ -878,11 +1102,10 @@ html:not(.js) .rv{opacity:1;transform:none}
      TODO add partners by replacing a slot with the same markup used by a
      client plate. Held open on purpose so the section can be filled later
      without touching the layout. -->
-<section class="sect" id="partners">
+<section class="sect sect-tight" id="partners">
   <div class="wrap">
-    <span class="kicker rv">Partners</span>
     <h2 class="h2 sect-head rv">Official partners.</h2>
-    <p class="lead sect-intro rv">Organisations and institutions that work alongside the practice. This register opens shortly.</p>
+    <p class="lead sect-intro rv">Organisations and institutions that work alongside the practice.</p>
     <div class="plates">
       <div class="plate rv">
         <div class="plate-mark"><img src="assets/logo-amaze-dark.png" alt="Amaze Consortium" width="240" height="240" loading="lazy" decoding="async" /></div>
@@ -892,16 +1115,13 @@ html:not(.js) .rv{opacity:1;transform:none}
         <div class="plate-mark"><img src="assets/logo-aries-dark.png" alt="ARIES" width="240" height="240" loading="lazy" decoding="async" /></div>
         <div class="plate-text"><span class="plate-name">ARIES</span><span class="plate-kind">Partner</span></div>
       </div>
-      <div class="plate rv"><div class="slot-empty">Partner slot</div></div>
-      <div class="plate rv"><div class="slot-empty">Partner slot</div></div>
     </div>
   </div>
 </section>
 
 <!-- ============================ SECTORS ============================ -->
-<section class="sect" id="sectors">
+<section class="sect sect-wide" id="sectors">
   <div class="wrap">
-    <span class="kicker rv">Sectors</span>
     <h2 class="h2 sect-head rv">Where these systems run.</h2>
     <p class="lead sect-intro rv">Six sectors where a failure is expensive.</p>
     <div class="mosaic">
@@ -951,68 +1171,94 @@ html:not(.js) .rv{opacity:1;transform:none}
     <span class="kicker rv">Delivery</span>
     <h2 class="h2 sect-head rv">How an engagement runs.</h2>
     <p class="lead sect-intro rv">Five stages, each closing on a written output.</p>
+    <!-- A measured line rather than five boxes. The rule is drawn once and the
+         stages hang off it, and every stage uses the same four grid rows so the
+         Output line lands at one height across all five regardless of how long
+         the description above it runs. -->
     <div class="stages" id="stages">
+      <span class="stages-rule" aria-hidden="true"></span>
       <article class="stage rv">
+        <span class="stage-node" aria-hidden="true"></span>
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-magnifying-glass"/></svg>
-        <h3 class="h3">Discovery</h3><p>The practice records how the organisation operates today.</p>
-        <div class="stage-out">Output<b>Scope document</b></div>
+        <h3 class="h3">Discovery</h3>
+        <p>The practice records how the organisation operates today.</p>
+        <div class="stage-out"><span>Output</span><b>Scope document</b></div>
       </article>
       <article class="stage rv">
+        <span class="stage-node" aria-hidden="true"></span>
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-compass-tool"/></svg>
-        <h3 class="h3">Architecture</h3><p>Data model, integrations and hosting fixed before any code.</p>
-        <div class="stage-out">Output<b>Technical specification</b></div>
+        <h3 class="h3">Architecture</h3>
+        <p>Data model, integrations and hosting fixed before any code.</p>
+        <div class="stage-out"><span>Output</span><b>Technical specification</b></div>
       </article>
       <article class="stage rv">
+        <span class="stage-node" aria-hidden="true"></span>
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-code"/></svg>
-        <h3 class="h3">Build</h3><p>Delivery in reviewable increments against agreed scope.</p>
-        <div class="stage-out">Output<b>Accepted release</b></div>
+        <h3 class="h3">Build</h3>
+        <p>Delivery in reviewable increments against agreed scope.</p>
+        <div class="stage-out"><span>Output</span><b>Accepted release</b></div>
       </article>
       <article class="stage rv">
+        <span class="stage-node" aria-hidden="true"></span>
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-handshake"/></svg>
-        <h3 class="h3">Handover</h3><p>Source, credentials and documentation transfer to the client.</p>
-        <div class="stage-out">Output<b>Operations manual</b></div>
+        <h3 class="h3">Handover</h3>
+        <p>Source, credentials and documentation transfer to the client.</p>
+        <div class="stage-out"><span>Output</span><b>Operations manual</b></div>
       </article>
       <article class="stage rv">
+        <span class="stage-node" aria-hidden="true"></span>
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-pulse"/></svg>
-        <h3 class="h3">Operations</h3><p>Monitored and maintained under a service agreement.</p>
-        <div class="stage-out">Output<b>Service report</b></div>
+        <h3 class="h3">Operations</h3>
+        <p>Monitored and maintained under a service agreement.</p>
+        <div class="stage-out"><span>Output</span><b>Service report</b></div>
       </article>
     </div>
   </div>
 </section>
 
 <!-- ============================ STANDARDS ============================ -->
+<!-- Three groups read as three rows, not three boxes. One hairline separates
+     the groups; the commitments inside a group carry no rule of their own,
+     which is what stops twelve items reading as a spec table. -->
 <section class="sect" id="standards">
   <div class="wrap">
-    <span class="kicker rv">Standards</span>
     <h2 class="h2 sect-head rv">What HaveStack commits to in writing.</h2>
     <p class="lead sect-intro rv">Twelve commitments, written into every engagement contract.</p>
     <div class="std-grid">
       <section class="std rv" aria-labelledby="s-1">
-        <div class="std-head"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-text"/></svg><h3 class="h3" id="s-1">Delivery and documentation</h3></div>
-        <ul>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Written scope before any code</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Client read access to the repository</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>One configuration across development, staging and production</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Each stage accepted against the written specification</li>
+        <div class="std-head">
+          <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-text"/></svg>
+          <h3 class="h3" id="s-1">Delivery and documentation</h3>
+        </div>
+        <ul class="std-list">
+          <li>Written scope before any code</li>
+          <li>Client read access to the repository</li>
+          <li>One configuration across development, staging and production</li>
+          <li>Each stage accepted against the written specification</li>
         </ul>
       </section>
       <section class="std rv" aria-labelledby="s-2">
-        <div class="std-head"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-lock-key"/></svg><h3 class="h3" id="s-2">Security and access</h3></div>
-        <ul>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Least privilege on every account and integration</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Encryption in transit and at rest</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Audit trail on every record change</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Access withdrawn the working day someone leaves</li>
+        <div class="std-head">
+          <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-lock-key"/></svg>
+          <h3 class="h3" id="s-2">Security and access</h3>
+        </div>
+        <ul class="std-list">
+          <li>Least privilege on every account and integration</li>
+          <li>Encryption in transit and at rest</li>
+          <li>Audit trail on every record change</li>
+          <li>Access withdrawn the working day someone leaves</li>
         </ul>
       </section>
       <section class="std rv" aria-labelledby="s-3">
-        <div class="std-head"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-key"/></svg><h3 class="h3" id="s-3">Ownership and continuity</h3></div>
-        <ul>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Intellectual property transfers on final payment</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Hosting, domains and repositories in the client name</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>Established open technology, documented for another team</li>
-          <li><span class="ar" aria-hidden="true">&#8594;</span>A notice period and a defined exit process</li>
+        <div class="std-head">
+          <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-key"/></svg>
+          <h3 class="h3" id="s-3">Ownership and continuity</h3>
+        </div>
+        <ul class="std-list">
+          <li>Intellectual property transfers on final payment</li>
+          <li>Hosting, domains and repositories in the client name</li>
+          <li>Established open technology, documented for another team</li>
+          <li>A notice period and a defined exit process</li>
         </ul>
       </section>
     </div>
@@ -1022,7 +1268,6 @@ html:not(.js) .rv{opacity:1;transform:none}
 <!-- ============================ GOVERNANCE ============================ -->
 <section class="sect sect-band" id="clients">
   <div class="wrap">
-    <span class="kicker rv">Governance</span>
     <h2 class="h2 sect-head rv">Governance and standing.</h2>
 
     <div class="gov rv">
@@ -1033,18 +1278,18 @@ html:not(.js) .rv{opacity:1;transform:none}
           <p>Those relationships give an institutional buyer more than one organisation to examine, and continuity that does not rest on any one individual.</p>
         </div>
         <div class="gov-lineage">
-          <span class="kicker">Related organisations</span>
+          <h3 class="h4 lin-title">Related organisations</h3>
           <div class="lin">
             <div class="lin-item is-self">
-              <div class="lin-node"><span class="lin-dot"></span><span class="lin-line"></span></div>
+              <span class="lin-dot" aria-hidden="true"></span>
               <div class="lin-body"><b>HaveStack Technologies</b><span>Software practice</span></div>
             </div>
             <div class="lin-item">
-              <div class="lin-node"><span class="lin-dot"></span><span class="lin-line"></span></div>
+              <span class="lin-dot" aria-hidden="true"></span>
               <div class="lin-body"><b>Amaze Consortium</b><span>Partner</span></div>
             </div>
             <div class="lin-item">
-              <div class="lin-node"><span class="lin-dot"></span><span class="lin-line"></span></div>
+              <span class="lin-dot" aria-hidden="true"></span>
               <div class="lin-body"><b>ARIES</b><span>Partner, research and exploration society</span></div>
             </div>
           </div>
@@ -1061,21 +1306,25 @@ html:not(.js) .rv{opacity:1;transform:none}
 </section>
 
 <!-- ============================ ENGAGEMENT ============================ -->
-<section class="sect" id="book">
+<!-- The page's one loud moment. Everything above it is restrained on purpose
+     so that the accent arriving here reads as a decision rather than as
+     decoration. It gets the widest section padding on the page. -->
+<section class="sect sect-wide cta-sect" id="book">
   <div class="wrap">
     <span class="kicker rv">Engagement</span>
-    <h2 class="h2 sect-head rv">Start with a meeting.</h2>
     <div class="cta-band rv">
-      <div>
-        <h3 class="h3">A first meeting runs about forty minutes.</h3>
-        <p>It establishes what the organisation needs and whether HaveStack is the right practice for it. Cost is discussed once the scope is understood.</p>
-        <div class="cta-steps">
-          <span><span class="ar" aria-hidden="true">&#8594;</span>Submit the brief</span>
-          <span><span class="ar" aria-hidden="true">&#8594;</span>Reply within two working days</span>
-          <span><span class="ar" aria-hidden="true">&#8594;</span>Meeting scheduled</span>
-        </div>
+      <div class="cta-say">
+        <h2 class="h2">Start with a meeting.</h2>
+        <p>A first meeting runs about forty minutes. It establishes what the organisation needs and whether HaveStack is the right practice for it. Cost is discussed once the scope is understood.</p>
       </div>
-      <a class="btn" href="request.html"><span class="btn-face">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span></a>
+      <div class="cta-act">
+        <ol class="cta-steps">
+          <li>Submit the brief</li>
+          <li>Reply within two working days</li>
+          <li>Meeting scheduled</li>
+        </ol>
+        <a class="btn" href="request.html"><span class="btn-face">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span></a>
+      </div>
     </div>
   </div>
 </section>

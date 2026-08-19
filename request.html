@@ -21,21 +21,40 @@
    would arrive on paper.
    ========================================================================== */
 :root{
-  /* One permanent theme, matching the site. */
-  --bg:#0A0A0B;--bg-2:#101012;--surface:#131315;
-  --ink:#F2F2F0;--ink-2:#A2A2A7;--ink-3:#8C8C92;
-  --line:#26262A;--line-2:#1C1C1F;
-  --band:#050506;--band-ink:#F2F2F0;--band-ink-2:#9A9A9E;--band-line:#242428;
-  --red:#FF3B4E;--red-deep:#FF5C6B;--red-text:#FF8792;--on-red:#0A0A0B;
-  --r:3px;--gut:clamp(18px,3.4vw,44px);
+  /* One permanent theme, generated from the same OKLCH ramp as the site.
+     Hue 286 across every neutral; the accent is held at chroma .200. */
+  --band:#050506;--bg:#0A0A0C;--bg-2:#0F0F12;--surface:#131317;
+  --line-2:#1C1C20;--line:#26262B;--line-3:#35353A;
+  --ink-3:#8D8D94;--ink-2:#A3A3A9;--ink:#F1F1F4;
+  --band-ink:#F1F1F4;--band-ink-2:#9A9AA1;--band-line:#242429;
+  --red:#E64246;--red-hover:#D2383D;--red-press:#BD2F35;
+  --red-deep:#F36162;--red-text:#FC918E;--on-red:#0A0A0C;
+  /* semantic, desaturated toward the palette rather than a framework green */
+  --ok:#6FC087;
+
+  --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;
+  --space-6:32px;--space-7:48px;--space-8:64px;--space-9:96px;--space-10:128px;
+
+  --r:0px;
+  --gut:clamp(18px,3.4vw,44px);
   --ease:cubic-bezier(.22,.7,.3,1);--ease-out:cubic-bezier(.16,1,.3,1);
+  --t-1:90ms;--t-2:180ms;--t-3:320ms;--t-4:560ms;
   --sans:'Helvetica Neue',Helvetica,Arial,'Segoe UI',sans-serif;
+  --elev-1:0 1px 2px rgba(9,8,13,.44),0 2px 6px -2px rgba(9,8,13,.34);
+  --lit:inset 0 1px 0 rgba(255,255,255,.055);
   color-scheme:dark;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scrollbar-color:var(--line) var(--bg-2)}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;
   letter-spacing:-.002em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+/* the same 4% grain the site carries, so the two pages read as one surface */
+body::after{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.042;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:140px 140px;
+}
+@media (forced-colors:active){ body::after{display:none} }
 img{display:block;max-width:100%;height:auto}
 a{color:inherit;text-decoration:none}
 ul{list-style:none}
@@ -45,17 +64,17 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sprite{position:absolute;width:0;height:0;overflow:hidden}
 .ic{width:1em;height:1em;display:block;flex:0 0 auto;fill:currentColor}
 .ar{font-size:.95em;line-height:1}
-.skip{position:absolute;left:-9999px;top:0;z-index:200;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:var(--r);font-size:15px;font-weight:500}
+.skip{position:absolute;left:-9999px;top:0;z-index:200;background:var(--ink);color:var(--bg);padding:var(--space-3) var(--space-4);border-radius:var(--r);font-size:15px;font-weight:500}
 .skip:focus{left:12px;top:12px}
 
 .head{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:20}
-.head-in{max-width:1360px;margin:0 auto;padding-inline:var(--gut);height:66px;display:flex;align-items:center;gap:14px}
-.brand{display:flex;align-items:center;gap:9px;margin-right:auto;padding:4px;border-radius:var(--r)}
+.head-in{max-width:1360px;margin:0 auto;padding-inline:var(--gut);height:66px;display:flex;align-items:center;gap:var(--space-3)}
+.brand{display:flex;align-items:center;gap:var(--space-2);margin-right:auto;padding:var(--space-1);border-radius:var(--r)}
 .brand img{width:23px;height:23px}
 .brand span{font-size:17px;font-weight:500;letter-spacing:-.03em}
 .brand:focus-visible,.back:focus-visible{outline:2px solid currentColor;outline-offset:2px}
-.back{display:inline-flex;align-items:center;gap:8px;font-size:14.5px;color:var(--ink-2);padding:8px 10px;border-radius:var(--r)}
-.back:hover{color:var(--ink)}
+.back{display:inline-flex;align-items:center;gap:var(--space-2);font-size:14.5px;color:var(--ink-2);padding:var(--space-2) var(--space-2);border-radius:var(--r)}
+@media (hover:hover) and (pointer:fine){ .back:hover{color:var(--ink)} }
 
 /* ---- the two column instrument ---- */
 .sheet{max-width:1360px;margin:0 auto;padding-inline:var(--gut);
@@ -63,27 +82,27 @@ button,input,select,textarea{font:inherit;color:inherit}
 .rail{position:sticky;top:66px;padding:clamp(34px,4.4vw,64px) clamp(24px,2.6vw,42px) clamp(34px,4.4vw,64px) 0;
   border-right:1px solid var(--line)}
 .rail h1{font-size:clamp(30px,3.2vw,42px);line-height:1.06;font-weight:400;letter-spacing:-.03em}
-.rail .lede{margin-top:16px;font-size:15.5px;line-height:1.6;color:var(--ink-2);max-width:34ch}
-.kicker{display:inline-block;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px}
-.rail-meta{margin-top:30px;border-top:1px solid var(--line)}
-.rail-meta div{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid var(--line-2);font-size:14px}
+.rail .lede{margin-top:var(--space-4);font-size:15.5px;line-height:1.6;color:var(--ink-2);max-width:34ch}
+.kicker{display:inline-block;font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:var(--space-4)}
+.rail-meta{margin-top:var(--space-6);border-top:1px solid var(--line)}
+.rail-meta div{display:flex;justify-content:space-between;gap:var(--space-4);padding:var(--space-3) 0;border-bottom:1px solid var(--line-2);font-size:14px}
 .rail-meta dt{color:var(--ink-3)}
 .rail-meta dd{color:var(--ink);text-align:right}
-.rail-steps{margin-top:26px;display:grid;gap:10px}
-.rail-steps li{display:flex;gap:10px;font-size:14px;color:var(--ink-2)}
-.rail-steps .ar{color:var(--red-text)}
+.rail-steps{margin-top:var(--space-5);display:grid;gap:var(--space-2)}
+.rail-steps li{display:flex;gap:var(--space-2);font-size:14px;color:var(--ink-2)}
+.rail-steps .ar{color:var(--ink-3)}
 
 .body{padding:clamp(34px,4.4vw,64px) 0 clamp(56px,7vw,96px) clamp(24px,2.6vw,42px)}
 
 /* parts of the form, ruled like a printed instrument */
-.part{border-top:1px solid var(--line);padding-top:22px;margin-top:34px}
+.part{border-top:1px solid var(--line);padding-top:var(--space-5);margin-top:var(--space-6)}
 .part:first-of-type{margin-top:0;border-top:0;padding-top:0}
-.part-head{display:flex;align-items:baseline;gap:12px;margin-bottom:20px}
+.part-head{display:flex;align-items:baseline;gap:var(--space-3);margin-bottom:var(--space-4)}
 .part-no{font-size:12.5px;letter-spacing:.1em;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .part-head h2{font-size:17px;font-weight:500;letter-spacing:-.015em}
 
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
-.f{display:flex;flex-direction:column;gap:7px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--space-4)}
+.f{display:flex;flex-direction:column;gap:var(--space-2)}
 .f-6{grid-column:span 6}.f-12{grid-column:span 12}
 .f label{font-size:14px;font-weight:500}
 .f .req{color:var(--red-text);margin-left:3px}
@@ -91,27 +110,29 @@ button,input,select,textarea{font:inherit;color:inherit}
 .ctrl{position:relative}
 .ctrl input,.ctrl select,.ctrl textarea{
   width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-  padding:12px 14px;font-size:15.5px;line-height:1.5;color:var(--ink);
+  padding:var(--space-3) var(--space-3);font-size:15.5px;line-height:1.5;color:var(--ink);
   transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
 .ctrl select{appearance:none;-webkit-appearance:none;padding-right:40px;cursor:pointer}
 .ctrl textarea{resize:vertical;min-height:132px}
 .ctrl input::placeholder,.ctrl textarea::placeholder{color:var(--ink-3)}
-.ctrl input:hover,.ctrl select:hover,.ctrl textarea:hover{border-color:var(--ink-3)}
+@media (hover:hover) and (pointer:fine){ .ctrl input:hover,.ctrl select:hover,.ctrl textarea:hover{border-color:var(--ink-3)} }
 .ctrl :focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-color:var(--ink)}
 .ctrl .caret{position:absolute;right:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ink-3);font-size:17px}
 .f[data-bad="true"] input,.f[data-bad="true"] select,.f[data-bad="true"] textarea{border-color:var(--red)}
-.err{display:none;font-size:13.5px;color:var(--red-text);align-items:center;gap:7px}
+.err{display:none;font-size:13.5px;color:var(--red-text);align-items:center;gap:var(--space-2)}
 .f[data-bad="true"] .err{display:flex}
 .err .ic{font-size:16px}
 
 /* the priority notice restates the mandate at the point of decision */
-.notice{display:flex;gap:12px;border:1px solid var(--line);border-left:2px solid var(--red);
-  background:var(--surface);padding:15px 17px;margin-top:8px}
-.notice .ic{font-size:18px;color:var(--red);margin-top:2px}
+/* one rule, not a box, and not the accent: this restates the mandate, it does
+   not report an error, and red on a form reads as an error */
+.notice{display:flex;gap:var(--space-4);border-left:1px solid var(--line-3);
+  padding:var(--space-1) 0 var(--space-1) var(--space-5);margin-top:var(--space-5)}
+.notice .ic{font-size:18px;color:var(--ink-3);margin-top:3px}
 .notice p{font-size:14px;line-height:1.55;color:var(--ink-2)}
 
 .trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.foot-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:34px;padding-top:24px;border-top:1px solid var(--line)}
+.foot-row{display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;margin-top:var(--space-6);padding-top:var(--space-5);border-top:1px solid var(--line)}
 .foot-row p{font-size:13.5px;color:var(--ink-3);max-width:44ch}
 /* ---- the call to action ----
    Adapted from the Uiverse converging circles button by Randdose, retuned for
@@ -123,33 +144,45 @@ button,input,select,textarea{font:inherit;color:inherit}
    still black page for the length of the slide. */
 .btn{
   all:unset;
-  position:relative;display:inline-flex;align-items:center;gap:11px;
-  box-sizing:border-box;min-height:46px;padding:12px 22px;
-  border:1px solid #F4F4F2;border-radius:6px;
-  background:#F4F4F2;color:#0A0A0B;
+  position:relative;display:inline-flex;align-items:center;gap:var(--space-3);
+  box-sizing:border-box;min-height:46px;padding:var(--space-3) var(--space-5) var(--space-3);
+  border:1px solid var(--ink);border-radius:var(--r);
+  background:var(--ink);color:var(--on-red);
+  box-shadow:var(--elev-1),inset 0 1px 0 rgba(255,255,255,.7);
   font-family:var(--sans);font-size:16px;font-weight:500;letter-spacing:-.008em;
+  line-height:1.1;white-space:nowrap;
   cursor:pointer;overflow:hidden;user-select:none;
-  transition:border-color 300ms var(--ease);
+  transition:border-color var(--t-2) var(--ease),
+             transform var(--t-1) var(--ease),
+             box-shadow var(--t-1) var(--ease);
 }
-.btn-face{position:relative;z-index:1;display:inline-flex;align-items:center;gap:11px}
+.btn-face{position:relative;z-index:1;display:inline-flex;align-items:center;gap:var(--space-3)}
 .btn::before,.btn::after{
   content:"";position:absolute;top:50%;
   width:9em;aspect-ratio:1;border-radius:50%;
   background:var(--red);
-  transition:transform 500ms var(--ease),background 300ms var(--ease);
+  transition:transform var(--t-4) var(--ease),background var(--t-2) var(--ease);
 }
 .btn::before{left:0;transform:translate(-9.5em,-50%)}
 .btn::after{right:0;transform:translate(9.5em,-50%)}
-.btn:hover::before,.btn:focus-visible::before{transform:translate(-1.2em,-50%)}
-.btn:hover::after,.btn:focus-visible::after{transform:translate(1.2em,-50%)}
-.btn:hover,.btn:focus-visible{border-color:var(--red)}
-.btn:active::before,.btn:active::after{background:var(--red-deep)}
-.btn:active{border-color:var(--red-deep)}
-.btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.btn:focus-visible::before{transform:translate(-1.2em,-50%)}
+.btn:focus-visible::after{transform:translate(1.2em,-50%)}
+.btn:focus-visible{border-color:var(--red);outline:2px solid var(--ink);outline-offset:3px}
+@media (hover:hover) and (pointer:fine){
+  .btn:hover::before{transform:translate(-1.2em,-50%)}
+  .btn:hover::after{transform:translate(1.2em,-50%)}
+  .btn:hover{border-color:var(--red)}
+  .btn:hover .ar{transform:translate(2px,-2px)}
+}
+.btn:active{
+  transform:translateY(1px);
+  box-shadow:0 0 0 rgba(0,0,0,0),inset 0 1px 2px rgba(9,8,13,.30);
+  border-color:var(--red-press);
+}
+.btn:active::before,.btn:active::after{background:var(--red-press)}
 .btn[disabled]{cursor:progress}
-.btn .ar{opacity:.7;transition:transform .3s var(--ease-out)}
-.btn:hover .ar{transform:translate(2px,-2px)}
-.head .btn{min-height:38px;padding:8px 16px;font-size:15px}
+.btn .ar{opacity:.7;transition:transform var(--t-2) var(--ease-out)}
+.head .btn{min-height:38px;padding:var(--space-2) var(--space-4) var(--space-2);font-size:15px}
 .spin{width:14px;height:14px;border:2px solid rgba(10,10,11,.3);border-top-color:var(--bg);border-radius:50%;animation:spin .8s linear infinite;display:none}
 .btn[data-busy="true"] .spin{display:block}
 .btn[data-busy="true"] .ar{display:none}
@@ -159,15 +192,15 @@ button,input,select,textarea{font:inherit;color:inherit}
 .lodged{display:none;border:1px solid var(--line);background:var(--surface)}
 .lodged[data-show="true"]{display:block}
 .lodged-top{padding:clamp(26px,3vw,42px);border-bottom:1px solid var(--line)}
-.lodged-top .ic{font-size:26px;color:var(--red)}
-.lodged-top h2{margin:16px 0 10px;font-size:clamp(22px,2.4vw,30px);font-weight:400;letter-spacing:-.025em}
+.lodged-top .ic{font-size:26px;color:var(--ok)}
+.lodged-top h2{margin:var(--space-4) 0 var(--space-2);font-size:clamp(22px,2.4vw,30px);font-weight:400;letter-spacing:-.025em}
 .lodged-top p{color:var(--ink-2);max-width:52ch;font-size:15.5px}
 .lodged-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
-.lodged-cell{padding:18px 22px;border-right:1px solid var(--line)}
+.lodged-cell{padding:var(--space-4) var(--space-5);border-right:1px solid var(--line)}
 .lodged-cell:last-child{border-right:0}
 .lodged-cell dt{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
-.lodged-cell dd{margin-top:6px;font-size:16px;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.lodged-foot{padding:18px 22px;border-top:1px solid var(--line);display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+.lodged-cell dd{margin-top:var(--space-1);font-size:16px;font-weight:500;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.lodged-foot{padding:var(--space-4) var(--space-5);border-top:1px solid var(--line);display:flex;gap:var(--space-4);flex-wrap:wrap;align-items:center}
 .lodged-foot a{font-size:14.5px;border-bottom:1px solid currentColor;padding-bottom:1px}
 .lodged-foot a:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 
@@ -386,7 +419,7 @@ button,input,select,textarea{font:inherit;color:inherit}
       <div class="lodged-top">
         <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-seal-check"/></svg>
         <h2>The brief has been lodged.</h2>
-        <p>Your email client has been opened with the request prepared. Send that message to complete the submission.</p>
+        <p>The request has been received and is queued for review. Keep the reference below; a reply is due by the date shown.</p>
       </div>
       <dl class="lodged-grid">
         <div class="lodged-cell"><dt>Reference</dt><dd id="ref">HS</dd></div>
