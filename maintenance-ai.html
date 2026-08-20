@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI and language models | Systems under management | HaveStack Technologies</title>
+<meta name="description" content="How HaveStack maintains AI and language model features in production: version pinning, standing evaluation sets, token ceilings, provider fallback and retrieval freshness." />
+<link rel="icon" href="assets/favicon.png" />
+<link rel="apple-touch-icon" href="assets/favicon.png" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0A0A0C" />
+<link rel="canonical" href="https://havestack.tech/maintenance-ai.html" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="HaveStack Technologies" />
+<meta property="og:title" content="AI and language models | Systems under management" />
+<meta property="og:description" content="How HaveStack maintains AI and language model features in production: version pinning, standing evaluation sets, token ceilings, provider fallback and retrieval freshness." />
+<meta property="og:image" content="https://havestack.tech/assets/og-card.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="stylesheet" href="assets/domain.css" />
+<script>document.documentElement.classList.add('js');</script>
+<style>.mast::before{background-image:url("assets/ops-ai.jpg")}</style>
+</head>
+
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-brain" viewBox="0 0 256 256"><path d="M248,124a56.11,56.11,0,0,0-32-50.61V72a48,48,0,0,0-88-26.49A48,48,0,0,0,40,72v1.39a56,56,0,0,0,0,101.2V176a48,48,0,0,0,88,26.49A48,48,0,0,0,216,176v-1.41A56.09,56.09,0,0,0,248,124ZM88,208a32,32,0,0,1-31.81-28.56A55.87,55.87,0,0,0,64,180h8a8,8,0,0,0,0-16H64A40,40,0,0,1,50.67,86.27,8,8,0,0,0,56,78.73V72a32,32,0,0,1,64,0v68.26A47.8,47.8,0,0,0,88,128a8,8,0,0,0,0,16,32,32,0,0,1,0,64Zm104-44h-8a8,8,0,0,0,0,16h8a55.87,55.87,0,0,0,7.81-.56A32,32,0,1,1,168,144a8,8,0,0,0,0-16,47.8,47.8,0,0,0-32,12.26V72a32,32,0,0,1,64,0v6.73a8,8,0,0,0,5.33,7.54A40,40,0,0,1,192,164Zm16-52a8,8,0,0,1-8,8h-4a36,36,0,0,1-36-36V80a8,8,0,0,1,16,0v4a20,20,0,0,0,20,20h4A8,8,0,0,1,208,112ZM60,120H56a8,8,0,0,1,0-16h4A20,20,0,0,0,80,84V80a8,8,0,0,1,16,0v4A36,36,0,0,1,60,120Z"/></symbol>
+<symbol id="i-hard-drives" viewBox="0 0 256 256"><path d="M208,136H48a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V152A16,16,0,0,0,208,136Zm0,64H48V152H208v48Zm0-160H48A16,16,0,0,0,32,56v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40Zm0,64H48V56H208v48ZM192,80a12,12,0,1,1-12-12A12,12,0,0,1,192,80Zm0,96a12,12,0,1,1-12-12A12,12,0,0,1,192,176Z"/></symbol>
+<symbol id="i-cpu" viewBox="0 0 256 256"><path d="M152,96H104a8,8,0,0,0-8,8v48a8,8,0,0,0,8,8h48a8,8,0,0,0,8-8V104A8,8,0,0,0,152,96Zm-8,48H112V112h32Zm88,0H216V112h16a8,8,0,0,0,0-16H216V56a16,16,0,0,0-16-16H160V24a8,8,0,0,0-16,0V40H112V24a8,8,0,0,0-16,0V40H56A16,16,0,0,0,40,56V96H24a8,8,0,0,0,0,16H40v32H24a8,8,0,0,0,0,16H40v40a16,16,0,0,0,16,16H96v16a8,8,0,0,0,16,0V216h32v16a8,8,0,0,0,16,0V216h40a16,16,0,0,0,16-16V160h16a8,8,0,0,0,0-16Zm-32,56H56V56H200v95.87s0,.09,0,.13,0,.09,0,.13V200Z"/></symbol>
+<symbol id="i-clock-counter-clockwise" viewBox="0 0 256 256"><path d="M136,80v43.47l36.12,21.67a8,8,0,0,1-8.24,13.72l-40-24A8,8,0,0,1,120,128V80a8,8,0,0,1,16,0Zm-8-48A95.44,95.44,0,0,0,60.08,60.15C52.81,67.51,46.35,74.59,40,82V64a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H72a8,8,0,0,0,0-16H49c7.15-8.42,14.27-16.35,22.39-24.57a80,80,0,1,1,1.66,114.75,8,8,0,1,0-11,11.64A96,96,0,1,0,128,32Z"/></symbol>
+</defs></svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="head">
+  <div class="wrap head-in">
+    <a class="brand" href="index.html">
+      <img src="assets/logo-mark-96.png" alt="" width="23" height="23" />
+      <span>HaveStack</span>
+    </a>
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a class="home" href="index.html">Home</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="index.html#maintenance">Maintenance</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <b aria-current="page">AI and language models</b>
+    </nav>
+    <a class="btn" href="request.html"><span class="btn-face">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span></a>
+  </div>
+</header>
+
+<main id="main">
+
+  <div class="mast">
+    <div class="wrap">
+      <span class="kicker">Systems under management</span>
+      <h1 class="h1">Keeping a language model honest after launch.</h1>
+      <p class="lead">A model that passed review in March is not the same product in September. The weights move, the prompts drift, the retrieval corpus goes stale and the bill grows. Maintenance is what keeps a language feature behaving the way it behaved on the day it was accepted.</p>
+      <dl class="facts">
+        <div><dt>Applies to</dt><dd>Any feature calling a hosted or self hosted model</dd></div>
+        <div><dt>Cadence</dt><dd>Evaluation on every change, review each month</dd></div>
+        <div><dt>Evidence</dt><dd>Eval results, token ledger, incident record</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="sheet">
+      <aside class="rail">
+        <div class="rail-in">
+          <h2>On this page</h2>
+          <ul class="toc" id="toc">
+            <li><a href="#moving-target">The product moves even when you do not ship</a></li>
+            <li><a href="#pinning">Pinning, so that change is a decision</a></li>
+            <li><a href="#evaluation">Evaluation is a standing test, not a launch gate</a></li>
+            <li><a href="#cost">Cost is an operational limit, not a surprise</a></li>
+            <li><a href="#fallback">What happens when the provider is having a bad day</a></li>
+            <li><a href="#retrieval">Retrieval that is current, or honest about not being</a></li>
+            <li><a href="#agreement">What goes into the agreement</a></li>
+            <li><a href="#terms">Terms used here</a></li>
+            <li><a href="#references">References</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <article class="art">
+        <section id="moving-target" class="rv">
+          <h2 class="h2">The product moves even when you do not ship.</h2>
+          <p>Conventional software is stable between releases. If nobody deploys, nothing changes. A feature built on a language model does not work that way. The provider updates a checkpoint, the safety layer is retuned, a rate limit is revised, and the answers your users see change without a line of your code moving.</p>
+          <p>The failure this produces is not a crash. It is a slope. Output quality declines gradually as the distribution of real prompts drifts away from the ones the feature was designed against, or as an underlying checkpoint shifts beneath it. Industry guidance on LLM observability describes exactly this: quality degradation arrives as a gradient rather than an outage, and without a baseline to compare against, teams do not notice they are on the slope until the drop is large enough for someone to complain.</p>
+          <p>Everything below exists to turn that slope into something with a number attached, so it can be seen before a client sees it.</p>
+        </section>
+
+        <section id="pinning" class="rv">
+          <h2 class="h2">Pinning, so that change is a decision.</h2>
+          <p>Every model reference in a HaveStack system names an explicit version. Not the provider alias that quietly follows the newest checkpoint, the version. An upgrade is then something the practice chooses and tests, on a date, rather than something that arrives on a Tuesday.</p>
+          <p>Pinning the weights alone is not enough, because the model is only one of the artefacts that decides an answer. Current LLMOps practice treats prompt templates, retrieval indexes and guardrail configuration as versioned artefacts in their own right, each tied to the release that shipped it. A response that was wrong last week can then be traced to the exact combination that produced it.</p>
+          <ul class="points">
+            <li>The model version is written down, never inherited from an alias</li>
+            <li>Prompt templates are versioned with the code that sends them</li>
+            <li>Retrieval index builds carry a build identifier</li>
+            <li>Guardrail and safety configuration is versioned alongside</li>
+            <li>An upgrade is tested against the standing evaluation set first</li>
+            <li>The previous version stays reachable until the new one is accepted</li>
+          </ul>
+        </section>
+
+        <section id="evaluation" class="rv">
+          <h2 class="h2">Evaluation is a standing test, not a launch gate.</h2>
+          <p>A fixed evaluation set is a body of representative inputs with known good outputs, held constant so that results are comparable over time. It is run before any change to a model, a prompt or a retrieval source, and the result is compared against the last accepted run rather than against an abstract idea of quality.</p>
+          <p>The distinction that matters in practice is between evaluation and monitoring. Evaluation validates a candidate before it reaches users, on data you control. Monitoring catches what evaluation could not anticipate, on live traffic. A system with only the first has no idea what real users are experiencing; a system with only the second learns about every problem from the people it affects.</p>
+          <p>HaveStack runs both, and keeps the evaluation set under version control with the system, so that a client can read it.</p>
+        </section>
+
+        <section id="cost" class="rv">
+          <h2 class="h2">Cost is an operational limit, not a surprise.</h2>
+          <p>Token spend is the one part of a language feature that can fail while everything else works perfectly. Usage grows, a prompt gets longer, a retrieval step starts returning more context, and the monthly figure moves without any single change looking significant.</p>
+          <p>Every system HaveStack maintains logs input and output token counts per call, attributes them to a feature, and carries a monthly ceiling agreed in the service agreement. Crossing an agreed fraction of that ceiling raises an alert to a named contact rather than an invoice at the end of the month.</p>
+        </section>
+
+        <section id="fallback" class="rv">
+          <h2 class="h2">What happens when the provider is having a bad day.</h2>
+          <p>Hosted models degrade in ways that are not outages. Latency triples, a region rate limits, a safety filter starts refusing a category of legitimate request. A system with a single hard coded provider passes all of that straight through to the user.</p>
+          <p>Fallback routing means the system has a defined second path and a rule for taking it: a latency threshold, an error rate, a refusal pattern. The fallback is exercised on a schedule, not assumed, because a route nobody has ever taken is a guess rather than a control.</p>
+        </section>
+
+        <section id="retrieval" class="rv">
+          <h2 class="h2">Retrieval that is current, or honest about not being.</h2>
+          <p>Where a feature answers from an organisation’s own documents, the answer is only as good as the last index build. A retrieval corpus that has not been rebuilt since a policy changed will answer confidently from the old policy, and nothing in the output will indicate that it is out of date.</p>
+          <p>Re indexing runs on a schedule written into the agreement, the build carries a timestamp, and the system can report when it last ran. Where currency genuinely matters, that timestamp is surfaced to the user rather than kept in a log.</p>
+        </section>
+        <section id="agreement" class="rv">
+          <h2 class="h2">Written down, or it does not happen.</h2>
+          <p>Maintenance that is not written down is a favour, and a favour stops the moment somebody is busy. These are the clauses that make the practice above enforceable.</p>
+          <div class="pact">
+            <h3 class="h3">What goes into the agreement</h3>
+            <ul>
+              <li>The model version, prompt version and index build in production at handover</li>
+              <li>The evaluation set, its pass threshold, and who signs off a change to it</li>
+              <li>A monthly token ceiling and the contact alerted before it is reached</li>
+              <li>The fallback provider, the conditions that trigger it, and how often it is exercised</li>
+              <li>The re indexing schedule for every retrieval source</li>
+              <li>A monthly written report covering evaluation results, spend and incidents</li>
+            </ul>
+          </div>
+        </section>
+        <section id="terms" class="rv">
+          <h2 class="h2">Terms used here.</h2>
+          <dl class="defs">
+            <div><dt>Evaluation set</dt><dd>A fixed body of representative inputs with known good outputs, held constant so results are comparable between runs.</dd></div>
+            <div><dt>Drift</dt><dd>Movement in the distribution of real inputs, or in the model beneath them, that changes output quality without any code change.</dd></div>
+            <div><dt>Token ceiling</dt><dd>An agreed monthly limit on spend, with an alert threshold below it, so cost is bounded rather than observed.</dd></div>
+            <div><dt>Fallback routing</dt><dd>A defined second provider and the measured conditions under which traffic moves to it.</dd></div>
+            <div><dt>Re indexing</dt><dd>Rebuilding a retrieval corpus so that answers reflect current source documents rather than the state at launch.</dd></div>
+          </dl>
+        </section>
+        <section id="references" class="rv">
+          <h2 class="h2">References.</h2>
+          <p>Published guidance this page draws on. HaveStack does not claim authorship of the practice described; it claims to follow it.</p>
+          <ol class="refs">
+            <li><span>01</span><div><a href="https://www.openlayer.com/blog/llm-observability-complete-guide" rel="noopener noreferrer" target="_blank">LLM observability: a complete guide to monitoring AI applications</a>. Openlayer.</div></li>
+            <li><span>02</span><div><a href="https://portkey.ai/blog/the-complete-guide-to-llm-observability/" rel="noopener noreferrer" target="_blank">The complete guide to LLM observability</a>. Portkey.</div></li>
+            <li><span>03</span><div><a href="https://redis.io/blog/large-language-model-operations-guide/" rel="noopener noreferrer" target="_blank">LLMOps guide: building fast, cost effective LLM applications</a>. Redis.</div></li>
+            <li><span>04</span><div><a href="https://machinelearningmastery.com/the-roadmap-for-mastering-llmops-in-2026/" rel="noopener noreferrer" target="_blank">The roadmap for mastering LLMOps</a>. Machine Learning Mastery.</div></li>
+          </ol>
+        </section>
+
+        <section id="siblings" class="rv">
+          <h2 class="h2">The rest of what stays under management.</h2>
+          <div class="siblings">
+          <a class="sib" href="maintenance-databases.html">
+            <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-hard-drives"/></svg>
+            <b>Databases</b>
+            <span class="ar" aria-hidden="true">&#8594;</span>
+          </a>
+          <a class="sib" href="maintenance-backend.html">
+            <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-cpu"/></svg>
+            <b>Backend and infrastructure</b>
+            <span class="ar" aria-hidden="true">&#8594;</span>
+          </a>
+          <a class="sib" href="maintenance-response.html">
+            <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-clock-counter-clockwise"/></svg>
+            <b>Response and reporting</b>
+            <span class="ar" aria-hidden="true">&#8594;</span>
+          </a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <section class="cta-sect">
+    <div class="wrap">
+      <span class="kicker">Engagement</span>
+      <div class="cta-band">
+        <div class="cta-say">
+          <h2 class="h2">Start with a meeting.</h2>
+          <p>Maintenance is available on systems HaveStack built and, after a written technical review, on systems it did not. A first meeting runs about forty minutes and establishes what is already in place.</p>
+        </div>
+        <div class="cta-act">
+          <ol class="cta-steps">
+            <li>Submit the brief</li>
+            <li>Reply within two working days</li>
+            <li>Meeting scheduled</li>
+          </ol>
+          <a class="btn" href="request.html"><span class="btn-face">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <a class="foot-brand" href="index.html">
+        <img src="assets/logo-mark-96.png" alt="" width="23" height="23" />
+        <span>HaveStack</span>
+      </a>
+      <a href="index.html#maintenance">Maintenance</a>
+      <a href="index.html#standards">Standards</a>
+      <a href="index.html#clients">Governance</a>
+      <a href="mailto:hello@havestack.tech">hello@havestack.tech</a>
+    </div>
+    <div class="foot-bar">
+      <p>HaveStack Technologies, in partnership with Amaze Consortium</p>
+      <p>Copyright 2026</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* reveals, staggered inside a section rather than across the page */
+  var rv = [].slice.call(document.querySelectorAll('.rv'));
+  if (reduce.matches) {
+    rv.forEach(function (e) { e.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function (rows, obs) {
+      rows.forEach(function (r, i) {
+        if (!r.isIntersecting) return;
+        r.target.style.transitionDelay = (Math.min(i, 4) * 55) + 'ms';
+        r.target.classList.add('in');
+        obs.unobserve(r.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: .08 });
+    rv.forEach(function (e) { io.observe(e); });
+  }
+
+  /* mark the section being read in the contents rail */
+  var links = [].slice.call(document.querySelectorAll('.toc a'));
+  var targets = links
+    .map(function (a) { return document.querySelector(a.getAttribute('href')); })
+    .filter(Boolean);
+  if (targets.length) {
+    var seen = new Map();
+    var spy = new IntersectionObserver(function (rows) {
+      rows.forEach(function (r) { seen.set(r.target, r.intersectionRatio); });
+      var best = null, top = 0;
+      seen.forEach(function (ratio, el) { if (ratio > top) { top = ratio; best = el; } });
+      links.forEach(function (a) {
+        var on = best && a.getAttribute('href') === '#' + best.id;
+        if (on) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+    }, { rootMargin: '-88px 0px -55% 0px', threshold: [0, .25, .5, 1] });
+    targets.forEach(function (t) { spy.observe(t); });
+  }
+})();
+</script>
+</body>
+</html>

@@ -521,7 +521,7 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 }
 .ops{display:flex;flex-direction:column}
 /* one hairline between domains, never a box around each one */
-.op{position:relative;padding:var(--space-7) 0;border-top:1px solid var(--band-line)}
+.op{position:relative;display:flex;flex-direction:column;padding:var(--space-7) 0;border-top:1px solid var(--band-line)}
 .op:first-child{padding-top:var(--space-1);border-top:0}
 .op-head{position:relative;display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5)}
 .op .ic{font-size:20px;color:var(--ink-3);margin:0}
@@ -536,6 +536,34 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
   content:'';position:absolute;left:0;top:.72em;width:6px;height:1px;
   background:var(--line-3);
 }
+
+/* The link sits in the corner the two list columns leave empty, so it costs
+   the row no height. It is navigation rather than a call to action, which is
+   why it is a text link and not a second button competing with the one label
+   the site uses. */
+.op-more{
+  position:relative;z-index:1;
+  display:inline-flex;align-items:center;gap:var(--space-2);
+  margin-top:var(--space-6);align-self:flex-end;
+  font-size:14px;font-weight:500;color:var(--band-ink-2);
+  padding-bottom:3px;
+  transition:color var(--t-2) var(--ease);
+}
+.op-more::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:currentColor;transform:scaleX(0);transform-origin:0 50%;
+  transition:transform var(--t-3) var(--ease-out);
+}
+.op-more .ar{transition:transform var(--t-2) var(--ease-out)}
+@media (hover:hover) and (pointer:fine){
+  .op:hover .op-more{color:var(--band-ink)}
+  .op-more:hover::after{transform:scaleX(1)}
+  .op-more:hover .ar{transform:translateX(3px)}
+}
+.op-more:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+.op-more:focus-visible::after{transform:scaleX(1)}
+/* visually hidden, so the link text is unique to a screen reader */
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* One frame per domain, revealed on hover.
    The frame is declared only inside the pointer query, so a phone never
@@ -1166,6 +1194,7 @@ html:not(.js) .rv{opacity:1;transform:none}
           <li>Fallback routing when a provider degrades</li>
           <li>Retrieval sources re indexed on a schedule</li>
         </ul>
+        <a class="op-more" href="maintenance-ai.html">Learn more<span class="vh"> about AI and language models</span> <span class="ar" aria-hidden="true">&#8594;</span></a>
       </article>
       <article class="op op-data rv">
         <span class="op-shot" aria-hidden="true"></span>
@@ -1180,6 +1209,7 @@ html:not(.js) .rv{opacity:1;transform:none}
           <li>Replication and failover verified</li>
           <li>Growth watched before storage runs out</li>
         </ul>
+        <a class="op-more" href="maintenance-databases.html">Learn more<span class="vh"> about Databases</span> <span class="ar" aria-hidden="true">&#8594;</span></a>
       </article>
       <article class="op op-infra rv">
         <span class="op-shot" aria-hidden="true"></span>
@@ -1194,6 +1224,7 @@ html:not(.js) .rv{opacity:1;transform:none}
           <li>Capacity reviewed against measured load</li>
           <li>Logs retained for the period the contract sets</li>
         </ul>
+        <a class="op-more" href="maintenance-backend.html">Learn more<span class="vh"> about Backend and infrastructure</span> <span class="ar" aria-hidden="true">&#8594;</span></a>
       </article>
       <article class="op op-report rv">
         <span class="op-shot" aria-hidden="true"></span>
@@ -1208,6 +1239,7 @@ html:not(.js) .rv{opacity:1;transform:none}
           <li>A monthly report the client can file</li>
           <li>Access reviewed each quarter</li>
         </ul>
+        <a class="op-more" href="maintenance-response.html">Learn more<span class="vh"> about Response and reporting</span> <span class="ar" aria-hidden="true">&#8594;</span></a>
       </article>
     </div>
   </div>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Backend and infrastructure | Systems under management | HaveStack Technologies</title>
+<meta name="description" content="How HaveStack maintains backend services and infrastructure: patching by exploitability, certificate and domain renewal, alerting to a named contact, capacity against measured load and log retention." />
+<link rel="icon" href="assets/favicon.png" />
+<link rel="apple-touch-icon" href="assets/favicon.png" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0A0A0C" />
+<link rel="canonical" href="https://havestack.tech/maintenance-backend.html" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="HaveStack Technologies" />
+<meta property="og:title" content="Backend and infrastructure | Systems under management" />
+<meta property="og:description" content="How HaveStack maintains backend services and infrastructure: patching by exploitability, certificate and domain renewal, alerting to a named contact, capacity against measured load and log retention." />
+<meta property="og:image" content="https://havestack.tech/assets/og-card.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="stylesheet" href="assets/domain.css" />
+<script>document.documentElement.classList.add('js');</script>
+<style>.mast::before{background-image:url("assets/ops-infra.jpg")}</style>
+</head>
+
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-brain" viewBox="0 0 256 256"><path d="M248,124a56.11,56.11,0,0,0-32-50.61V72a48,48,0,0,0-88-26.49A48,48,0,0,0,40,72v1.39a56,56,0,0,0,0,101.2V176a48,48,0,0,0,88,26.49A48,48,0,0,0,216,176v-1.41A56.09,56.09,0,0,0,248,124ZM88,208a32,32,0,0,1-31.81-28.56A55.87,55.87,0,0,0,64,180h8a8,8,0,0,0,0-16H64A40,40,0,0,1,50.67,86.27,8,8,0,0,0,56,78.73V72a32,32,0,0,1,64,0v68.26A47.8,47.8,0,0,0,88,128a8,8,0,0,0,0,16,32,32,0,0,1,0,64Zm104-44h-8a8,8,0,0,0,0,16h8a55.87,55.87,0,0,0,7.81-.56A32,32,0,1,1,168,144a8,8,0,0,0,0-16,47.8,47.8,0,0,0-32,12.26V72a32,32,0,0,1,64,0v6.73a8,8,0,0,0,5.33,7.54A40,40,0,0,1,192,164Zm16-52a8,8,0,0,1-8,8h-4a36,36,0,0,1-36-36V80a8,8,0,0,1,16,0v4a20,20,0,0,0,20,20h4A8,8,0,0,1,208,112ZM60,120H56a8,8,0,0,1,0-16h4A20,20,0,0,0,80,84V80a8,8,0,0,1,16,0v4A36,36,0,0,1,60,120Z"/></symbol>
+<symbol id="i-hard-drives" viewBox="0 0 256 256"><path d="M208,136H48a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V152A16,16,0,0,0,208,136Zm0,64H48V152H208v48Zm0-160H48A16,16,0,0,0,32,56v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40Zm0,64H48V56H208v48ZM192,80a12,12,0,1,1-12-12A12,12,0,0,1,192,80Zm0,96a12,12,0,1,1-12-12A12,12,0,0,1,192,176Z"/></symbol>
+<symbol id="i-cpu" viewBox="0 0 256 256"><path d="M152,96H104a8,8,0,0,0-8,8v48a8,8,0,0,0,8,8h48a8,8,0,0,0,8-8V104A8,8,0,0,0,152,96Zm-8,48H112V112h32Zm88,0H216V112h16a8,8,0,0,0,0-16H216V56a16,16,0,0,0-16-16H160V24a8,8,0,0,0-16,0V40H112V24a8,8,0,0,0-16,0V40H56A16,16,0,0,0,40,56V96H24a8,8,0,0,0,0,16H40v32H24a8,8,0,0,0,0,16H40v40a16,16,0,0,0,16,16H96v16a8,8,0,0,0,16,0V216h32v16a8,8,0,0,0,16,0V216h40a16,16,0,0,0,16-16V160h16a8,8,0,0,0,0-16Zm-32,56H56V56H200v95.87s0,.09,0,.13,0,.09,0,.13V200Z"/></symbol>
+<symbol id="i-clock-counter-clockwise" viewBox="0 0 256 256"><path d="M136,80v43.47l36.12,21.67a8,8,0,0,1-8.24,13.72l-40-24A8,8,0,0,1,120,128V80a8,8,0,0,1,16,0Zm-8-48A95.44,95.44,0,0,0,60.08,60.15C52.81,67.51,46.35,74.59,40,82V64a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H72a8,8,0,0,0,0-16H49c7.15-8.42,14.27-16.35,22.39-24.57a80,80,0,1,1,1.66,114.75,8,8,0,1,0-11,11.64A96,96,0,1,0,128,32Z"/></symbol>
+</defs></svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="head">
+  <div class="wrap head-in">
+    <a class="brand" href="index.html">
+      <img src="assets/logo-mark-96.png" alt="" width="23" height="23" />
+      <span>HaveStack</span>
+    </a>
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a class="home" href="index.html">Home</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="index.html#maintenance">Maintenance</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <b aria-current="page">Backend and infrastructure</b>
+    </nav>
+    <a class="btn" href="request.html"><span class="btn-face">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span></a>
+  </div>
+</header>
+
+<main id="main">
+
+  <div class="mast">
+    <div class="wrap">
+      <span class="kicker">Systems under management</span>
+      <h1 class="h1">The work that is invisible until the day it is not.</h1>
+      <p class="lead">Dependencies acquire vulnerabilities, certificates expire, load grows past what was provisioned and logs are discarded a week before somebody needs them. None of it announces itself. All of it is on a calendar if somebody keeps one.</p>
+      <dl class="facts">
+        <div><dt>Applies to</dt><dd>Application servers, data stores, networking and delivery</dd></div>
+        <div><dt>Cadence</dt><dd>Advisories weekly, capacity monthly, access quarterly</dd></div>
+        <div><dt>Evidence</dt><dd>Patch record, renewal calendar, alert history</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="sheet">
+      <aside class="rail">
+        <div class="rail-in">
+          <h2>On this page</h2>
+          <ul class="toc" id="toc">
+            <li><a href="#patching">Patch by exploitability, not by score alone</a></li>
+            <li><a href="#certificates">Certificates and domains, renewed before expiry</a></li>
+            <li><a href="#alerting">Alerting to a named contact</a></li>
+            <li><a href="#capacity">Capacity against measured load, not guessed load</a></li>
+            <li><a href="#logs">Logs retained for the period the contract sets</a></li>
+            <li><a href="#agreement">What goes into the agreement</a></li>
+            <li><a href="#terms">Terms used here</a></li>
+            <li><a href="#references">References</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <article class="art">
+        <section id="patching" class="rv">
+          <h2 class="h2">Patch by exploitability, not by score alone.</h2>
+          <p>A modern application carries hundreds of transitive dependencies. Reviewing every advisory against every one of them by hand is not a plan, and treating the severity score as the sole ranking produces a queue nobody can finish: there are always more critical findings than there is time.</p>
+          <p>The prioritisation that works is risk based. A vulnerability that is known to be exploited in the wild outranks a theoretically severe one that is not, regardless of the score attached to it. The catalogue of known exploited vulnerabilities maintained by the United States Cybersecurity and Infrastructure Security Agency exists for exactly this purpose, and is a standing input to the weekly review.</p>
+          <p>Exposure is the second axis. The same library carries a different risk in a service reachable from the public internet than in a batch job on an internal network. Both get patched; they do not get patched in the same week.</p>
+          <ul class="points">
+            <li>Composition analysis runs in the pipeline, not as an annual exercise</li>
+            <li>Advisories reviewed weekly against the dependency inventory</li>
+            <li>Known exploited vulnerabilities take precedence over score alone</li>
+            <li>Internet facing exposure raises priority</li>
+            <li>A patch service level per severity, agreed in writing</li>
+            <li>Every applied patch recorded against the system it changed</li>
+          </ul>
+        </section>
+
+        <section id="certificates" class="rv">
+          <h2 class="h2">Certificates and domains, renewed before expiry.</h2>
+          <p>Certificate expiry is the purest example of avoidable downtime. The date is known at the moment of issue. The outage it causes is total, immediate and affects every user at once. It happens anyway, to large organisations, several times a year.</p>
+          <p>Automated renewal is the first control and monitoring is the second, because automation fails silently. Every certificate and every domain a HaveStack system depends on is on a renewal calendar with an alert well ahead of the date, and the alert goes to a person rather than a shared mailbox nobody owns.</p>
+        </section>
+
+        <section id="alerting" class="rv">
+          <h2 class="h2">Alerting to a named contact.</h2>
+          <p>A dashboard tells you something is wrong when you are looking at it. Most failures do not wait for office hours. The useful question about any monitoring setup is not what it measures but who it wakes.</p>
+          <p>Uptime and error rates are alerted to a named individual on the client side and to the practice, with a defined escalation if the first contact does not respond. Thresholds are set against agreed objectives rather than against whatever the tool defaults to, so that an alert means something is outside the commitment rather than merely unusual.</p>
+        </section>
+
+        <section id="capacity" class="rv">
+          <h2 class="h2">Capacity against measured load, not guessed load.</h2>
+          <p>Provisioning decided at launch reflects what the team expected. Six months in there is real data: peak concurrency, request distribution, the shape of month end. Reviewing against measurement rather than against the original estimate is how a system stops being either fragile or wasteful.</p>
+          <p>Capacity is reviewed monthly against observed load, with headroom expressed as a multiple of measured peak rather than as a feeling. Public facing services carry a stated peak they have been proven against, and the proof is a load test, not an opinion.</p>
+        </section>
+
+        <section id="logs" class="rv">
+          <h2 class="h2">Logs retained for the period the contract sets.</h2>
+          <p>Log retention is treated as an infrastructure cost decision and it is actually a contractual and sometimes regulatory one. The moment a client needs to establish what happened, in a dispute or an audit or a security review, the only relevant question is whether the record still exists.</p>
+          <p>The retention period is agreed in writing, applied to application, access and audit logs separately where they differ, and the storage is provisioned for it. Logs are not discarded to save space without a written change.</p>
+        </section>
+        <section id="agreement" class="rv">
+          <h2 class="h2">Written down, or it does not happen.</h2>
+          <p>Maintenance that is not written down is a favour, and a favour stops the moment somebody is busy. These are the clauses that make the practice above enforceable.</p>
+          <div class="pact">
+            <h3 class="h3">What goes into the agreement</h3>
+            <ul>
+              <li>A dependency inventory and the tool that maintains it</li>
+              <li>A patch service level per severity, with exploitability as an override</li>
+              <li>A renewal calendar for every certificate and domain, with a named owner</li>
+              <li>Alert thresholds tied to agreed objectives, and who they reach</li>
+              <li>Monthly capacity review against measured peak, with stated headroom</li>
+              <li>Retention periods for application, access and audit logs</li>
+            </ul>
+          </div>
+        </section>
+        <section id="terms" class="rv">
+          <h2 class="h2">Terms used here.</h2>
+          <dl class="defs">
+            <div><dt>CVE</dt><dd>Common Vulnerabilities and Exposures. The public identifier that lets a single flaw be referenced across tools, advisories and patch notes.</dd></div>
+            <div><dt>CVSS</dt><dd>A severity score for a vulnerability considered in isolation. Useful as an input, misleading as the only ranking.</dd></div>
+            <div><dt>KEV</dt><dd>The Known Exploited Vulnerabilities catalogue, listing flaws with confirmed exploitation in the wild. A stronger prioritisation signal than severity.</dd></div>
+            <div><dt>SCA</dt><dd>Software composition analysis. Tooling that inventories third party components and matches them against known advisories.</dd></div>
+            <div><dt>Headroom</dt><dd>Provisioned capacity expressed as a multiple of measured peak load rather than of an original estimate.</dd></div>
+          </dl>
+        </section>
+        <section id="references" class="rv">
+          <h2 class="h2">References.</h2>
+          <p>Published guidance this page draws on. HaveStack does not claim authorship of the practice described; it claims to follow it.</p>
+          <ol class="refs">
+            <li><span>01</span><div><a href="https://www.cisa.gov/news-events/directives/bod-22-01-reducing-significant-risk-known-exploited-vulnerabilities" rel="noopener noreferrer" target="_blank">Known Exploited Vulnerabilities catalogue and directives</a>. CISA.</div></li>
+            <li><span>02</span><div><a href="https://www.paloaltonetworks.com/cyberpedia/patch-management" rel="noopener noreferrer" target="_blank">What is patch management: process, policy and benefits</a>. Palo Alto Networks.</div></li>
+            <li><span>03</span><div><a href="https://tuxcare.com/blog/cve-patching/" rel="noopener noreferrer" target="_blank">CVE patching: process, best practices and tools</a>. TuxCare.</div></li>
+            <li><span>04</span><div><a href="https://www.hexnode.com/blogs/patch-management-glossary-cve-cvss-kb-rollout-rings-and-more/" rel="noopener noreferrer" target="_blank">Patch management lifecycle: CVE, CVSS and rollout rings</a>. Hexnode.</div></li>
+          </ol>
+        </section>
+
+        <section id="siblings" class="rv">
+          <h2 class="h2">The rest of what stays under management.</h2>
+          <div class="siblings">
+          <a class="sib" href="maintenance-ai.html">
+            <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-brain"/></svg>
+            <b>AI and language models</b>
+            <span class="ar" aria-hidden="true">&#8594;</span>
+          </a>
+          <a class="sib" href="maintenance-databases.html">
+            <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-hard-drives"/></svg>
+            <b>Databases</b>
+            <span class="ar" aria-hidden="true">&#8594;</span>
+          </a>
+          <a class="sib" href="maintenance-response.html">
+            <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-clock-counter-clockwise"/></svg>
+            <b>Response and reporting</b>
+            <span class="ar" aria-hidden="true">&#8594;</span>
+          </a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <section class="cta-sect">
+    <div class="wrap">
+      <span class="kicker">Engagement</span>
+      <div class="cta-band">
+        <div class="cta-say">
+          <h2 class="h2">Start with a meeting.</h2>
+          <p>Maintenance is available on systems HaveStack built and, after a written technical review, on systems it did not. A first meeting runs about forty minutes and establishes what is already in place.</p>
+        </div>
+        <div class="cta-act">
+          <ol class="cta-steps">
+            <li>Submit the brief</li>
+            <li>Reply within two working days</li>
+            <li>Meeting scheduled</li>
+          </ol>
+          <a class="btn" href="request.html"><span class="btn-face">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <a class="foot-brand" href="index.html">
+        <img src="assets/logo-mark-96.png" alt="" width="23" height="23" />
+        <span>HaveStack</span>
+      </a>
+      <a href="index.html#maintenance">Maintenance</a>
+      <a href="index.html#standards">Standards</a>
+      <a href="index.html#clients">Governance</a>
+      <a href="mailto:hello@havestack.tech">hello@havestack.tech</a>
+    </div>
+    <div class="foot-bar">
+      <p>HaveStack Technologies, in partnership with Amaze Consortium</p>
+      <p>Copyright 2026</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* reveals, staggered inside a section rather than across the page */
+  var rv = [].slice.call(document.querySelectorAll('.rv'));
+  if (reduce.matches) {
+    rv.forEach(function (e) { e.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function (rows, obs) {
+      rows.forEach(function (r, i) {
+        if (!r.isIntersecting) return;
+        r.target.style.transitionDelay = (Math.min(i, 4) * 55) + 'ms';
+        r.target.classList.add('in');
+        obs.unobserve(r.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: .08 });
+    rv.forEach(function (e) { io.observe(e); });
+  }
+
+  /* mark the section being read in the contents rail */
+  var links = [].slice.call(document.querySelectorAll('.toc a'));
+  var targets = links
+    .map(function (a) { return document.querySelector(a.getAttribute('href')); })
+    .filter(Boolean);
+  if (targets.length) {
+    var seen = new Map();
+    var spy = new IntersectionObserver(function (rows) {
+      rows.forEach(function (r) { seen.set(r.target, r.intersectionRatio); });
+      var best = null, top = 0;
+      seen.forEach(function (ratio, el) { if (ratio > top) { top = ratio; best = el; } });
+      links.forEach(function (a) {
+        var on = best && a.getAttribute('href') === '#' + best.id;
+        if (on) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+    }, { rootMargin: '-88px 0px -55% 0px', threshold: [0, .25, .5, 1] });
+    targets.forEach(function (t) { spy.observe(t); });
+  }
+})();
+</script>
+</body>
+</html>

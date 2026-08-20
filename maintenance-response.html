@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Response and reporting | Systems under management | HaveStack Technologies</title>
+<meta name="description" content="How HaveStack handles response and reporting: service level definitions, error budgets, blameless incident write ups, scheduled releases, the monthly report and quarterly access review." />
+<link rel="icon" href="assets/favicon.png" />
+<link rel="apple-touch-icon" href="assets/favicon.png" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0A0A0C" />
+<link rel="canonical" href="https://havestack.tech/maintenance-response.html" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="HaveStack Technologies" />
+<meta property="og:title" content="Response and reporting | Systems under management" />
+<meta property="og:description" content="How HaveStack handles response and reporting: service level definitions, error budgets, blameless incident write ups, scheduled releases, the monthly report and quarterly access review." />
+<meta property="og:image" content="https://havestack.tech/assets/og-card.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="stylesheet" href="assets/domain.css" />
+<script>document.documentElement.classList.add('js');</script>
+<style>.mast::before{background-image:url("assets/ops-report.jpg")}</style>
+</head>
+
+<body>
+<svg class="sprite" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-brain" viewBox="0 0 256 256"><path d="M248,124a56.11,56.11,0,0,0-32-50.61V72a48,48,0,0,0-88-26.49A48,48,0,0,0,40,72v1.39a56,56,0,0,0,0,101.2V176a48,48,0,0,0,88,26.49A48,48,0,0,0,216,176v-1.41A56.09,56.09,0,0,0,248,124ZM88,208a32,32,0,0,1-31.81-28.56A55.87,55.87,0,0,0,64,180h8a8,8,0,0,0,0-16H64A40,40,0,0,1,50.67,86.27,8,8,0,0,0,56,78.73V72a32,32,0,0,1,64,0v68.26A47.8,47.8,0,0,0,88,128a8,8,0,0,0,0,16,32,32,0,0,1,0,64Zm104-44h-8a8,8,0,0,0,0,16h8a55.87,55.87,0,0,0,7.81-.56A32,32,0,1,1,168,144a8,8,0,0,0,0-16,47.8,47.8,0,0,0-32,12.26V72a32,32,0,0,1,64,0v6.73a8,8,0,0,0,5.33,7.54A40,40,0,0,1,192,164Zm16-52a8,8,0,0,1-8,8h-4a36,36,0,0,1-36-36V80a8,8,0,0,1,16,0v4a20,20,0,0,0,20,20h4A8,8,0,0,1,208,112ZM60,120H56a8,8,0,0,1,0-16h4A20,20,0,0,0,80,84V80a8,8,0,0,1,16,0v4A36,36,0,0,1,60,120Z"/></symbol>
+<symbol id="i-hard-drives" viewBox="0 0 256 256"><path d="M208,136H48a16,16,0,0,0-16,16v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V152A16,16,0,0,0,208,136Zm0,64H48V152H208v48Zm0-160H48A16,16,0,0,0,32,56v48a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40Zm0,64H48V56H208v48ZM192,80a12,12,0,1,1-12-12A12,12,0,0,1,192,80Zm0,96a12,12,0,1,1-12-12A12,12,0,0,1,192,176Z"/></symbol>
+<symbol id="i-cpu" viewBox="0 0 256 256"><path d="M152,96H104a8,8,0,0,0-8,8v48a8,8,0,0,0,8,8h48a8,8,0,0,0,8-8V104A8,8,0,0,0,152,96Zm-8,48H112V112h32Zm88,0H216V112h16a8,8,0,0,0,0-16H216V56a16,16,0,0,0-16-16H160V24a8,8,0,0,0-16,0V40H112V24a8,8,0,0,0-16,0V40H56A16,16,0,0,0,40,56V96H24a8,8,0,0,0,0,16H40v32H24a8,8,0,0,0,0,16H40v40a16,16,0,0,0,16,16H96v16a8,8,0,0,0,16,0V216h32v16a8,8,0,0,0,16,0V216h40a16,16,0,0,0,16-16V160h16a8,8,0,0,0,0-16Zm-32,56H56V56H200v95.87s0,.09,0,.13,0,.09,0,.13V200Z"/></symbol>
+<symbol id="i-clock-counter-clockwise" viewBox="0 0 256 256"><path d="M136,80v43.47l36.12,21.67a8,8,0,0,1-8.24,13.72l-40-24A8,8,0,0,1,120,128V80a8,8,0,0,1,16,0Zm-8-48A95.44,95.44,0,0,0,60.08,60.15C52.81,67.51,46.35,74.59,40,82V64a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H72a8,8,0,0,0,0-16H49c7.15-8.42,14.27-16.35,22.39-24.57a80,80,0,1,1,1.66,114.75,8,8,0,1,0-11,11.64A96,96,0,1,0,128,32Z"/></symbol>
+</defs></svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="head">
+  <div class="wrap head-in">
+    <a class="brand" href="index.html">
+      <img src="assets/logo-mark-96.png" alt="" width="23" height="23" />
+      <span>HaveStack</span>
+    </a>
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a class="home" href="index.html">Home</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <a href="index.html#maintenance">Maintenance</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <b aria-current="page">Response and reporting</b>
+    </nav>
+    <a class="btn" href="request.html"><span class="btn-face">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span></a>
+  </div>
+</header>
+
+<main id="main">
+
+  <div class="mast">
+    <div class="wrap">
+      <span class="kicker">Systems under management</span>
+      <h1 class="h1">What a response time actually promises.</h1>
+      <p class="lead">A service agreement is only as good as the definitions underneath it. This is what HaveStack means by a response time, what happens after an incident, how releases reach production, and what arrives in the client’s inbox at the end of each month.</p>
+      <dl class="facts">
+        <div><dt>Applies to</dt><dd>Every system under a maintenance agreement</dd></div>
+        <div><dt>Cadence</dt><dd>Report each month, access review each quarter</dd></div>
+        <div><dt>Evidence</dt><dd>Incident record, release log, monthly report</dd></div>
+      </dl>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="sheet">
+      <aside class="rail">
+        <div class="rail-in">
+          <h2>On this page</h2>
+          <ul class="toc" id="toc">
+            <li><a href="#definitions">Three words that are not interchangeable</a></li>
+            <li><a href="#error-budget">The error budget, and what it is for</a></li>
+            <li><a href="#incidents">Incidents are written up without indicting anyone</a></li>
+            <li><a href="#releases">Scheduled, never applied unannounced</a></li>
+            <li><a href="#report">A monthly report the client can file</a></li>
+            <li><a href="#access">Access reviewed each quarter</a></li>
+            <li><a href="#agreement">What goes into the agreement</a></li>
+            <li><a href="#terms">Terms used here</a></li>
+            <li><a href="#references">References</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <article class="art">
+        <section id="definitions" class="rv">
+          <h2 class="h2">Three words that are not interchangeable.</h2>
+          <p>Most disagreements about a service agreement are really disagreements about definitions, and three terms carry almost all of the weight.</p>
+          <p>A service level indicator is a measurement: the proportion of requests served under a given latency, the proportion of successful writes, the availability of an endpoint. A service level objective is the target for that measurement, set internally. A service level agreement is the external commitment, with a stated consequence if it is missed.</p>
+          <p>The order matters. An agreement written before anyone has decided what is being measured commits the practice to a number it cannot verify and the client to a promise they cannot check.</p>
+        </section>
+
+        <section id="error-budget" class="rv">
+          <h2 class="h2">The error budget, and what it is for.</h2>
+          <p>If availability is targeted at anything below one hundred per cent, the difference is a budget. It is the amount of unreliability the objective permits over a period, and it converts an argument into arithmetic.</p>
+          <p>The use of it is a decision rule. While the budget is healthy, change is cheap and features ship. When it is burning, the work moves to stability until it recovers. That removes the recurring standoff between shipping and reliability by making it a measured condition rather than a matter of who is more persuasive in the room.</p>
+        </section>
+
+        <section id="incidents" class="rv">
+          <h2 class="h2">Incidents are written up without indicting anyone.</h2>
+          <p>A blameless write up identifies the contributing causes of an incident without attributing it to an individual, on the working assumption that everybody involved acted reasonably given the information they had at the time.</p>
+          <p>This is not politeness. A process that assigns fault reliably produces incomplete accounts, because the people who know most about what happened have the strongest reason to say least. The organisation then loses the one thing an incident was good for.</p>
+          <p>Every incident on a HaveStack system produces a written record: what the client experienced, the timeline, the contributing causes, the correction made, and the change that reduces the chance of a repeat. The client gets it whether or not they asked.</p>
+          <ul class="points">
+            <li>What the user experienced, before what the system did</li>
+            <li>A timeline with detection, response and resolution times</li>
+            <li>Contributing causes, in the plural, without naming an individual</li>
+            <li>The immediate correction, and the durable change</li>
+            <li>Action items with an owner and a date</li>
+            <li>Sent to the client, not filed internally</li>
+          </ul>
+        </section>
+
+        <section id="releases" class="rv">
+          <h2 class="h2">Scheduled, never applied unannounced.</h2>
+          <p>The change failure rate is one of the four delivery metrics popularised by the DORA research programme: the proportion of releases that cause a degradation requiring remediation. It is a useful figure because it resists the intuition that shipping less often is safer. In practice the teams with the lowest failure rates are usually the ones releasing in small, frequent, reversible increments.</p>
+          <p>HaveStack releases into an agreed window, announces the window in advance, and keeps each release small enough to be reversed. A client should never discover a deployment by noticing that something moved.</p>
+        </section>
+
+        <section id="report" class="rv">
+          <h2 class="h2">A monthly report the client can file.</h2>
+          <p>The report exists so that somebody who was not in any of the conversations can understand the state of the system. It is written for a director or an auditor, not for an engineer, and it is a document rather than a dashboard link that will be dead in a year.</p>
+          <p>It covers availability against the objective, incidents and their status, changes applied, capacity against provisioning, outstanding risks, and what is scheduled next. Where a target was missed, it says so and says why.</p>
+        </section>
+
+        <section id="access" class="rv">
+          <h2 class="h2">Access reviewed each quarter.</h2>
+          <p>Access accumulates. People join a project, get what they need, and keep it after they move on. The risk is not usually malice, it is arithmetic: the set of credentials that can reach a production system grows monotonically unless somebody prunes it.</p>
+          <p>Every account and integration with access to a maintained system is reviewed quarterly against whether it is still required. Access is withdrawn on the working day someone leaves, rather than at the next review, and the review confirms it happened.</p>
+        </section>
+        <section id="agreement" class="rv">
+          <h2 class="h2">Written down, or it does not happen.</h2>
+          <p>Maintenance that is not written down is a favour, and a favour stops the moment somebody is busy. These are the clauses that make the practice above enforceable.</p>
+          <div class="pact">
+            <h3 class="h3">What goes into the agreement</h3>
+            <ul>
+              <li>The indicators being measured, before any target is written</li>
+              <li>Objectives per system, and the response times attached to each severity</li>
+              <li>A written incident record for every incident, sent to the client</li>
+              <li>Named release windows, announced in advance</li>
+              <li>A monthly report covering availability, incidents, changes and risks</li>
+              <li>Quarterly access review, and withdrawal on the day someone leaves</li>
+            </ul>
+          </div>
+        </section>
+        <section id="terms" class="rv">
+          <h2 class="h2">Terms used here.</h2>
+          <dl class="defs">
+            <div><dt>SLI</dt><dd>Service level indicator. A quantitative measurement of one aspect of the service, such as the proportion of requests served under a latency threshold.</dd></div>
+            <div><dt>SLO</dt><dd>Service level objective. The internal target for an indicator, set before any external commitment is made.</dd></div>
+            <div><dt>SLA</dt><dd>Service level agreement. The external commitment, with a stated consequence when it is missed.</dd></div>
+            <div><dt>Error budget</dt><dd>The unreliability an objective permits over a period. It decides when to ship and when to stabilise.</dd></div>
+            <div><dt>Change failure rate</dt><dd>The proportion of releases that cause a degradation requiring remediation. One of the four DORA delivery metrics.</dd></div>
+          </dl>
+        </section>
+        <section id="references" class="rv">
+          <h2 class="h2">References.</h2>
+          <p>Published guidance this page draws on. HaveStack does not claim authorship of the practice described; it claims to follow it.</p>
+          <ol class="refs">
+            <li><span>01</span><div><a href="https://incident.io/hubs/dora/dora-metrics-change-failure-rate" rel="noopener noreferrer" target="_blank">Understanding the DORA change failure rate metric</a>. incident.io.</div></li>
+            <li><span>02</span><div><a href="https://sreschool.com/blog/blameless-postmortem/" rel="noopener noreferrer" target="_blank">Blameless postmortems: meaning, architecture and measurement</a>. SRE School.</div></li>
+            <li><span>03</span><div><a href="https://coralogix.com/guides/what-is-sre/" rel="noopener noreferrer" target="_blank">What is site reliability engineering</a>. Coralogix.</div></li>
+            <li><span>04</span><div><a href="https://hyperping.com/blog/incident-post-mortem" rel="noopener noreferrer" target="_blank">Incident post mortems: the complete, blameless guide</a>. Hyperping.</div></li>
+          </ol>
+        </section>
+
+        <section id="siblings" class="rv">
+          <h2 class="h2">The rest of what stays under management.</h2>
+          <div class="siblings">
+          <a class="sib" href="maintenance-ai.html">
+            <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-brain"/></svg>
+            <b>AI and language models</b>
+            <span class="ar" aria-hidden="true">&#8594;</span>
+          </a>
+          <a class="sib" href="maintenance-databases.html">
+            <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-hard-drives"/></svg>
+            <b>Databases</b>
+            <span class="ar" aria-hidden="true">&#8594;</span>
+          </a>
+          <a class="sib" href="maintenance-backend.html">
+            <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-cpu"/></svg>
+            <b>Backend and infrastructure</b>
+            <span class="ar" aria-hidden="true">&#8594;</span>
+          </a>
+          </div>
+        </section>
+      </article>
+    </div>
+  </div>
+
+  <section class="cta-sect">
+    <div class="wrap">
+      <span class="kicker">Engagement</span>
+      <div class="cta-band">
+        <div class="cta-say">
+          <h2 class="h2">Start with a meeting.</h2>
+          <p>Maintenance is available on systems HaveStack built and, after a written technical review, on systems it did not. A first meeting runs about forty minutes and establishes what is already in place.</p>
+        </div>
+        <div class="cta-act">
+          <ol class="cta-steps">
+            <li>Submit the brief</li>
+            <li>Reply within two working days</li>
+            <li>Meeting scheduled</li>
+          </ol>
+          <a class="btn" href="request.html"><span class="btn-face">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <a class="foot-brand" href="index.html">
+        <img src="assets/logo-mark-96.png" alt="" width="23" height="23" />
+        <span>HaveStack</span>
+      </a>
+      <a href="index.html#maintenance">Maintenance</a>
+      <a href="index.html#standards">Standards</a>
+      <a href="index.html#clients">Governance</a>
+      <a href="mailto:hello@havestack.tech">hello@havestack.tech</a>
+    </div>
+    <div class="foot-bar">
+      <p>HaveStack Technologies, in partnership with Amaze Consortium</p>
+      <p>Copyright 2026</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* reveals, staggered inside a section rather than across the page */
+  var rv = [].slice.call(document.querySelectorAll('.rv'));
+  if (reduce.matches) {
+    rv.forEach(function (e) { e.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function (rows, obs) {
+      rows.forEach(function (r, i) {
+        if (!r.isIntersecting) return;
+        r.target.style.transitionDelay = (Math.min(i, 4) * 55) + 'ms';
+        r.target.classList.add('in');
+        obs.unobserve(r.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: .08 });
+    rv.forEach(function (e) { io.observe(e); });
+  }
+
+  /* mark the section being read in the contents rail */
+  var links = [].slice.call(document.querySelectorAll('.toc a'));
+  var targets = links
+    .map(function (a) { return document.querySelector(a.getAttribute('href')); })
+    .filter(Boolean);
+  if (targets.length) {
+    var seen = new Map();
+    var spy = new IntersectionObserver(function (rows) {
+      rows.forEach(function (r) { seen.set(r.target, r.intersectionRatio); });
+      var best = null, top = 0;
+      seen.forEach(function (ratio, el) { if (ratio > top) { top = ratio; best = el; } });
+      links.forEach(function (a) {
+        var on = best && a.getAttribute('href') === '#' + best.id;
+        if (on) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+    }, { rootMargin: '-88px 0px -55% 0px', threshold: [0, .25, .5, 1] });
+    targets.forEach(function (t) { spy.observe(t); });
+  }
+})();
+</script>
+</body>
+</html>
