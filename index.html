@@ -638,62 +638,40 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 .idx-state::before{content:'';width:5px;height:5px;border:1px solid var(--line-3)}
 
 /* ==========================================================================
-   CLIENTS AND PARTNERS  a running register of marks
-   The marks sit directly on the page. No plate, no border, no fill behind
-   them, because a box around a logo is the thing that makes a logo wall look
-   like a table of contents.
-
-   The track holds the same group of marks twice and travels exactly -50%, so
-   the frame at the end of the cycle is identical to the frame at the start and
-   the join cannot be seen. Speed is set by the track width rather than by a
-   fixed duration, which means adding a mark keeps the pixels-per-second
-   constant instead of quietly speeding the reel up.
+   CLIENTS AND PARTNERS  a register of marks
+   One row, each mark once, sitting directly on the page with no plate behind
+   it. At rest every mark is flattened to the same light grey: grayscale then
+   brightness(0) then a partial invert turns any artwork, dark green ring or
+   red gradient alike, into one neutral silhouette, and because it works on
+   colour rather than alpha the counters and cut outs survive. Hovering
+   returns the mark to the colour it actually is.
    ========================================================================== */
-.reel{
-  position:relative;margin-top:clamp(34px,3.8vw,52px);
-  padding-block:clamp(14px,1.6vw,24px);
-  overflow:hidden;
-  /* the band runs to the viewport edge, and the marks fade out into the page
-     rather than being cut off against a hard boundary */
-  width:100vw;margin-inline:calc(50% - 50vw + (var(--sbw) / 2));
-  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 6%,#000 94%,transparent 100%);
-          mask-image:linear-gradient(to right,transparent 0,#000 6%,#000 94%,transparent 100%);
+.marks{
+  display:flex;flex-wrap:wrap;align-items:center;
+  gap:clamp(26px,3.4vw,52px) clamp(32px,5.6vw,88px);
+  margin-top:clamp(34px,3.8vw,52px);
 }
-.reel-track{
-  display:flex;align-items:center;width:max-content;
-  /* --reel-dur is written by the script from the measured group width, so the
-     reel travels at a constant speed however many marks are in it */
-  animation:reel var(--reel-dur,26s) linear infinite;
-  will-change:transform;
+.mark img{
+  display:block;width:auto;max-width:none;height:38px;
+  filter:grayscale(1) brightness(0) invert(.82);
+  opacity:.92;
+  transition:filter var(--t-3) var(--ease),
+             opacity var(--t-3) var(--ease),
+             transform var(--t-3) var(--ease-out);
 }
-@keyframes reel{ from{transform:translate3d(0,0,0)} to{transform:translate3d(-50%,0,0)} }
-.reel-item{
-  flex:0 0 auto;
-  display:flex;align-items:center;justify-content:center;
-  padding-inline:clamp(32px,4.8vw,74px);
-}
-.reel-item img{
-  height:clamp(46px,4.4vw,64px);width:auto;max-width:none;
-  /* graded a little so three marks drawn by three different hands read as one
-     row rather than as three separate brands shouting */
-  opacity:.9;filter:saturate(.92);
-  transition:opacity var(--t-2) var(--ease),filter var(--t-2) var(--ease);
-}
-/* Optical, not mathematical. A ring encloses less ink than a solid shield at
-   the same measured height, so matching the boxes leaves the circle looking
-   undersized; these two nudges make the row read level. */
-.reel-item img[src*="aries"]{height:clamp(54px,5.2vw,76px)}
-.reel-item img[src*="gungchil"]{height:clamp(40px,3.8vw,55px)}
-/* the reel is decoration in motion: let a reader stop it to look */
+/* optical, not mathematical: a wide lockup at the same measured height as a
+   square mark reads far heavier, so the lockups sit shorter */
+.mark img[src*="aries"]{height:46px}
+.mark img[src*="amaze"]{height:40px}
+.mark img[src*="gungchil"]{height:36px}
+.mark img[src*="fp"]{height:31px}
+.mark img[src*="ayct"]{height:29px}
+.mark img[src*="toc"]{height:27px}
 @media (hover:hover) and (pointer:fine){
-  .reel:hover .reel-track{animation-play-state:paused}
-  .reel:hover .reel-item img{opacity:1;filter:none}
+  .mark:hover img{filter:none;opacity:1;transform:translateY(-2px)}
 }
 @media (prefers-reduced-motion:reduce){
-  .reel-track{animation:none;justify-content:center;width:100%;flex-wrap:wrap;gap:var(--space-5) 0}
-  /* with the travel gone the repeats are noise, so only the first group shows */
-  .reel-item[aria-hidden="true"]{display:none}
-  .reel{-webkit-mask-image:none;mask-image:none}
+  .mark:hover img{transform:none}
 }
 
 /* ==========================================================================
@@ -927,7 +905,7 @@ html:not(.js) .rv{opacity:1;transform:none}
   .scard h3,.scard p,.scard .kicker{color:#000}
   .rv{opacity:1 !important;transform:none !important}
   body::after{display:none}
-  .cond,.op,.std,.stage,.scard,.panel,.reel-item{break-inside:avoid}
+  .cond,.op,.std,.stage,.scard,.panel,.mark{break-inside:avoid}
   a[href^="http"]::after{content:' (' attr(href) ')';font-size:8pt;color:#555}
 }
 </style>
@@ -1283,54 +1261,28 @@ html:not(.js) .rv{opacity:1;transform:none}
   <div class="wrap">
     <h2 class="h2 sect-head rv">Organisations we build for.</h2>
     <p class="lead sect-intro rv">Named with their agreement. Further references are available under a non disclosure agreement.</p>
+    <ul class="marks rv">
+        <li class="mark"><img src="assets/mark-gungchil.png" alt="Gungchil" width="254" height="160" loading="lazy" decoding="async" /></li>
+    </ul>
   </div>
-    <div class="reel" role="group" aria-label="Clients">
-      <ul class="reel-track">
-        <li class="reel-item"><img src="assets/mark-gungchil.png" alt="Gungchil" width="254" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-gungchil.png" alt="" width="254" height="160" loading="lazy" decoding="async" /></li>
-      </ul>
-    </div>
 </section>
 
 <!-- ============================ PARTNERS ============================
-     TODO add a partner by appending one <li class="reel-item"> to each of the
-     two groups in the track below. The groups must stay identical, because the
-     loop works by translating the track exactly half its own width. -->
+     TODO add a partner by appending one <li class="mark"> here. Wide lockups
+     take a shorter height than square marks so the row reads level; the sizes
+     live next to .mark-w in the stylesheet. -->
 <section class="sect sect-tight" id="partners">
   <div class="wrap">
     <h2 class="h2 sect-head rv">Official partners.</h2>
-    <p class="lead sect-intro rv">Organisations and institutions that work alongside the practice. Amaze Consortium and ARIES both work alongside HaveStack as partners.</p>
+    <p class="lead sect-intro rv">Organisations and institutions that work alongside the practice.</p>
+    <ul class="marks rv">
+        <li class="mark"><img src="assets/mark-amaze.png" alt="Amaze Consortium" width="160" height="160" loading="lazy" decoding="async" /></li>
+        <li class="mark"><img src="assets/mark-aries.png" alt="ARIES" width="162" height="160" loading="lazy" decoding="async" /></li>
+        <li class="mark"><img src="assets/mark-ayct.png" alt="Amaze Youth Chess Tournament" width="1024" height="160" loading="lazy" decoding="async" /></li>
+        <li class="mark"><img src="assets/mark-fp.png" alt="First Principles" width="601" height="160" loading="lazy" decoding="async" /></li>
+        <li class="mark"><img src="assets/mark-toc.png" alt="The Outliers Club" width="901" height="160" loading="lazy" decoding="async" /></li>
+    </ul>
   </div>
-    <div class="reel" role="group" aria-label="Partners">
-      <ul class="reel-track">
-        <li class="reel-item"><img src="assets/mark-amaze.png" alt="Amaze Consortium" width="160" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item"><img src="assets/mark-aries.png" alt="ARIES" width="162" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-amaze.png" alt="" width="160" height="160" loading="lazy" decoding="async" /></li>
-        <li class="reel-item" aria-hidden="true"><img src="assets/mark-aries.png" alt="" width="162" height="160" loading="lazy" decoding="async" /></li>
-      </ul>
-    </div>
 </section>
 
 <!-- ============================ SECTORS ============================ -->
@@ -1702,29 +1654,6 @@ html:not(.js) .rv{opacity:1;transform:none}
   var stages = document.getElementById('stages');
   new IntersectionObserver(function(rows,obs){ if(!rows[0].isIntersecting) return; stages.classList.add('in'); obs.disconnect(); },
     { threshold: .25 }).observe(stages);
-
-  /* logo reels
-     The track holds the same group twice and the keyframe travels -50%, so the
-     duration has to follow the group's own width or the reel changes speed
-     every time a mark is added. 62 pixels a second is the rate that reads as
-     moving without asking to be read. */
-  var reels = document.querySelectorAll('.reel-track');
-  function timeReels(){
-    reels.forEach(function(track){
-      var group = track.scrollWidth / 2;
-      if (!group) return;
-      track.style.setProperty('--reel-dur', (group / 62).toFixed(2) + 's');
-    });
-  }
-  if (reels.length){
-    timeReels();
-    // the marks are lazy, so remeasure once they have real dimensions
-    document.querySelectorAll('.reel-item img').forEach(function(img){
-      if (!img.complete) img.addEventListener('load', timeReels, { once:true });
-    });
-    var rt;
-    addEventListener('resize', function(){ clearTimeout(rt); rt = setTimeout(timeReels, 180); });
-  }
 
   /* capability tabs */
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
