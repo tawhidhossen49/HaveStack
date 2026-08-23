@@ -689,8 +689,11 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 }
 /* optical, not mathematical: a wide lockup at the same measured height as a
    square mark reads far heavier, so the lockups sit shorter */
-.mark img[src*="aries"]{height:46px}
-.mark img[src*="amaze"]{height:40px}
+/* Amaze and ARIES are wide lockups now, not square marks, so they take the
+   shorter height the other wordmarks use rather than the taller one a shield
+   or a ring needed. */
+.mark img[src*="aries"]{height:34px}
+.mark img[src*="amaze"]{height:28px}
 .mark img[src*="gungchil"]{height:36px}
 .mark img[src*="fp"]{height:31px}
 .mark img[src*="ayct"]{height:29px}

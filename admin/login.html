@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sign in | HaveStack Admin</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="../assets/favicon.png" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0A0A0C" />
+<link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+<main class="login">
+  <div class="login-card">
+    <div class="login-brand">
+      <img src="../assets/logo-mark-96.png" alt="" width="26" height="26" />
+      <b>HaveStack Admin</b>
+    </div>
+    <p class="lead">Sign in to manage the site.</p>
+
+    <form id="loginForm" novalidate>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" autocomplete="username" placeholder="you@havestack.tech" />
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" autocomplete="current-password" placeholder="Your password" />
+      </div>
+      <button class="btn btn-key btn-block" type="submit">Sign in</button>
+    </form>
+
+    <p class="login-foot">Authentication is not connected yet. This screen is the interface.</p>
+  </div>
+</main>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script src="js/admin-common.js"></script>
+<script>
+document.getElementById('loginForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  Admin.toast('Sign in is not wired up yet.');
+  window.setTimeout(function () { window.location.href = 'index.html'; }, 700);
+});
+</script>
+</body>
+</html>
