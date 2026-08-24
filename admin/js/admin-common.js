@@ -222,10 +222,13 @@ window.Admin = (function () {
     return '<div class="notice">' + svg(I.info, 17) + "<p>" + text + "</p></div>";
   }
 
+  /* Wide content scrolls inside its own box rather than pushing the document.
+     At 720px the seven column header measured 755px and took the whole page
+     with it; below 720 the rows become records and the wrapper stands down. */
   function table(headers, bodyRows) {
-    return '<table class="table"><thead><tr>' +
+    return '<div class="table-wrap"><table class="table"><thead><tr>' +
       headers.map(function (h) { return "<th>" + escapeHtml(h) + "</th>"; }).join("") +
-      "</tr></thead><tbody>" + (bodyRows || "") + "</tbody></table>";
+      "</tr></thead><tbody>" + (bodyRows || "") + "</tbody></table></div>";
   }
 
   return {

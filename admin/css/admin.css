@@ -242,7 +242,8 @@ table{border-collapse:collapse}
 @media (min-width:720px){ .panel-head .row-actions{flex-wrap:nowrap} }
 
 /* ---- table --------------------------------------------------------------- */
-.table{width:100%;font-size:14px}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.table{width:100%;min-width:640px;font-size:14px}
 .table th{
   text-align:left;padding:var(--space-3) var(--space-5);
   font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
@@ -322,8 +323,18 @@ table{border-collapse:collapse}
   .search{flex:1 1 100%;min-width:0}
   .toasts{left:var(--space-4);right:var(--space-4)}
   .toast{max-width:none}
+  /* rows become records, so nothing is wide any more and the scroll
+     container stands down */
+  .table-wrap{overflow-x:visible}
+  .table{min-width:0}
   /* rows become records: each cell carries the column it came from */
-  .table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  /* The header stays in the accessibility tree but must stop laying out at
+     its natural width: clip() only stops the paint, so the row and its cells
+     were still measuring 755px inside a 320px viewport. Collapsing the
+     children as well is what actually removes the geometry. */
+  .table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .table thead tr{display:block;width:1px;overflow:hidden}
+  .table thead th{display:block;width:1px;padding:0;overflow:hidden}
   .table tbody tr{display:block;border-bottom:1px solid var(--line);padding:var(--space-3) 0}
   .table tbody tr:last-child{border-bottom:0}
   .table td{
