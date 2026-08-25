@@ -229,6 +229,8 @@ button,input,select,textarea{font:inherit;color:inherit}
   .rail{position:static}
 }
 </style>
+<!-- the one file that is specific to this deployment; see the notes inside -->
+<script src="assets/site-config.js"></script>
 </head>
 <body>
 <svg class="sprite" aria-hidden="true" focusable="false"><defs>
@@ -532,8 +534,14 @@ button,input,select,textarea{font:inherit;color:inherit}
     // The publishable key is meant to be public. It permits one thing: adding
     // a row to meeting_requests. Reading, updating and deleting are refused by
     // the row level security policy, so nothing here exposes past submissions.
-    var SUPABASE_URL = 'https://dnuqhgrxgthfbatnagbm.supabase.co';
-    var SUPABASE_KEY = 'sb_publishable_nTzfhETJm69WQfq_7oicfw_TsJuY99r';
+    var CRLF = String.fromCharCode(13, 10);
+    var CFG = window.SITE_CONFIG || {};
+    var SUPABASE_URL = CFG.supabaseUrl || '';
+    var SUPABASE_KEY = CFG.supabaseKey || '';
+    var MAIL_TO = CFG.contactEmail || 'hello@havestack.tech';
+    // A copy of this project with the config cleared has no backend to post to.
+    // Rather than fail on a fetch to an empty URL, take the email path directly.
+    var HAS_BACKEND = !!(SUPABASE_URL && SUPABASE_KEY);
 
     function buildPayload() { return {
       reference:       ref,
@@ -580,6 +588,26 @@ button,input,select,textarea{font:inherit;color:inherit}
       });
     }
 
+    // the same message either way: a brief the sender typed is never lost
+    function mailtoHref() {
+      return 'mailto:' + MAIL_TO + '?subject='
+        + encodeURIComponent('Meeting request: ' + get('org') + ' [' + ref + ']')
+        + '&body=' + encodeURIComponent(
+            ['Reference: ' + ref, '',
+             'Organisation: ' + get('org'), 'Sector: ' + get('sector'), '',
+             'Name: ' + get('name'), 'Role: ' + get('role'),
+             'Work email: ' + get('email'), 'Named owner: ' + get('owner'), '',
+             'System required: ' + get('system'), 'Intended start: ' + get('start'), '',
+             'Requirement:', get('brief')].join(CRLF));
+    }
+
+    if (!HAS_BACKEND) {
+      showFailure('This copy of the site has no request backend configured. '
+        + '<a href="' + mailtoHref() + '" style="text-decoration:underline">Send the brief by email instead</a>'
+        + '. Nothing you typed has been lost.');
+      return;
+    }
+
     send().then(function (res) {
       // 409 means the reference was already taken. Issue a new one and try
       // once more rather than telling the sender their brief failed.
@@ -601,17 +629,8 @@ button,input,select,textarea{font:inherit;color:inherit}
     }).catch(function (err) {
       // Never show a success screen for something that did not send. The
       // fallback keeps the brief reachable rather than losing what was typed.
-      var mail = 'mailto:hello@havestack.tech?subject='
-        + encodeURIComponent('Meeting request: ' + get('org') + ' [' + ref + ']')
-        + '&body=' + encodeURIComponent(
-            ['Reference: ' + ref, '',
-             'Organisation: ' + get('org'), 'Sector: ' + get('sector'), '',
-             'Name: ' + get('name'), 'Role: ' + get('role'),
-             'Work email: ' + get('email'), 'Named owner: ' + get('owner'), '',
-             'System required: ' + get('system'), 'Intended start: ' + get('start'), '',
-             'Requirement:', get('brief')].join('\r\n'));
       showFailure('The brief could not be sent just now. '
-        + '<a href="' + mail + '" style="text-decoration:underline">Send it by email instead</a>'
+        + '<a href="' + mailtoHref() + '" style="text-decoration:underline">Send it by email instead</a>'
         + '. Nothing you typed has been lost.');
       if (window.console) console.error('meeting request failed:', err);
     });
