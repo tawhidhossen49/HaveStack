@@ -53,7 +53,7 @@ Pages
   index.html                  the site
   request.html                the meeting request form
   maintenance-*.html          four detail pages
-  admin/                      admin panel interface (no backend wired up yet)
+  admin/                      admin panel, behind Google sign in
 
 Before you deploy this as your own
 ----------------------------------
@@ -61,9 +61,21 @@ Before you deploy this as your own
 1. assets/site-config.js
    The Supabase values are blank. While they stay blank the request form
    collects the brief and hands it to the visitor's email client instead of
-   posting it anywhere. Fill them in with your own Supabase project to store
-   submissions in a database; supabase/schema.sql creates the table and the
-   row level security policy the form expects.
+   posting it anywhere, and the admin panel says sign in is not configured.
+
+   To turn both on, create a Supabase project and put its URL and publishable
+   key here, then run these two files in its SQL editor:
+
+     supabase/schema.sql        the meeting_requests table the form writes to
+     supabase/auth-schema.sql   the admins allowlist the panel checks
+
+   Edit the address at the bottom of auth-schema.sql to your own before you
+   run it: that seeds the first admin, and there is no way to add one from
+   inside the panel until one exists.
+
+   Then in the Supabase dashboard, Authentication > Providers > Google: turn
+   it on and paste in a client ID and secret from Google Cloud Console. Add
+   your site's /admin/login.html to the redirect URLs.
 
    Change contactEmail to your own address. It is where briefs go when there
    is no database, and it is shown in the footer.

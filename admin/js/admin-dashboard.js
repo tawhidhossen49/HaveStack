@@ -2,9 +2,11 @@
 (function () {
   "use strict";
   var A = window.Admin;
-  var content = A.Shell("index.html", 'Dashboard', 'An overview of the site and what needs attention.', null);
-  if (!content) return;
-  content.innerHTML = '<div class="stats">' +
+  // nothing renders until the session is checked against the allowlist
+  AdminAuth.requireAdmin().then(function (admin) {
+    var content = A.Shell("index.html", 'Dashboard', 'An overview of the site and what needs attention.', null, admin);
+    if (!content) return;
+    content.innerHTML = '<div class="stats">' +
       ['Meeting requests', 'Products', 'Clients and partners', 'Maintenance pages']
         .map(function (label) {
           return '<div class="stat">' +
@@ -35,4 +37,5 @@
       flush: true,
       body: A.empty('No activity yet', 'Once the panel is connected, everything changed here is logged so you can see who did what and when.')
     });
+  });
 })();

@@ -71,9 +71,21 @@ window.Admin = (function () {
   }
 
   /* ---------- the shell ---------- */
-  function Shell(active, title, subtitle, actions) {
+  function initials(w) {
+    var src = (w.name || w.email || "?").trim();
+    var parts = src.split(/[\s@._-]+/).filter(Boolean);
+    return ((parts[0] || "?")[0] + (parts.length > 1 ? parts[1][0] : "")).toUpperCase();
+  }
+
+  /* `admin` is the row from public.admins, passed in by the page after the
+     guard has run. Everything else about the shell is unchanged. */
+  function Shell(active, title, subtitle, actions, admin) {
     var app = document.getElementById("adminApp");
     if (!app) return null;
+    var who = {
+      name: (admin && (admin.full_name || admin.email)) || "Signed in",
+      email: (admin && admin.email) || ""
+    };
 
     var nav = NAV.map(function (sec) {
       var head = sec.group ? '<div class="nav-group">' + escapeHtml(sec.group) + "</div>" : "";
@@ -95,13 +107,13 @@ window.Admin = (function () {
           '<nav class="nav" aria-label="Sections">' + nav + "</nav>" +
           '<div class="rail-foot">' +
             '<div class="who">' +
-              '<span class="who-mark" aria-hidden="true">HS</span>' +
+              '<span class="who-mark" aria-hidden="true">' + escapeHtml(initials(who)) + "</span>" +
               '<span class="who-text">' +
-                '<span class="who-name">Not signed in</span>' +
-                '<span class="who-role">Interface preview</span>' +
+                '<span class="who-name">' + escapeHtml(who.name) + "</span>" +
+                '<span class="who-role">' + escapeHtml(who.email) + "</span>" +
               "</span>" +
             "</div>" +
-            '<a class="btn btn-block btn-sm" href="login.html">' + svg(I.out, 15) + "Sign in</a>" +
+            '<button class="btn btn-block btn-sm" type="button" id="signOut">' + svg(I.out, 15) + "Sign out</button>" +
           "</div>" +
         "</aside>" +
         '<div class="main">' +
@@ -117,6 +129,12 @@ window.Admin = (function () {
       "</div>" +
       '<div class="scrim" id="scrim"></div>' +
       '<div class="toasts" id="toasts" role="status" aria-live="polite"></div>';
+
+    var out = document.getElementById("signOut");
+    if (out) out.addEventListener("click", function () {
+      out.disabled = true;
+      if (window.AdminAuth) AdminAuth.signOut(); else location.href = "login.html";
+    });
 
     wireDrawer();
     watchTables();
@@ -232,7 +250,7 @@ window.Admin = (function () {
   }
 
   return {
-    NAV: NAV, I: I, svg: svg, escapeHtml: escapeHtml,
+    NAV: NAV, I: I, svg: svg, escapeHtml: escapeHtml, initials: initials,
     Shell: Shell, toast: toast,
     panel: panel, empty: empty, notice: notice, table: table
   };

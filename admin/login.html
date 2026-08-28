@@ -12,37 +12,79 @@
 </head>
 <body>
 <main class="login">
-  <div class="login-card">
+  <div class="login-card" id="card">
     <div class="login-brand">
       <img src="../assets/logo-mark-96.png" alt="" width="26" height="26" />
       <b>HaveStack Admin</b>
     </div>
-    <p class="lead">Sign in to manage the site.</p>
-
-    <form id="loginForm" novalidate>
-      <div class="field">
-        <label for="email">Email</label>
-        <input id="email" type="email" autocomplete="username" placeholder="you@havestack.tech" />
-      </div>
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" type="password" autocomplete="current-password" placeholder="Your password" />
-      </div>
-      <button class="btn btn-key btn-block" type="submit">Sign in</button>
-    </form>
-
-    <p class="login-foot">Authentication is not connected yet. This screen is the interface.</p>
+    <p class="lead" id="lead">Checking your session.</p>
+    <div id="slot"></div>
   </div>
 </main>
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
+<script src="../assets/site-config.js"></script>
+<script src="js/vendor/supabase.js"></script>
+<script src="js/admin-auth.js"></script>
 <script src="js/admin-common.js"></script>
 <script>
-document.getElementById('loginForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-  Admin.toast('Sign in is not wired up yet.');
-  window.setTimeout(function () { window.location.href = 'index.html'; }, 700);
-});
+(function () {
+  "use strict";
+  var lead = document.getElementById("lead");
+  var slot = document.getElementById("slot");
+
+  if (!AdminAuth.configured()) { AdminAuth.showUnconfigured(); return; }
+
+  var G = 'M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.9h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.4z'
+        + 'M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z'
+        + 'M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.4H3.1a10 10 0 0 0 0 9.2z'
+        + 'M12 5.9c1.5 0 2.8.5 3.8 1.5l2.8-2.8A10 10 0 0 0 3.1 7.4L6.4 10c.8-2.4 3-4.1 5.6-4.1z';
+
+  function signInView(msg, isError) {
+    lead.textContent = "Sign in to manage the site.";
+    slot.innerHTML =
+      (msg ? '<div class="notice" style="border-left-color:' +
+             (isError ? 'var(--red)' : 'var(--line-3)') + '"><p>' + msg + '</p></div>' : '') +
+      '<button class="btn btn-key btn-block" type="button" id="go">' +
+        '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">' +
+          '<path d="' + G + '"/></svg>Continue with Google</button>' +
+      '<p class="login-foot">Access is limited to addresses on the admin list. ' +
+      'Ask whoever set this up to add yours.</p>';
+    document.getElementById("go").addEventListener("click", function (e) {
+      e.currentTarget.disabled = true;
+      lead.textContent = "Taking you to Google.";
+      AdminAuth.signInWithGoogle().catch(function (err) {
+        signInView("Could not start sign in. " + Admin.escapeHtml(err.message || String(err)), true);
+      });
+    });
+  }
+
+  var denied = new URLSearchParams(location.search).get("denied");
+
+  // detectSessionInUrl needs a moment to turn the OAuth redirect into a session
+  AdminAuth.client().auth.getSession().then(function (r) {
+    var session = r.data && r.data.session;
+    if (!session) {
+      signInView(denied ? "That account is not on the admin list yet." : "", !!denied);
+      return;
+    }
+    lead.textContent = "Checking your access.";
+    return AdminAuth.client()
+      .from("admins").select("email").eq("email", (session.user.email || "").toLowerCase())
+      .maybeSingle()
+      .then(function (res) {
+        if (res.data) { location.replace("index.html"); return; }
+        return AdminAuth.client().auth.signOut().then(function () {
+          signInView("<strong>" + Admin.escapeHtml(session.user.email || "That account") +
+            "</strong> is not on the admin list. Ask whoever set this up to add it, " +
+            "then sign in again.", true);
+        });
+      });
+  }).catch(function (err) {
+    signInView("Something went wrong reaching the server. " +
+      Admin.escapeHtml(err.message || String(err)), true);
+  });
+})();
 </script>
 </body>
 </html>
