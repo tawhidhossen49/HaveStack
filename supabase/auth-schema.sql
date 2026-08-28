@@ -90,12 +90,15 @@ revoke all on public.admins from anon;
 grant select, insert, update, delete on public.admins to authenticated;
 
 -- ---------------------------------------------------------------------------
---  The first admin
+--  The seeded admins
 --  There is no way to add one from inside the panel until one exists, so seed
---  it here. Change the address, then run the file.
+--  them here. Anyone added later through Settings > Access lives only in the
+--  database; add them here too if you want a re-run of this file to restore
+--  them. Addresses must be lowercase, per the constraint above.
 -- ---------------------------------------------------------------------------
-insert into public.admins (email, full_name, added_by)
-values ('tawhidhossen449@gmail.com', 'SK Tawhid Hossen', 'seed')
+insert into public.admins (email, full_name, added_by) values
+  ('tawhidhossen449@gmail.com', 'SK Tawhid Hossen', 'seed'),
+  ('ariyanbiswas500@gmail.com', 'Ariyan Biswas',    'seed')
 on conflict (email) do nothing;
 
 -- ---------------------------------------------------------------------------
