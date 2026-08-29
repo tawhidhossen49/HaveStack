@@ -146,9 +146,11 @@ button,input,select,textarea{font:inherit;color:inherit}
   all:unset;
   position:relative;display:inline-flex;align-items:center;gap:var(--space-3);
   box-sizing:border-box;min-height:46px;padding:var(--space-3) var(--space-5) var(--space-3);
-  border:1px solid var(--ink);border-radius:var(--r);
-  background:var(--ink);color:var(--on-red);
-  box-shadow:var(--elev-1),inset 0 1px 0 rgba(255,255,255,.7);
+  border:1px solid var(--red);border-radius:var(--r);
+  background:var(--red);color:var(--on-red);
+  /* the lit edge is pulled well back from the .7 a white key could carry;
+     at that strength it reads as a highlight painted on rather than light */
+  box-shadow:var(--elev-1),inset 0 1px 0 rgba(255,255,255,.24);
   font-family:var(--sans);font-size:16px;font-weight:500;letter-spacing:-.008em;
   line-height:1.1;white-space:nowrap;
   cursor:pointer;overflow:hidden;user-select:none;
@@ -160,26 +162,28 @@ button,input,select,textarea{font:inherit;color:inherit}
 .btn::before,.btn::after{
   content:"";position:absolute;top:50%;
   width:9em;aspect-ratio:1;border-radius:50%;
-  background:var(--red);
+  background:var(--ink);
   transition:transform var(--t-4) var(--ease),background var(--t-2) var(--ease);
 }
 .btn::before{left:0;transform:translate(-9.5em,-50%)}
 .btn::after{right:0;transform:translate(9.5em,-50%)}
 .btn:focus-visible::before{transform:translate(-1.2em,-50%)}
 .btn:focus-visible::after{transform:translate(1.2em,-50%)}
-.btn:focus-visible{border-color:var(--red);outline:2px solid var(--ink);outline-offset:3px}
+.btn:focus-visible{border-color:var(--ink);outline:2px solid var(--ink);outline-offset:3px}
 @media (hover:hover) and (pointer:fine){
   .btn:hover::before{transform:translate(-1.2em,-50%)}
   .btn:hover::after{transform:translate(1.2em,-50%)}
-  .btn:hover{border-color:var(--red)}
+  .btn:hover{border-color:var(--ink)}
   .btn:hover .ar{transform:translate(2px,-2px)}
 }
 .btn:active{
   transform:translateY(1px);
   box-shadow:0 0 0 rgba(0,0,0,0),inset 0 1px 2px rgba(9,8,13,.30);
-  border-color:var(--red-press);
 }
-.btn:active::before,.btn:active::after{background:var(--red-press)}
+/* The press sinks and shades the discs. It deliberately does not darken the
+   red underneath: at --red-press the near black label measures 3.41 to 1,
+   which is below the minimum, so the base colour has to hold still. */
+.btn:active::before,.btn:active::after{background:#DCDCE1}
 .btn[disabled]{cursor:progress}
 .btn .ar{opacity:.7;transition:transform var(--t-2) var(--ease-out)}
 .head .btn{min-height:38px;padding:var(--space-2) var(--space-4) var(--space-2);font-size:15px}
@@ -219,8 +223,10 @@ button,input,select,textarea{font:inherit;color:inherit}
   .btn::before{transform:translate(-1.2em,-50%)}
   .btn::after{transform:translate(1.2em,-50%)}
   .btn::before,.btn::after{background:transparent}
+  /* reduced motion keeps the discs still, so the reveal is the colour alone.
+     Reversed with the rest of the button: red at rest, white on hover. */
   .btn:hover::before,.btn:hover::after,
-  .btn:focus-visible::before,.btn:focus-visible::after{background:var(--red)}
+  .btn:focus-visible::before,.btn:focus-visible::after{background:var(--ink)}
   *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
 }
 @media print{
