@@ -2,10 +2,10 @@
 --  HaveStack admin access
 --  Run this once in the Supabase SQL editor.
 --
---  Google sign in on its own proves who somebody is, not that they are allowed
---  in. Anybody with a Google account could complete the sign in. This table is
---  the allowlist: an address has to be in it before the panel will open, and
---  an address can be added before that person has ever signed in.
+--  A password proves an account is yours. It does not decide whether that
+--  account may open the panel. This table is the allowlist: an address has to
+--  be in it before the panel will open, and an address can be added before
+--  that person has ever signed in.
 -- ===========================================================================
 
 create table if not exists public.admins (
@@ -20,7 +20,7 @@ create table if not exists public.admins (
 );
 
 comment on table public.admins is
-  'Addresses permitted to open the admin panel. Checked after Google sign in.';
+  'Addresses permitted to open the admin panel. Checked after sign in.';
 
 -- ---------------------------------------------------------------------------
 --  is_admin(): does the caller's signed in address appear above?

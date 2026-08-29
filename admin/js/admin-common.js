@@ -205,6 +205,69 @@ window.Admin = (function () {
     toast(el.getAttribute("data-stub") || "Nothing is wired up yet.");
   });
 
+  /* ---------- modal ----------
+     Opens a small form, returns a promise of the field values or null if the
+     person backed out. Escape, the close button and the backdrop all cancel,
+     and focus starts in the first field and returns to where it was. */
+  function modal(opts) {
+    return new Promise(function (resolve) {
+      var back = document.createElement("div");
+      back.className = "modal-back";
+      var wasFocused = document.activeElement;
+
+      back.innerHTML =
+        '<form class="modal" novalidate>' +
+          '<div class="modal-head"><div>' +
+            "<h2>" + escapeHtml(opts.title) + "</h2>" +
+            (opts.note ? "<p>" + escapeHtml(opts.note) + "</p>" : "") +
+          "</div>" +
+          '<button class="modal-x" type="button" data-cancel aria-label="Close">&#215;</button>' +
+          "</div>" +
+          '<div class="modal-body">' +
+            opts.fields.map(function (f) {
+              return '<div class="field"><label for="m-' + f.name + '">' + escapeHtml(f.label) + "</label>" +
+                '<input id="m-' + f.name + '" type="' + (f.type || "text") + '"' +
+                  (f.value ? ' value="' + escapeHtml(f.value) + '"' : "") +
+                  (f.autocomplete ? ' autocomplete="' + f.autocomplete + '"' : "") +
+                  (f.readonly ? " readonly" : "") + " />" +
+                (f.hint ? '<span class="hint">' + escapeHtml(f.hint) + "</span>" : "") +
+              "</div>";
+            }).join("") +
+          "</div>" +
+          '<div class="modal-foot">' +
+            '<button class="btn btn-sm" type="button" data-cancel>Cancel</button>' +
+            '<button class="btn btn-key btn-sm" type="submit">' + escapeHtml(opts.confirm || "Save") + "</button>" +
+          "</div>" +
+        "</form>";
+
+      function close(result) {
+        document.removeEventListener("keydown", onKey);
+        back.remove();
+        document.body.style.overflow = "";
+        if (wasFocused && wasFocused.focus) wasFocused.focus();
+        resolve(result);
+      }
+      function onKey(e) { if (e.key === "Escape") close(null); }
+
+      back.addEventListener("click", function (e) {
+        if (e.target === back || e.target.closest("[data-cancel]")) close(null);
+      });
+      back.querySelector("form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var out = {};
+        opts.fields.forEach(function (f) {
+          out[f.name] = document.getElementById("m-" + f.name).value;
+        });
+        close(out);
+      });
+      document.addEventListener("keydown", onKey);
+      document.body.appendChild(back);
+      document.body.style.overflow = "hidden";
+      var first = back.querySelector("input:not([readonly])");
+      if (first) first.focus();
+    });
+  }
+
   /* ---------- toasts ---------- */
   function toast(message, isError) {
     var wrap = document.getElementById("toasts");
@@ -251,7 +314,7 @@ window.Admin = (function () {
 
   return {
     NAV: NAV, I: I, svg: svg, escapeHtml: escapeHtml, initials: initials,
-    Shell: Shell, toast: toast,
+    Shell: Shell, toast: toast, modal: modal,
     panel: panel, empty: empty, notice: notice, table: table
   };
 })();

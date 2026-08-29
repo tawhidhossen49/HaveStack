@@ -282,6 +282,37 @@ table{border-collapse:collapse}
 .notice p{font-size:13.5px;line-height:1.55;color:var(--ink-2);max-width:78ch}
 .notice code{font-family:var(--mono);font-size:12.5px;color:var(--ink);background:var(--bg-2);padding:1px 5px;border:1px solid var(--line)}
 
+/* ---- modal ---------------------------------------------------------------
+   A password typed into window.prompt is shown in clear text and cannot be
+   labelled, so anything involving one gets a real form. */
+.modal-back{
+  position:fixed;inset:0;z-index:110;display:grid;place-items:start center;
+  padding:clamp(24px,6vh,80px) var(--space-5);overflow-y:auto;
+  background:rgba(5,5,6,.66);
+}
+.modal{
+  width:100%;max-width:440px;background:var(--surface);
+  border:1px solid var(--line);box-shadow:var(--elev-3),var(--lit);
+}
+.modal-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);
+  padding:var(--space-5);border-bottom:1px solid var(--line);
+}
+.modal-head h2{font-size:16px;font-weight:500;letter-spacing:-.014em}
+.modal-head p{margin-top:3px;font-size:13px;color:var(--ink-3);max-width:46ch}
+.modal-body{padding:var(--space-5)}
+.modal-body .field:last-child{margin-bottom:0}
+.modal-foot{
+  display:flex;gap:var(--space-3);justify-content:flex-end;flex-wrap:wrap;
+  padding:var(--space-4) var(--space-5);border-top:1px solid var(--line);
+}
+.modal-x{
+  flex:0 0 auto;width:30px;height:30px;display:grid;place-items:center;
+  border:1px solid var(--line);background:transparent;color:var(--ink-2);
+  cursor:pointer;font-size:16px;line-height:1;
+}
+@media (hover:hover) and (pointer:fine){ .modal-x:hover{border-color:var(--line-3);color:var(--ink)} }
+
 /* ---- toast --------------------------------------------------------------- */
 .toasts{position:fixed;top:var(--space-5);right:var(--space-5);z-index:120;display:flex;flex-direction:column;gap:var(--space-2)}
 .toast{
@@ -297,7 +328,10 @@ table{border-collapse:collapse}
 .login-card{width:100%;max-width:380px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--lit);padding:clamp(28px,4vw,40px)}
 .login-brand{display:flex;align-items:center;gap:var(--space-3);justify-content:center;margin-bottom:var(--space-3)}
 .login-brand img{width:26px;height:26px}
-.login-brand b{font-size:17px;font-weight:500;letter-spacing:-.03em}
+.login-brand h1{font-size:17px;font-weight:500;letter-spacing:-.03em;line-height:1.2}
+/* the reset link is a standalone control, not a word inside a sentence,
+   so it has to clear the 24px minimum rather than sit at its line height */
+.login-foot a{display:inline-block;padding-block:var(--space-2)}
 .login p.lead{text-align:center;font-size:13.5px;color:var(--ink-3);margin-bottom:var(--space-6)}
 .login-foot{margin-top:var(--space-5);text-align:center;font-size:12.5px;color:var(--ink-3)}
 

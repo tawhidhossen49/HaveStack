@@ -73,9 +73,18 @@ Before you deploy this as your own
    run it: that seeds the first admin, and there is no way to add one from
    inside the panel until one exists.
 
-   Then in the Supabase dashboard, Authentication > Providers > Google: turn
-   it on and paste in a client ID and secret from Google Cloud Console. Add
-   your site's /admin/login.html to the redirect URLs.
+   Then in the Supabase dashboard, Authentication > Sign In / Providers: leave
+   Email on and turn off "Allow new users to sign up", so the only accounts
+   are the ones an admin creates. Under URL Configuration set the Site URL and
+   add your /admin/login.html to the redirect URLs, which is where a password
+   reset link returns to.
+
+   Last, deploy the edge function in supabase/functions/admin-users. In the
+   dashboard: Edge Functions, create one named admin-users, paste in
+   index.ts, Deploy. Nothing to configure; the keys it needs are injected.
+   That function is what lets the panel create an account with a password you
+   choose. Without it the panel still signs people in, but Settings > Access
+   can only read the list.
 
    Change contactEmail to your own address. It is where briefs go when there
    is no database, and it is shown in the footer.
