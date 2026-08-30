@@ -1,0 +1,5 @@
+{
+  // Only needed to edit supabase/functions. The rest of the project is static
+  // HTML, CSS and browser JavaScript and needs nothing installed.
+  "recommendations": ["denoland.vscode-deno"]
+}

@@ -1,0 +1,18 @@
+{
+  // Everything in this repository is plain HTML, CSS and browser JavaScript
+  // except supabase/functions, which is Deno. Enabling Deno for that path only
+  // stops the editor checking a Deno file with the Node TypeScript server,
+  // which is what reports "cannot find module https://esm.sh/..." and "cannot
+  // find name Deno" on code that is perfectly valid where it actually runs.
+  //
+  // When the Deno extension owns a path it takes over from the TypeScript
+  // server for those files, so nothing else needs turning off.
+  //
+  // This needs denoland.vscode-deno, which .vscode/extensions.json recommends.
+  // Without it these settings sit inert and the warnings stay, but they remain
+  // cosmetic either way: the function is compiled by Deno on Supabase and is
+  // never built by this editor.
+  "deno.enable": true,
+  "deno.enablePaths": ["supabase/functions"],
+  "deno.lint": true
+}

@@ -16,10 +16,13 @@
    signing in once holds until you sign out or the refresh
    token expires.
 
-   Accounts are created in the Supabase dashboard, not here.
-   There is no sign up form on purpose: a panel that lets
-   anybody create an account is a panel with a public door,
-   even with an allowlist behind it.
+   Accounts are created by an admin, in Settings > Access,
+   which calls the admin-users edge function. There is no sign
+   up form on purpose: a panel that lets anybody create an
+   account is a panel with a public door, even with an
+   allowlist behind it. The very first account has to be made
+   in the Supabase dashboard, since there is no admin yet to
+   make it.
    ========================================================= */
 window.AdminAuth = (function () {
   "use strict";

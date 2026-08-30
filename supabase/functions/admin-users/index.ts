@@ -19,6 +19,12 @@
 //  admin-users, paste this in, Deploy. SUPABASE_URL and
 //  SUPABASE_SERVICE_ROLE_KEY are injected for you; there is nothing to set.
 // ===========================================================================
+// Editors that check this with the Node TypeScript server report "cannot find
+// module" on the URL import below and "cannot find name Deno" further down.
+// Both are wrong here: this file is compiled by Deno on Supabase, where URL
+// imports and the Deno global are native. The reference line pulls in the edge
+// runtime types so an editor with the Deno extension resolves them properly.
+/// <reference types="https://esm.sh/@supabase/functions-js@2/src/edge-runtime.d.ts" />
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const CORS = {
