@@ -11,11 +11,13 @@
    form still works: it detects that no backend is configured
    and sends the brief by email instead.
 
-   The publishable key is designed to be public and it permits
-   exactly one thing, adding a row to meeting_requests. Reading,
-   updating and deleting are refused by the row level security
-   policy, so this file never exposes past submissions. It is
-   still yours, and it still points at your project.
+   The publishable key is designed to be public. Row level
+   security limits it to three things: adding a row to
+   meeting_requests, and reading the published products and
+   organisations that this page already displays to everyone.
+   It cannot read a submitted brief, cannot change anything,
+   and cannot see an unpublished row. It is still yours, and it
+   still points at your project.
    ========================================================= */
 window.SITE_CONFIG = {
   /* Supabase project the request form posts to. Leave both empty to fall

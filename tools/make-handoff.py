@@ -64,10 +64,18 @@ Before you deploy this as your own
    posting it anywhere, and the admin panel says sign in is not configured.
 
    To turn both on, create a Supabase project and put its URL and publishable
-   key here, then run these two files in its SQL editor:
+   key here, then run these three files in its SQL editor, in this order:
 
-     supabase/schema.sql        the meeting_requests table the form writes to
-     supabase/auth-schema.sql   the admins allowlist the panel checks
+     supabase/schema.sql         the meeting_requests table the form writes to
+     supabase/auth-schema.sql    the admins allowlist the panel checks
+     supabase/content-schema.sql the products and organisations the panel edits
+
+   content-schema.sql is seeded with what the page already shows, so running
+   it changes nothing you can see. From then on the Products and the Clients
+   and partners pages in the admin panel edit the real site: a change appears
+   on the public page the next time somebody loads it. Until you run it, the
+   panel says it cannot read those tables and the public page keeps showing
+   the content written into index.html, which is the same content.
 
    Edit the address at the bottom of auth-schema.sql to your own before you
    run it: that seeds the first admin, and there is no way to add one from

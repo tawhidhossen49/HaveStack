@@ -225,15 +225,43 @@ window.Admin = (function () {
           "</div>" +
           '<div class="modal-body">' +
             opts.fields.map(function (f) {
-              return '<div class="field"><label for="m-' + f.name + '">' + escapeHtml(f.label) + "</label>" +
-                '<input id="m-' + f.name + '" type="' + (f.type || "text") + '"' +
-                  (f.value ? ' value="' + escapeHtml(f.value) + '"' : "") +
+              /* An empty string and a zero are different things. Testing the
+                 value for truth would blank every field holding 0, which is a
+                 real order number, so test for absence instead. */
+              var has = f.value !== undefined && f.value !== null && f.value !== "";
+              var val = has ? escapeHtml(f.value) : "";
+              var id = "m-" + f.name;
+              var control;
+
+              if (f.options) {
+                /* A fixed set of choices belongs in a select. Typed free hand
+                   it is a spelling test the writer can fail, and the failure
+                   only shows up as a rejected save. */
+                control = '<select id="' + id + '"' + (f.readonly ? " disabled" : "") + ">" +
+                  f.options.map(function (o) {
+                    var v = o.value === undefined ? o : o.value;
+                    var l = o.label === undefined ? v : o.label;
+                    return '<option value="' + escapeHtml(v) + '"' +
+                      (String(v) === String(f.value) ? " selected" : "") + ">" +
+                      escapeHtml(l) + "</option>";
+                  }).join("") + "</select>";
+              } else if (f.multiline) {
+                control = '<textarea id="' + id + '" rows="' + (f.rows || 5) + '"' +
+                  (f.readonly ? " readonly" : "") + ">" + val + "</textarea>";
+              } else {
+                control = '<input id="' + id + '" type="' + (f.type || "text") + '"' +
+                  (has ? ' value="' + val + '"' : "") +
                   (f.autocomplete ? ' autocomplete="' + f.autocomplete + '"' : "") +
-                  (f.readonly ? " readonly" : "") + " />" +
+                  (f.readonly ? " readonly" : "") + " />";
+              }
+
+              return '<div class="field"><label for="' + id + '">' + escapeHtml(f.label) + "</label>" +
+                control +
                 (f.hint ? '<span class="hint">' + escapeHtml(f.hint) + "</span>" : "") +
               "</div>";
             }).join("") +
           "</div>" +
+          '<p class="modal-err" id="modal-err" role="alert" hidden></p>' +
           '<div class="modal-foot">' +
             '<button class="btn btn-sm" type="button" data-cancel>Cancel</button>' +
             '<button class="btn btn-key btn-sm" type="submit">' + escapeHtml(opts.confirm || "Save") + "</button>" +
@@ -258,14 +286,66 @@ window.Admin = (function () {
         opts.fields.forEach(function (f) {
           out[f.name] = document.getElementById("m-" + f.name).value;
         });
+
+        /* Validate before closing. Closing first and complaining afterwards
+           throws away everything the writer typed and makes them start again
+           over a single wrong character, so the form stays put and says what
+           is wrong while their work is still in it. */
+        if (opts.validate) {
+          var problem = opts.validate(out);
+          if (problem) {
+            var box = back.querySelector("#modal-err");
+            box.textContent = problem;
+            box.hidden = false;
+            var bad = opts.invalidField && document.getElementById("m-" + opts.invalidField);
+            (bad || back.querySelector("input, textarea, select")).focus();
+            return;
+          }
+        }
         close(out);
+      });
+
+      // clear a stale complaint as soon as the writer starts fixing it
+      back.querySelector("form").addEventListener("input", function () {
+        var box = back.querySelector("#modal-err");
+        if (box && !box.hidden) box.hidden = true;
       });
       document.addEventListener("keydown", onKey);
       document.body.appendChild(back);
       document.body.style.overflow = "hidden";
-      var first = back.querySelector("input:not([readonly])");
+      var first = back.querySelector("input:not([readonly]), textarea:not([readonly]), select:not([disabled])");
       if (first) first.focus();
     });
+  }
+
+  /* ---------- data ----------
+     Thin wrappers over PostgREST through the signed in client. Row level
+     security decides what is actually allowed; these only shape the call. */
+  function db() { return AdminAuth.client(); }
+
+  function rows(table, order) {
+    return db().from(table).select("*").order(order || "sort")
+      .then(function (r) { return r.error ? { error: r.error.message } : { data: r.data || [] }; });
+  }
+  function insert(table, row) {
+    return db().from(table).insert(row)
+      .then(function (r) { return r.error ? { error: r.error.message } : { ok: true }; });
+  }
+  function update(table, id, patch) {
+    return db().from(table).update(patch).eq("id", id)
+      .then(function (r) { return r.error ? { error: r.error.message } : { ok: true }; });
+  }
+  function remove(table, id) {
+    return db().from(table).delete().eq("id", id)
+      .then(function (r) { return r.error ? { error: r.error.message } : { ok: true }; });
+  }
+
+  /* A section that failed to load should say so rather than look empty. The
+     two are very different: one means nothing is here yet, the other means
+     something is wrong, and only one of them is the reader's to fix. */
+  function failed(msg) {
+    return empty("Could not load",
+      msg + " If this keeps happening, check the tables exist and that you are still signed in.");
   }
 
   /* ---------- toasts ---------- */
@@ -315,6 +395,7 @@ window.Admin = (function () {
   return {
     NAV: NAV, I: I, svg: svg, escapeHtml: escapeHtml, initials: initials,
     Shell: Shell, toast: toast, modal: modal,
+    db: db, rows: rows, insert: insert, update: update, remove: remove, failed: failed,
     panel: panel, empty: empty, notice: notice, table: table
   };
 })();

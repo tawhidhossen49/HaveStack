@@ -202,6 +202,12 @@ table{border-collapse:collapse}
 .field input::placeholder,.field textarea::placeholder{color:var(--ink-3)}
 .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--ink-3)}
 .field input:focus-visible,.field textarea:focus-visible,.field select:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.modal-err{
+  margin:0 var(--space-5);padding:var(--space-3) var(--space-4);
+  border:1px solid var(--red);border-left-width:3px;
+  background:color-mix(in oklab,var(--red) 12%,transparent);
+  color:var(--ink);font-size:13px;line-height:1.45
+}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:0 var(--space-5)}
 .field-row .full{grid-column:1/-1}
 
@@ -253,6 +259,11 @@ table{border-collapse:collapse}
 .table tbody tr:last-child td{border-bottom:0}
 @media (hover:hover) and (pointer:fine){ .table tbody tr:hover td{background:var(--surface-2)} }
 .table .num{font-variant-numeric:tabular-nums;color:var(--ink-2)}
+/* A link sitting on its own line in a cell is a target, not part of a
+   sentence, so the line-height exemption in WCAG 2.5.8 does not cover it.
+   inline-flex gives it the full 24px to be tapped without changing the type
+   size or pushing the row around. */
+.table td a{display:inline-flex;align-items:center;min-height:24px}
 
 .tag{
   display:inline-flex;align-items:center;gap:6px;

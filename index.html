@@ -662,6 +662,19 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 .idx-row .ic{font-size:20px;color:var(--ink-3);margin-top:var(--space-1);transition:color var(--t-2) var(--ease)}
 .idx-main h3{font-size:clamp(18px,1.5vw,21px);font-weight:500;letter-spacing:-.014em;line-height:1.28}
 .idx-row p{margin-top:var(--space-2);font-size:14.5px;line-height:1.55;color:var(--ink-2);max-width:52ch}
+/* once a product has a real link the row shows it instead of the state */
+.idx-link{
+  display:inline-flex;align-items:center;gap:var(--space-2);
+  margin-top:var(--space-3);font-size:13px;font-weight:500;color:var(--ink-2);
+  padding-bottom:2px;box-shadow:inset 0 -1px 0 var(--line-3);
+  transition:color var(--t-2) var(--ease),box-shadow var(--t-2) var(--ease);
+}
+.idx-link .ar{transition:transform var(--t-2) var(--ease-out)}
+@media (hover:hover) and (pointer:fine){
+  .idx-link:hover{color:var(--ink);box-shadow:inset 0 -1px 0 var(--red)}
+  .idx-link:hover .ar{transform:translate(2px,-2px)}
+}
+.idx-link:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 /* an empty state that reads as deliberate rather than as a broken link */
 .idx-state{
   display:inline-flex;align-items:center;gap:var(--space-2);
@@ -1731,5 +1744,11 @@ html:not(.js) .rv{opacity:1;transform:none}
   });
 })();
 </script>
+<!-- Lets the admin panel change this page. The markup above already holds
+     the real content; these only replace a section once they have actually
+     fetched rows for it, so a crawler and a failed request both see the
+     finished page. -->
+<script src="assets/site-config.js"></script>
+<script src="assets/site-content.js" defer></script>
 </body>
 </html>
