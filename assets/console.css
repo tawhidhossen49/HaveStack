@@ -1,11 +1,15 @@
 /* ==========================================================================
-   HaveStack, admin panel
-   Interface only. Nothing here talks to a database yet: every page renders
-   its chrome, its controls and its empty state, and the places data will
-   land are marked rather than filled with invented rows.
+   HaveStack console
+   The shared surface behind both signed in areas: the admin panel, where the
+   practice edits itself, and the shareholder portal, where an owner reads
+   their position. One stylesheet, because they are one product and a reader
+   who has seen one should recognise the other immediately.
 
    Tokens are the public site's, generated in OKLCH at hue 286 with the accent
    held at chroma .200. Radius is zero everywhere, as it is on the site.
+
+   Anything below is used by both. Rules that belong to only one console live
+   in that console's own stylesheet, not here.
    ========================================================================== */
 
 :root{

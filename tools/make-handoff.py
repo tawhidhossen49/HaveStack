@@ -53,7 +53,12 @@ Pages
   index.html                  the site
   request.html                the meeting request form
   maintenance-*.html          four detail pages
-  admin/                      admin panel, behind Google sign in
+  admin/                      admin panel, behind email and password
+  portal/                     shareholder portal, behind email and password
+
+  Both signed in areas share assets/console.css and assets/console-ui.js, which
+  carry the chrome they have in common. Each keeps its own navigation, its own
+  sign in and its own data. Editing one does not change the other.
 
 Before you deploy this as your own
 ----------------------------------
@@ -69,6 +74,7 @@ Before you deploy this as your own
      supabase/schema.sql         the meeting_requests table the form writes to
      supabase/auth-schema.sql    the admins allowlist the panel checks
      supabase/content-schema.sql the products and organisations the panel edits
+     supabase/portal-schema.sql  the share register the portal reads
 
    content-schema.sql is seeded with what the page already shows, so running
    it changes nothing you can see. From then on the Products and the Clients
@@ -76,6 +82,19 @@ Before you deploy this as your own
    on the public page the next time somebody loads it. Until you run it, the
    panel says it cannot read those tables and the public page keeps showing
    the content written into index.html, which is the same content.
+
+   portal-schema.sql creates the share register: shareholders, holdings,
+   transactions, dividends, valuations, documents and updates, with row level
+   security that lets a shareholder read their own records and nothing else.
+   It seeds a realistic cap table so every screen in the portal has something
+   on it. Replace those figures with your own, or delete the seed block at the
+   bottom of the file before you run it. The two seeded shareholder addresses
+   are the same two as in auth-schema.sql, so change them as well.
+
+   A person is a shareholder because there is a row for their address in
+   public.shareholders, and an administrator because there is a row in
+   public.admins. The two are independent: somebody can be either, both or
+   neither, and giving somebody the portal does not give them the panel.
 
    Edit the address at the bottom of auth-schema.sql to your own before you
    run it: that seeds the first admin, and there is no way to add one from

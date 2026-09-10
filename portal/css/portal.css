@@ -1,0 +1,188 @@
+/* ==========================================================================
+   HaveStack shareholder portal
+   Loaded after assets/console.css, which carries the shell, the controls,
+   the tables and the tokens. Nothing is redefined here. What follows are the
+   few shapes the portal needs that the admin panel never did, drawn in the
+   same language: one pixel borders, no radius, no gradient, no glow.
+
+   A portal is read far more than it is operated, so the additions are mostly
+   about presenting figures honestly: a number next to the date it was set, a
+   proportion you can see as well as read, and a record laid out as a record
+   rather than a form.
+   ========================================================================== */
+
+/* ---- figures -------------------------------------------------------------
+   Money and share counts are compared down a column, so they are tabular and
+   they line up on the right. A figure that shifts as its digits change is a
+   figure nobody can scan. */
+.num,
+.money { font-variant-numeric: tabular-nums }
+.table td.money,
+.table th.money { text-align: right }
+@media (max-width: 719px) {
+  /* in record mode a right aligned value floats away from its label */
+  .table td.money { text-align: left }
+}
+
+/* A figure and the date it was true on. The date is not decoration: an
+   internal valuation without one cannot be checked by the person reading it. */
+.asof { display: block; margin-top: var(--space-2); font-size: 12.5px; color: var(--ink-3) }
+
+/* Movement against cost. Colour is never the only carrier: the sign is in the
+   text, so this still reads correctly in monochrome or forced colours. */
+.delta { font-size: 13px; font-variant-numeric: tabular-nums }
+.delta-up { color: var(--ok) }
+.delta-down { color: var(--red-text) }
+.delta-flat { color: var(--ink-3) }
+
+/* ---- proportion bar ------------------------------------------------------
+   Ownership is a share of a whole, and a 2px rule shows that faster than a
+   percentage does. It is an addition to the number, never a replacement, and
+   it is hidden from screen readers because the figure beside it already says
+   the same thing. */
+.bar { height: 2px; background: var(--line); margin-top: var(--space-3) }
+.bar > i { display: block; height: 100%; background: var(--ink-3) }
+.bar-key > i { background: var(--red) }
+
+/* ---- key and value -------------------------------------------------------
+   For a record that is read rather than edited: a certificate, a company
+   fact, the detail behind a transaction. */
+.kv { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr) }
+.kv > dt,
+.kv > dd {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--line-2);
+  font-size: 14px;
+}
+.kv > dt { color: var(--ink-3); padding-right: var(--space-4) }
+.kv > dd { color: var(--ink) }
+.kv > dt:last-of-type,
+.kv > dd:last-of-type { border-bottom: 0 }
+@media (max-width: 560px) {
+  .kv { grid-template-columns: 1fr }
+  .kv > dt { padding-bottom: 0; border-bottom: 0 }
+  .kv > dd { padding-top: var(--space-1) }
+}
+
+/* ---- timeline ------------------------------------------------------------
+   Updates and security activity. A rule down the left ties the entries
+   together; each marker sits on it. */
+.tl { position: relative; padding-left: var(--space-5) }
+.tl::before {
+  content: ''; position: absolute; left: 3px; top: 6px; bottom: 6px;
+  width: 1px; background: var(--line);
+}
+.tl-item { position: relative; padding: 0 0 var(--space-5) 0 }
+.tl-item:last-child { padding-bottom: 0 }
+.tl-item::before {
+  content: ''; position: absolute; left: -22px; top: 7px;
+  width: 7px; height: 7px; background: var(--line-3);
+}
+.tl-item.is-key::before { background: var(--red) }
+.tl-when { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3) }
+.tl-title { margin-top: var(--space-1); font-size: 14.5px; font-weight: 500; letter-spacing: -.01em }
+.tl-body { margin-top: var(--space-2); font-size: 13.5px; line-height: 1.6; color: var(--ink-2); max-width: 74ch }
+
+/* ---- document rows -------------------------------------------------------
+   A file is a name, what kind of thing it is, when it was issued and how big
+   it is. Laid out as a row rather than a card, because a reader is scanning a
+   list for one of them, not admiring twelve. */
+.docs { display: flex; flex-direction: column }
+.doc {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center; gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line-2);
+}
+.doc:last-child { border-bottom: 0 }
+@media (hover: hover) and (pointer: fine) { .doc:hover { background: var(--surface-2) } }
+.doc > svg { width: 19px; height: 19px; color: var(--ink-3) }
+.doc-name { font-size: 14.5px; overflow-wrap: anywhere }
+.doc-meta { margin-top: 2px; font-size: 12.5px; color: var(--ink-3) }
+@media (max-width: 560px) {
+  .doc { grid-template-columns: auto minmax(0, 1fr); row-gap: var(--space-3) }
+  .doc > .row-actions { grid-column: 2 }
+}
+
+/* ---- segmented filter ----------------------------------------------------
+   One row of choices where only one is on. Built from buttons so it is
+   reachable by keyboard and announced as pressed. */
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); width: fit-content; max-width: 100% }
+.seg button {
+  min-height: 32px; padding: 6px 13px 5px;
+  background: transparent; border: 0; border-right: 1px solid var(--line);
+  color: var(--ink-3); font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+  transition: color var(--t-2) var(--ease), background var(--t-2) var(--ease);
+}
+.seg button:last-child { border-right: 0 }
+.seg button[aria-pressed="true"] { color: var(--ink); background: rgba(255, 255, 255, .05) }
+@media (hover: hover) and (pointer: fine) { .seg button:hover { color: var(--ink) } }
+.seg button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px }
+
+/* ---- loading -------------------------------------------------------------
+   A shape where the content will be, at the size it will be, so the page does
+   not jump when it arrives. It pulses opacity only, and holds still for
+   anyone who asked for less motion. */
+.skel { background: var(--surface-2); animation: skel 1.4s var(--ease) infinite }
+.skel-line { height: 11px; margin-bottom: var(--space-3) }
+.skel-line:last-child { margin-bottom: 0; width: 60% }
+.skel-fig { height: 32px; width: 120px; margin-top: var(--space-3) }
+@keyframes skel { 0%, 100% { opacity: .45 } 50% { opacity: .8 } }
+@media (prefers-reduced-motion: reduce) { .skel { animation: none; opacity: .55 } }
+
+/* ---- small pieces --------------------------------------------------------- */
+.pill {
+  display: inline-block; min-width: 26px; padding: 2px 7px;
+  border: 1px solid var(--line); font-size: 12px; text-align: center; color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+.tag-paid { color: var(--ok); border-color: rgba(111, 192, 135, .4) }
+.tag-pending { color: var(--warn); border-color: rgba(217, 164, 65, .4) }
+.tag-cancelled { color: var(--ink-3) }
+.tag-me { color: var(--red-text); border-color: rgba(230, 66, 70, .4) }
+
+/* The row for the person reading it, in a register of other people. A left
+   rule rather than a fill: it marks the row without shouting over the data. */
+.table tbody tr.is-me td:first-child { box-shadow: inset 2px 0 0 var(--red) }
+
+/* The currency code beside a large figure. Small and grey so the digits stay
+   the thing being read. */
+.stat .value .cur {
+  font-size: 13px; font-weight: 500; letter-spacing: .06em;
+  color: var(--ink-3); margin-right: .45em; vertical-align: .28em;
+}
+
+/* Portal figures run long: a holding is eight digits and a currency code.
+   Three things keep one on a single line without ever pushing the page
+   sideways. The cards are given more room before the grid adds a column, the
+   figure scales with the viewport rather than sitting at a fixed 32px, and
+   anywhere is the last resort so a number that still will not fit breaks
+   instead of overflowing. Refusing to wrap is not an option: it does not make
+   the number fit, it just moves the problem onto the document. */
+.stats { grid-template-columns: repeat(auto-fit, minmax(232px, 1fr)) }
+.stat .value { font-size: clamp(23px, 2.1vw, 32px); overflow-wrap: anywhere }
+
+/* Two panels side by side on a wide screen, stacked below. Used where a
+   figure and its history belong together. */
+.split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-5) }
+/* When one side holds a table it needs the room: a six column table in half a
+   page scrolls sideways for ever, which is not a table anybody can read. */
+.split-wide { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr) }
+@media (max-width: 1180px) { .split-wide { grid-template-columns: 1fr } }
+.split > * { margin-bottom: 0 }
+@media (max-width: 960px) { .split { grid-template-columns: 1fr } }
+
+/* A read only field in a form, for a record shown in a modal. It has to look
+   unavailable, not merely be unavailable. */
+.field input[readonly],
+.field textarea[readonly] { background: var(--band); color: var(--ink-2); cursor: default }
+
+/* The security notice on the Account page, where the consequence matters more
+   than the instruction. */
+.notice-key { border-left-color: var(--red) }
+
+@media print {
+  .rail, .topbar, .scrim, .toasts, .seg, .row-actions { display: none }
+  .split { grid-template-columns: 1fr 1fr }
+  .bar > i { background: #444 }
+}

@@ -3,19 +3,20 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sign in | HaveStack Admin</title>
+<title>Sign in | HaveStack Portal</title>
 <meta name="robots" content="noindex, nofollow" />
 <link rel="icon" href="../assets/favicon.png" />
 <meta name="color-scheme" content="dark" />
 <meta name="theme-color" content="#0A0A0C" />
 <link rel="stylesheet" href="../assets/console.css" />
+<link rel="stylesheet" href="css/portal.css" />
 </head>
 <body>
 <main class="login">
   <div class="login-card">
     <div class="login-brand">
       <img src="../assets/logo-mark-96.png" alt="" width="26" height="26" />
-      <h1>HaveStack Admin</h1>
+      <h1>HaveStack Portal</h1>
     </div>
     <p class="lead" id="lead">Checking your session.</p>
     <div id="slot"></div>
@@ -26,16 +27,16 @@
 <script src="../assets/site-config.js"></script>
 <script src="../assets/console-ui.js"></script>
 <script src="js/vendor/supabase.js"></script>
-<script src="js/admin-auth.js"></script>
-<script src="js/admin-common.js"></script>
+<script src="js/portal-auth.js"></script>
+<script src="js/portal-common.js"></script>
 <script>
 (function () {
   "use strict";
   var lead = document.getElementById("lead");
   var slot = document.getElementById("slot");
-  var esc  = Admin.escapeHtml;
+  var esc  = ConsoleUI.escapeHtml;
 
-  if (!AdminAuth.configured()) { AdminAuth.showUnconfigured(); return; }
+  if (!PortalAuth.configured()) { PortalAuth.showUnconfigured(); return; }
 
   function notice(msg, isError) {
     if (!msg) return "";
@@ -45,7 +46,7 @@
 
   /* ---- sign in ----------------------------------------------------------- */
   function signInView(msg, isError, email) {
-    lead.textContent = "Sign in to manage the site.";
+    lead.textContent = "Sign in to view your shareholding.";
     slot.innerHTML = notice(msg, isError) +
       '<form id="f" novalidate>' +
         '<div class="field"><label for="email">Email</label>' +
@@ -56,7 +57,8 @@
         '<button class="btn btn-key btn-block" type="submit" id="go">Sign in</button>' +
       "</form>" +
       '<p class="login-foot"><a href="#" id="forgot">Forgot your password?</a><br />' +
-      "Accounts are created by whoever administers this site.</p>";
+      "Accounts are created by the company. If you are a shareholder and cannot get in, " +
+      "contact the company secretary.</p>";
 
     document.getElementById("f").addEventListener("submit", function (e) {
       e.preventDefault();
@@ -67,23 +69,17 @@
       var btn = document.getElementById("go");
       btn.disabled = true; btn.textContent = "Signing in";
 
-      AdminAuth.signIn(em, pw).then(function (res) {
+      PortalAuth.signIn(em, pw).then(function (res) {
         if (res.error) {
           /* Supabase returns the same message for a wrong password and for an
              address with no account. Repeat that rather than narrowing it:
-             saying which one it was tells a stranger whether the address
-             exists. */
+             saying which one it was tells a stranger whether an address is on
+             the share register, which is exactly what a register is not for. */
           signInView("That address and password did not match an account.", true, em);
           return;
         }
-        lead.textContent = "Checking your access.";
-        return AdminAuth.lookupAdmin(res.data.session).then(function (row) {
-          if (row) { location.replace("index.html"); return; }
-          return AdminAuth.client().auth.signOut().then(function () {
-            signInView("<strong>" + esc(em) + "</strong> signed in, but is not on the " +
-              "admin list. Ask whoever administers this site to add it.", true, em);
-          });
-        });
+        lead.textContent = "Checking the register.";
+        return afterSession(res.data.session, em);
       }).catch(function (err) {
         signInView("Could not reach the server. " + esc(err.message || String(err)), true, em);
       });
@@ -92,6 +88,76 @@
     document.getElementById("forgot").addEventListener("click", function (e) {
       e.preventDefault();
       resetView(document.getElementById("email").value.trim());
+    });
+  }
+
+  /* Signed in. Are they on the register, and is there a second factor still to
+     satisfy? Both have to pass before the portal opens. */
+  function afterSession(session, typed) {
+    var email = (session && session.user && session.user.email) || typed || "";
+    return PortalAuth.lookupHolder().then(function (row) {
+      if (!row) {
+        return PortalAuth.client().auth.signOut().then(function () {
+          signInView("<strong>" + esc(email) + "</strong> signed in, but is not on the " +
+            "share register. If you believe you are a shareholder, contact the company " +
+            "secretary.", true, email);
+        });
+      }
+      return needsSecondFactor().then(function (factorId) {
+        if (factorId) { challengeView(factorId); return; }
+        PortalAuth.record("sign_in", "Signed in");
+        location.replace("index.html");
+      });
+    });
+  }
+
+  /* Supabase reports the level this session has reached and the level the
+     account requires. A verified factor that has not been used this session is
+     the gap between the two. */
+  function needsSecondFactor() {
+    var c = PortalAuth.client();
+    if (!c.auth.mfa || !c.auth.mfa.getAuthenticatorAssuranceLevel) return Promise.resolve(null);
+    return c.auth.mfa.getAuthenticatorAssuranceLevel().then(function (r) {
+      var d = r && r.data;
+      if (!d || d.currentLevel === d.nextLevel) return null;
+      return PortalAuth.listFactors().then(function (f) {
+        var v = ((f && f.totp) || []).filter(function (x) { return x.status === "verified"; });
+        return v.length ? v[0].id : null;
+      });
+    }).catch(function () { return null; });
+  }
+
+  function challengeView(factorId) {
+    lead.textContent = "One more step.";
+    slot.innerHTML =
+      '<form id="mf" novalidate>' +
+        '<div class="field"><label for="code">Six digit code</label>' +
+          '<input id="code" inputmode="numeric" autocomplete="one-time-code" ' +
+            'maxlength="6" placeholder="000000" />' +
+          '<span class="hint">From the authenticator app on your phone.</span></div>' +
+        '<button class="btn btn-key btn-block" type="submit" id="mgo">Verify</button>' +
+      "</form>" +
+      '<p class="login-foot"><a href="#" id="cancel">Cancel and sign out</a></p>';
+
+    document.getElementById("mf").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var code = document.getElementById("code").value.trim();
+      if (!/^[0-9]{6}$/.test(code)) { ConsoleUI.toast("That should be six digits.", true); return; }
+      var btn = document.getElementById("mgo");
+      btn.disabled = true; btn.textContent = "Verifying";
+      PortalAuth.verifyTotp(factorId, code).then(function (r) {
+        if (r.error) {
+          btn.disabled = false; btn.textContent = "Verify";
+          ConsoleUI.toast("That code was not accepted. Try the next one.", true);
+          return;
+        }
+        PortalAuth.record("sign_in", "Signed in with two factor");
+        location.replace("index.html");
+      });
+    });
+    document.getElementById("cancel").addEventListener("click", function (e) {
+      e.preventDefault();
+      PortalAuth.client().auth.signOut().then(function () { signInView("", false); });
     });
   }
 
@@ -113,7 +179,7 @@
       if (!em) return;
       var btn = document.getElementById("rgo");
       btn.disabled = true; btn.textContent = "Sending";
-      AdminAuth.sendReset(em).then(function () {
+      PortalAuth.sendReset(em).then(function () {
         lead.textContent = "Check your inbox.";
         /* Same wording whether or not that address has an account. */
         slot.innerHTML = notice("If <strong>" + esc(em) + "</strong> has an account, a " +
@@ -121,7 +187,7 @@
           '<p class="login-foot"><a href="login.html">Back to sign in</a></p>';
       }).catch(function (err) {
         btn.disabled = false; btn.textContent = "Send the link";
-        Admin.toast(err.message || String(err), true);
+        ConsoleUI.toast(err.message || String(err), true);
       });
     });
     document.getElementById("back").addEventListener("click", function (e) {
@@ -136,7 +202,7 @@
       '<form id="pf" novalidate>' +
         '<div class="field"><label for="p1">New password</label>' +
           '<input id="p1" type="password" autocomplete="new-password" />' +
-          '<span class="hint">At least eight characters.</span></div>' +
+          '<span class="hint">At least ten characters.</span></div>' +
         '<div class="field"><label for="p2">Repeat it</label>' +
           '<input id="p2" type="password" autocomplete="new-password" /></div>' +
         '<button class="btn btn-key btn-block" type="submit" id="pgo">Save and sign in</button>' +
@@ -145,39 +211,33 @@
     document.getElementById("pf").addEventListener("submit", function (e) {
       e.preventDefault();
       var a = document.getElementById("p1").value, b = document.getElementById("p2").value;
-      if (a.length < 8) { Admin.toast("Use at least eight characters.", true); return; }
-      if (a !== b)      { Admin.toast("Those two do not match.", true); return; }
+      if (a.length < 10) { ConsoleUI.toast("Use at least ten characters.", true); return; }
+      if (a !== b)       { ConsoleUI.toast("Those two do not match.", true); return; }
       var btn = document.getElementById("pgo");
       btn.disabled = true; btn.textContent = "Saving";
-      AdminAuth.updatePassword(a).then(function (res) {
+      PortalAuth.updatePassword(a).then(function (res) {
         if (res.error) {
           btn.disabled = false; btn.textContent = "Save and sign in";
-          Admin.toast(res.error.message, true); return;
+          ConsoleUI.toast(res.error.message, true); return;
         }
         location.replace("index.html");
       });
     });
   }
 
-  /* ---- which of the three is this? --------------------------------------- */
+  /* ---- which of these is this? ------------------------------------------- */
   var denied = new URLSearchParams(location.search).get("denied");
   var recovery = /type=recovery/.test(location.hash || "");
 
-  AdminAuth.client().auth.getSession().then(function (r) {
+  PortalAuth.client().auth.getSession().then(function (r) {
     var session = r.data && r.data.session;
     if (recovery && session) { newPasswordView(); return; }
     if (!session) {
-      signInView(denied ? "That account is not on the admin list." : "", !!denied);
+      signInView(denied ? "That account is not on the share register." : "", !!denied);
       return;
     }
-    lead.textContent = "Checking your access.";
-    return AdminAuth.lookupAdmin(session).then(function (row) {
-      if (row) { location.replace("index.html"); return; }
-      return AdminAuth.client().auth.signOut().then(function () {
-        signInView("<strong>" + esc(session.user.email || "That account") +
-          "</strong> is not on the admin list.", true, session.user.email || "");
-      });
-    });
+    lead.textContent = "Checking the register.";
+    return afterSession(session, "");
   }).catch(function (err) {
     signInView("Could not reach the server. " + esc(err.message || String(err)), true);
   });
