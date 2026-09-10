@@ -52,9 +52,13 @@ create table if not exists public.organisations (
 
 -- keep updated_at honest without the client having to remember
 create or replace function public.touch_updated_at()
-returns trigger language plpgsql as $$
+returns trigger
+language plpgsql
+set search_path = public, pg_temp
+as $$
 begin new.updated_at = now(); return new; end;
 $$;
+revoke all on function public.touch_updated_at() from public, anon, authenticated;
 
 drop trigger if exists products_touch on public.products;
 create trigger products_touch before update on public.products

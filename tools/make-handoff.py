@@ -69,11 +69,13 @@ Before you deploy this as your own
    posting it anywhere, and the admin panel says sign in is not configured.
 
    To turn both on, create a Supabase project and put its URL and publishable
-   key here, then run these three files in its SQL editor, in this order:
+   key here, then run these five files in its SQL editor, in this order:
 
      supabase/schema.sql         the meeting_requests table the form writes to
      supabase/auth-schema.sql    the admins allowlist the panel checks
      supabase/content-schema.sql the products and organisations the panel edits
+     supabase/site-schema.sql    the sections of the public page, and which of
+                                 them are shown
      supabase/portal-schema.sql  the share register the portal reads
 
    content-schema.sql is seeded with what the page already shows, so running
@@ -82,6 +84,12 @@ Before you deploy this as your own
    on the public page the next time somebody loads it. Until you run it, the
    panel says it cannot read those tables and the public page keeps showing
    the content written into index.html, which is the same content.
+
+   site-schema.sql is what puts the public page under the panel's control.
+   Every section of index.html gets a row, and the panel can hide any of them:
+   a hidden section is not sent to visitors at all, and its link disappears
+   from the menu at the same time. It is seeded with what the page already
+   says, so running it changes nothing until you edit something.
 
    portal-schema.sql creates the share register: shareholders, holdings,
    transactions, dividends, valuations, documents and updates, with row level

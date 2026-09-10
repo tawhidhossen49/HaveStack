@@ -44,7 +44,9 @@ as $$
   );
 $$;
 
-revoke all on function public.is_admin() from public;
+-- Supabase grants every new function in `public` to anon by default, so
+-- revoking from PUBLIC alone leaves that grant standing. Name anon too.
+revoke all on function public.is_admin() from public, anon;
 grant execute on function public.is_admin() to authenticated;
 
 -- ---------------------------------------------------------------------------

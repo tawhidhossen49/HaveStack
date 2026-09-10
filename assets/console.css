@@ -192,7 +192,8 @@ table{border-collapse:collapse}
   transition:border-color var(--t-2) var(--ease),color var(--t-2) var(--ease);
 }
 .icon-btn svg{width:15px;height:15px}
-@media (hover:hover) and (pointer:fine){ .icon-btn:hover{border-color:var(--line-3);color:var(--ink)} }
+.icon-btn:disabled{opacity:.35;cursor:not-allowed}
+@media (hover:hover) and (pointer:fine){ .icon-btn:not(:disabled):hover{border-color:var(--line-3);color:var(--ink)} }
 
 .field{display:flex;flex-direction:column;gap:var(--space-2);margin-bottom:var(--space-4)}
 .field label{font-size:13px;font-weight:500;color:var(--ink-2)}
@@ -269,6 +270,26 @@ table{border-collapse:collapse}
    size or pushing the row around. */
 .table td a{display:inline-flex;align-items:center;min-height:24px}
 
+/* A second line under a cell's main value: the id behind a name, the file a
+   row points at. Quieter than the value it explains, and never the only place
+   something important is said. */
+.row-note{margin-top:3px;font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.muted{color:var(--ink-3)}
+
+/* A row for something switched off. Dimming it says "still here, not in use"
+   in a way a tag alone does not, and the tag is still there for anyone who
+   cannot see the difference. */
+.table tbody tr.is-off td{opacity:.62}
+.table tbody tr.is-off td:first-child{box-shadow:inset 2px 0 0 var(--line-3)}
+
+/* Image previews. A fixed box so a row is the same height whatever it holds,
+   and a marked empty box where a file is referenced but absent. */
+.thumb{width:56px;height:40px;object-fit:cover;background:var(--bg-2);border:1px solid var(--line)}
+.thumb-missing{
+  display:block;border-style:dashed;border-color:rgba(230,66,70,.5);
+  background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(230,66,70,.09) 4px,rgba(230,66,70,.09) 8px);
+}
+
 .tag{
   display:inline-flex;align-items:center;gap:6px;
   padding:3px 9px;border:1px solid var(--line-3);
@@ -276,6 +297,7 @@ table{border-collapse:collapse}
 }
 .tag::before{content:'';width:5px;height:5px;background:currentColor}
 .tag-live{color:var(--ok);border-color:rgba(111,192,135,.4)}
+.tag-missing{color:var(--red-text);border-color:rgba(230,66,70,.4)}
 .tag-draft{color:var(--ink-3)}
 .tag-new{color:var(--red-text);border-color:rgba(230,66,70,.4)}
 
@@ -390,6 +412,16 @@ table{border-collapse:collapse}
     display:grid;grid-template-columns:minmax(0,96px) minmax(0,1fr);gap:var(--space-3);
     padding:var(--space-2) var(--space-5);border:0;
   }
+  /* An address or a path is one unbreakable word. In record mode the value
+     column is what is left of a phone screen, so a long one pushed the table
+     wider than the page. Let it break rather than let it overflow: a wrapped
+     address is readable, a sideways scrolling document is not. */
+  .table td{overflow-wrap:anywhere}
+  /* A cell is a two column grid in record mode, and a grid item stretches by
+     default. A status tag is the width of its word, not the width of the
+     column, so it has to opt out. */
+  .table td .tag,
+  .table td .pill{justify-self:start}
   .table td::before{
     content:attr(data-label);
     font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);

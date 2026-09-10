@@ -21,27 +21,37 @@ window.Admin = (function () {
   var U = window.ConsoleUI;
   var I = U.I;
 
-  /* Grouped so the rail reads as a structure rather than a list of fourteen
-     equal things. Groups match how the public site is actually organised. */
+  /* Seven entries, not fourteen.
+
+     The panel used to carry one rail item per section of the public page,
+     which made the rail a table of contents for a document the reader was
+     already looking at, and left every one of those pages holding a single
+     small list. Page sections is now the way in to all of them: it shows
+     every section at once, with what is on the page and what is hidden, and
+     each row opens its own editor. Products and Clients and partners keep
+     their own entries because they are edited far more often than the rest. */
   var NAV = [
     { group: null, items: [
       { href: "index.html",    label: "Dashboard",        icon: I.grid },
       { href: "requests.html", label: "Meeting requests", icon: I.inbox }
     ]},
-    { group: "Site content", items: [
-      { href: "capabilities.html", label: "Capabilities",         icon: I.layers },
-      { href: "maintenance.html",  label: "Maintenance",          icon: I.gauge },
-      { href: "products.html",     label: "Products",             icon: I.box },
-      { href: "partners.html",     label: "Clients and partners", icon: I.users },
-      { href: "sectors.html",      label: "Sectors",              icon: I.globe },
-      { href: "standards.html",    label: "Standards",            icon: I.shield },
-      { href: "governance.html",   label: "Governance",           icon: I.scales }
+    { group: "The public page", items: [
+      { href: "sections.html", label: "Page sections",        icon: I.layers },
+      { href: "products.html", label: "Products",             icon: I.box },
+      { href: "partners.html", label: "Clients and partners", icon: I.users },
+      { href: "media.html",    label: "Images",               icon: I.image }
     ]},
     { group: "Practice", items: [
-      { href: "media.html",    label: "Media library", icon: I.image },
-      { href: "settings.html", label: "Settings",      icon: I.cog }
+      { href: "settings.html", label: "Settings", icon: I.cog }
     ]}
   ];
+
+  /* The section editor is reached from Page sections rather than from the
+     rail, so it has no entry of its own. It still needs the rail to show
+     where the reader is. */
+  function activeFor(file) {
+    return file === "section.html" ? "sections.html" : file;
+  }
 
   /* `admin` is the row from public.admins, passed in by the page after the
      guard has run. */
@@ -58,7 +68,7 @@ window.Admin = (function () {
       onSignOut: function () {
         if (window.AdminAuth) AdminAuth.signOut(); else location.href = "login.html";
       }
-    }, active, title, subtitle, actions);
+    }, activeFor(active), title, subtitle, actions);
   }
 
   /* Data helpers bound to the admin session. Ordering defaults to the sort

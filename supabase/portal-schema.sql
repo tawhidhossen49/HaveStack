@@ -226,9 +226,13 @@ create index if not exists portal_activity_by_holder on public.portal_activity (
 
 -- keep updated_at honest
 create or replace function public.touch_updated_at()
-returns trigger language plpgsql as $$
+returns trigger
+language plpgsql
+set search_path = public, pg_temp
+as $$
 begin new.updated_at = now(); return new; end;
 $$;
+revoke all on function public.touch_updated_at() from public, anon, authenticated;
 drop trigger if exists shareholders_touch on public.shareholders;
 create trigger shareholders_touch before update on public.shareholders
   for each row execute function public.touch_updated_at();
@@ -264,8 +268,12 @@ as $$
   select public.current_shareholder_id() is not null;
 $$;
 
-revoke all on function public.current_shareholder_id() from public;
-revoke all on function public.is_shareholder() from public;
+--  Supabase grants every new function in `public` to anon by default, so
+--  revoking from PUBLIC alone leaves that grant standing. Name anon as well.
+--  authenticated keeps execute because the policies below call these, and a
+--  policy is evaluated as the caller.
+revoke all on function public.current_shareholder_id() from public, anon;
+revoke all on function public.is_shareholder() from public, anon;
 grant execute on function public.current_shareholder_id() to authenticated;
 grant execute on function public.is_shareholder() to authenticated;
 
@@ -385,6 +393,8 @@ begin
 end;
 $$;
 
+revoke all on function public.guard_shareholder_self_edit() from public, anon, authenticated;
+
 drop trigger if exists shareholders_self_edit_guard on public.shareholders;
 create trigger shareholders_self_edit_guard
   before update on public.shareholders
@@ -421,18 +431,23 @@ create policy "holder records own activity"
 
 -- Shares actually in issue: active lots only, so a cancelled or transferred
 -- certificate stops counting the moment it stops being owned.
+--  Both of these are company wide rather than personal, so neither filters by
+--  who is asking. They still need a gate: without one, any account that can
+--  sign in at all could read the internal share price and the total in issue.
 create or replace view public.v_share_totals as
   select
     coalesce(sum(h.shares), 0)::bigint as total_shares,
     count(distinct h.shareholder_id)::int as holders
   from public.holdings h
   join public.shareholders s on s.id = h.shareholder_id
-  where h.status = 'active' and s.status = 'active';
+  where h.status = 'active' and s.status = 'active'
+    and (public.is_shareholder() or public.is_admin());
 
 create or replace view public.v_latest_valuation as
   select effective_on, price_per_share, total_valuation, method, note
     from public.valuations
    where published
+     and (public.is_shareholder() or public.is_admin())
    order by effective_on desc
    limit 1;
 

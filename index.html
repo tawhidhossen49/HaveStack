@@ -1709,38 +1709,50 @@ html:not(.js) .rv{opacity:1;transform:none}
   new IntersectionObserver(function(rows,obs){ if(!rows[0].isIntersecting) return; stages.classList.add('in'); obs.disconnect(); },
     { threshold: .25 }).observe(stages);
 
-  /* capability tabs */
-  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  /* capability tabs
+     Delegated rather than bound tab by tab. The admin panel can replace what
+     is inside the tablist, and a handler attached to a button that no longer
+     exists would leave the widget dead with no sign of why. Reading the tabs
+     at the moment of the event means the set can change underneath it. */
+  var tablist = document.querySelector('.tablist');
+  function allTabs(){ return Array.prototype.slice.call(document.querySelectorAll('.tab')); }
   function selectTab(tab, focus){
-    tabs.forEach(function(t){
+    allTabs().forEach(function(t){
       var on = t === tab;
       t.setAttribute('aria-selected', on ? 'true' : 'false');
       t.tabIndex = on ? 0 : -1;
-      document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      var p = document.getElementById(t.getAttribute('aria-controls'));
+      if (p) p.hidden = !on;
     });
     if (focus) tab.focus();
   }
-  tabs.forEach(function(tab,i){
-    tab.addEventListener('click', function(){ selectTab(tab); });
-    tab.addEventListener('keydown', function(e){
-      var n=null;
-      if(e.key==='ArrowRight'||e.key==='ArrowDown') n=tabs[(i+1)%tabs.length];
-      else if(e.key==='ArrowLeft'||e.key==='ArrowUp') n=tabs[(i-1+tabs.length)%tabs.length];
-      else if(e.key==='Home') n=tabs[0];
-      else if(e.key==='End') n=tabs[tabs.length-1];
+  if (tablist) {
+    tablist.addEventListener('click', function(e){
+      var t = e.target.closest && e.target.closest('.tab');
+      if (t) selectTab(t);
+    });
+    tablist.addEventListener('keydown', function(e){
+      var t = e.target.closest && e.target.closest('.tab');
+      if (!t) return;
+      var list = allTabs(), i = list.indexOf(t), n = null;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown') n=list[(i+1)%list.length];
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp') n=list[(i-1+list.length)%list.length];
+      else if(e.key==='Home') n=list[0];
+      else if(e.key==='End') n=list[list.length-1];
       if(!n) return;
       e.preventDefault(); selectTab(n,true);
     });
-  });
-  document.querySelectorAll('[data-go]').forEach(function(a){
-    a.addEventListener('click', function(e){
-      var t=document.querySelector('.tab[data-cap="'+a.getAttribute('data-go')+'"]');
-      if(!t) return;
-      e.preventDefault();
-      selectTab(t);
-      document.getElementById('services').scrollIntoView({behavior: reduce.matches?'auto':'smooth', block:'start'});
-      t.focus({preventScroll:true});
-    });
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('[data-go]');
+    if(!a) return;
+    var t=document.querySelector('.tab[data-cap="'+a.getAttribute('data-go')+'"]');
+    if(!t) return;
+    e.preventDefault();
+    selectTab(t);
+    var svc = document.getElementById('services');
+    if (svc) svc.scrollIntoView({behavior: reduce.matches?'auto':'smooth', block:'start'});
+    t.focus({preventScroll:true});
   });
 })();
 </script>

@@ -4,46 +4,61 @@
   var A = window.Admin;
   // nothing renders until the session is checked against the allowlist
   AdminAuth.requireAdmin().then(function (admin) {
-    var content = A.Shell("settings.html", 'Settings', 'Practice details, form behaviour and access.', null, admin);
+    var content = A.Shell("settings.html", 'Settings', 'The contact address and who can sign in.', null, admin);
     if (!content) return;
-    content.innerHTML = A.notice('This panel is the interface only. Saving is not wired up, so the fields below hold '
-      + 'their current values from the public site and nothing is written anywhere.') +
-    A.panel({
-      title: 'Practice details',
-      note: 'Used in the footer, the structured data and the request page.',
-      body: '<div class="field-row">' +
-        '<div class="field"><label for="s-name">Practice name</label>' +
-        '<input id="s-name" type="text" value="HaveStack Technologies" /></div>' +
-        '<div class="field"><label for="s-email">Contact address</label>' +
-        '<input id="s-email" type="email" value="hello@havestack.tech" /></div>' +
-        '<div class="field"><label for="s-city">Base</label>' +
-        '<input id="s-city" type="text" value="Dhaka, Bangladesh" /></div>' +
-        '<div class="field"><label for="s-domain">Live domain</label>' +
-        '<input id="s-domain" type="url" value="https://havestack.tech/" />' +
-        '<span class="hint">Used for the canonical tag and the social card.</span></div>' +
-        '<div class="field full"><label for="s-desc">Description</label>' +
-        '<textarea id="s-desc">Enterprise software built, integrated and maintained for institutions in Bangladesh.</textarea></div>' +
-      '</div>',
-      foot: '<button class="btn btn-sm" type="button">Discard</button>' +
-            '<button class="btn btn-key btn-sm" type="button" data-stub="Saving is not wired up yet.">Save changes</button>'
+    content.innerHTML = A.panel({
+      title: 'Contact address',
+      note: 'Where the site tells people to write, and where a submitted brief ' +
+            'goes if the database is ever unreachable.',
+      body: '<div class="field"><label for="s-email">Contact address</label>' +
+        '<input id="s-email" type="email" placeholder="hello@example.com" />' +
+        '<span class="hint">Shown in the footer and on the request page, and used ' +
+        'as the address a brief falls back to.</span></div>' +
+        '<div id="s-email-note"></div>',
+      foot: '<button class="btn btn-key btn-sm" type="button" id="saveContact">Save</button>'
     }) +
-    A.panel({
-      title: 'Request form',
-      note: 'Where submitted briefs are delivered.',
-      body: '<div class="field-row">' +
-        '<div class="field"><label for="s-reply">Reply target, working days</label>' +
-        '<input id="s-reply" type="number" value="2" min="1" /></div>' +
-        '<div class="field"><label for="s-len">Meeting length, minutes</label>' +
-        '<input id="s-len" type="number" value="40" min="10" /></div>' +
-      '</div>',
-      foot: '<button class="btn btn-key btn-sm" type="button" data-stub="Saving is not wired up yet.">Save changes</button>'
-    }) +
+    A.notice('The practice name, the description and the live domain are not ' +
+      'settings and are not editable here. They sit in the head of ' +
+      '<code>index.html</code> because a search engine reads them before any ' +
+      'script on the page has run, so a value stored in the database would ' +
+      'arrive too late to be the one indexed. Change them in that file.') +
     A.panel({
       title: 'Access',
       note: 'Everyone who can sign in. Adding somebody here creates their account with the password you choose and puts them on the list, in one step.',
       flush: true,
       actions: '<button class="btn btn-key btn-sm" type="button" id="addAdmin">' + A.svg(A.I.plus, 14) + 'Add admin</button>',
       body: '<div id="adminList">' + A.empty('Loading', 'Reading the admin list.') + '</div>'
+    });
+
+    /* ---- the contact address ----------------------------------------------
+       One row in site_settings. The public page reads the same row, so what is
+       typed here is what a visitor sees rather than a copy of it kept in step
+       by hand. */
+    var emailInput = document.getElementById('s-email');
+    var emailNote = document.getElementById('s-email-note');
+
+    AdminAuth.client().from('site_settings').select('value').eq('key', 'contact_email')
+      .maybeSingle().then(function (r) {
+        if (r.error) {
+          emailNote.innerHTML = '<span class="hint">Could not read it. Run ' +
+            'supabase/site-schema.sql if you have not yet.</span>';
+          return;
+        }
+        emailInput.value = (r.data && r.data.value) || '';
+      });
+
+    document.getElementById('saveContact').addEventListener('click', function () {
+      var v = emailInput.value.trim().toLowerCase();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) {
+        A.toast('That does not look like an email address.', true);
+        return;
+      }
+      AdminAuth.client().from('site_settings')
+        .update({ value: v }).eq('key', 'contact_email')
+        .then(function (r) {
+          if (r.error) { A.toast(r.error.message, true); return; }
+          A.toast('Saved. The site uses it on its next load.');
+        });
     });
 
     /* ---- the access list -------------------------------------------------
