@@ -53,6 +53,14 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
 
+  /* An organisation's name as a stable handle. The stylesheet gives each mark
+     its own optical height under this name, so the height belongs to the
+     organisation rather than to whichever file is currently its mark. */
+  function slug(s) {
+    return String(s == null ? "" : s).toLowerCase().replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
   function text(root, sel, value) {
     if (value == null || value === "") return;
     var el = root.querySelector(sel);
@@ -431,7 +439,11 @@
       var mine = rows.filter(function (o) { return o.register === pair[0]; });
       if (!mine.length) return;
       list.innerHTML = mine.map(function (o) {
-        return '<li class="mark"><img src="' + esc(o.mark) + '" alt="' + esc(o.name) + '" ' +
+        /* Named by organisation, not by file. Each mark sits at its own
+           optical height, and keying that to the picture meant an uploaded
+           replacement lost it and jumped to the default. */
+        return '<li class="mark" data-org="' + esc(slug(o.name)) + '">' +
+          '<img src="' + esc(o.mark) + '" alt="' + esc(o.name) + '" ' +
           'width="' + (o.mark_w || 160) + '" height="' + (o.mark_h || 160) + '" ' +
           'loading="lazy" decoding="async" /></li>';
       }).join("");

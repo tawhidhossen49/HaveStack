@@ -722,12 +722,12 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 /* Amaze and ARIES are wide lockups now, not square marks, so they take the
    shorter height the other wordmarks use rather than the taller one a shield
    or a ring needed. */
-.mark img[src*="aries"]{height:34px}
-.mark img[src*="avane"]{height:30px}
-.mark img[src*="gungchil"]{height:36px}
-.mark img[src*="fp"]{height:31px}
-.mark img[src*="ayct"]{height:29px}
-.mark img[src*="toc"]{height:27px}
+.mark[data-org="aries"] img{height:34px}
+.mark[data-org="avane-labs"] img{height:30px}
+.mark[data-org="gungchil"] img{height:36px}
+.mark[data-org="first-principles"] img{height:31px}
+.mark[data-org="amaze-youth-chess-tournament"] img{height:29px}
+.mark[data-org="the-outliers-club"] img{height:27px}
 @media (hover:hover) and (pointer:fine){
   .mark:hover img{filter:none;opacity:1;transform:translateY(-2px)}
 }
@@ -1143,7 +1143,7 @@ html:not(.js) .rv{opacity:1;transform:none}
       </div>
 
       <div class="panel" id="p-erp" role="tabpanel" aria-labelledby="t-erp" tabindex="0">
-        <div class="panel-media"><img src="assets/cap-erp.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/d1/1200/457'" /></div>
+        <div class="panel-media"><img src="assets/cap-erp.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" /></div>
         <div class="panel-body">
           <h3 class="h3">Enterprise resource planning</h3>
           <p>One authoritative record of finance, procurement, inventory and payroll, with approval chains enforced in software.</p>
@@ -1151,7 +1151,7 @@ html:not(.js) .rv{opacity:1;transform:none}
         </div>
       </div>
       <div class="panel" id="p-learning" role="tabpanel" aria-labelledby="t-learning" tabindex="0" hidden>
-        <div class="panel-media"><img src="assets/cap-learning.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k6/1200/457'" /></div>
+        <div class="panel-media"><img src="assets/cap-learning.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" /></div>
         <div class="panel-body">
           <h3 class="h3">Learning platforms</h3>
           <p>Course delivery, assessment and certification engineered to carry full cohorts through an academic term.</p>
@@ -1159,7 +1159,7 @@ html:not(.js) .rv{opacity:1;transform:none}
         </div>
       </div>
       <div class="panel" id="p-public" role="tabpanel" aria-labelledby="t-public" tabindex="0" hidden>
-        <div class="panel-media"><img src="assets/cap-public.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k11/1200/457'" /></div>
+        <div class="panel-media"><img src="assets/cap-public.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" /></div>
         <div class="panel-body">
           <h3 class="h3">Public facing platforms</h3>
           <p>Citizen facing services provisioned for a defined peak load and proven against it before release.</p>
@@ -1167,7 +1167,7 @@ html:not(.js) .rv{opacity:1;transform:none}
         </div>
       </div>
       <div class="panel" id="p-integration" role="tabpanel" aria-labelledby="t-integration" tabindex="0" hidden>
-        <div class="panel-media"><img src="assets/cap-integration.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k12/1200/457'" /></div>
+        <div class="panel-media"><img src="assets/cap-integration.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" /></div>
         <div class="panel-body">
           <h3 class="h3">Integration and internal tooling</h3>
           <p>Interfaces between the platforms an institution already runs, governed by a documented data contract.</p>
@@ -1175,7 +1175,7 @@ html:not(.js) .rv{opacity:1;transform:none}
         </div>
       </div>
       <div class="panel" id="p-managed" role="tabpanel" aria-labelledby="t-managed" tabindex="0" hidden>
-        <div class="panel-media"><img src="assets/cap-managed.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/k8/1200/457'" /></div>
+        <div class="panel-media"><img src="assets/cap-managed.jpg" alt="" width="1200" height="457" fetchpriority="low" decoding="async" /></div>
         <div class="panel-body">
           <h3 class="h3">Managed operations</h3>
           <p>Monitoring, release management, recovery and a named escalation route under a service agreement.</p>
@@ -1329,7 +1329,7 @@ html:not(.js) .rv{opacity:1;transform:none}
     <h2 class="h2 sect-head rv">Organisations we build for.</h2>
     <p class="lead sect-intro rv">Named with their agreement. Further references are available under a non disclosure agreement.</p>
     <ul class="marks rv">
-        <li class="mark"><img src="assets/mark-gungchil.png" alt="Gungchil" width="254" height="160" loading="lazy" decoding="async" /></li>
+        <li class="mark" data-org="gungchil"><img src="assets/mark-gungchil.png" alt="Gungchil" width="254" height="160" loading="lazy" decoding="async" /></li>
     </ul>
   </div>
 </section>
@@ -1343,11 +1343,11 @@ html:not(.js) .rv{opacity:1;transform:none}
     <h2 class="h2 sect-head rv">Official partners.</h2>
     <p class="lead sect-intro rv">Organisations and institutions that work alongside the practice.</p>
     <ul class="marks rv">
-        <li class="mark"><img src="assets/mark-avane.png" alt="Avane Labs" width="766" height="160" loading="lazy" decoding="async" /></li>
-        <li class="mark"><img src="assets/mark-aries.png" alt="ARIES" width="162" height="160" loading="lazy" decoding="async" /></li>
-        <li class="mark"><img src="assets/mark-ayct.png" alt="Amaze Youth Chess Tournament" width="1024" height="160" loading="lazy" decoding="async" /></li>
-        <li class="mark"><img src="assets/mark-fp.png" alt="First Principles" width="601" height="160" loading="lazy" decoding="async" /></li>
-        <li class="mark"><img src="assets/mark-toc.png" alt="The Outliers Club" width="901" height="160" loading="lazy" decoding="async" /></li>
+        <li class="mark" data-org="avane-labs"><img src="assets/mark-avane.png" alt="Avane Labs" width="766" height="160" loading="lazy" decoding="async" /></li>
+        <li class="mark" data-org="aries"><img src="assets/mark-aries.png" alt="ARIES" width="162" height="160" loading="lazy" decoding="async" /></li>
+        <li class="mark" data-org="amaze-youth-chess-tournament"><img src="assets/mark-ayct.png" alt="Amaze Youth Chess Tournament" width="1024" height="160" loading="lazy" decoding="async" /></li>
+        <li class="mark" data-org="first-principles"><img src="assets/mark-fp.png" alt="First Principles" width="601" height="160" loading="lazy" decoding="async" /></li>
+        <li class="mark" data-org="the-outliers-club"><img src="assets/mark-toc.png" alt="The Outliers Club" width="901" height="160" loading="lazy" decoding="async" /></li>
     </ul>
   </div>
 </section>
@@ -1359,37 +1359,37 @@ html:not(.js) .rv{opacity:1;transform:none}
     <p class="lead sect-intro rv">Six sectors where a failure is expensive.</p>
     <div class="mosaic">
       <article class="scard sc-a rv">
-        <img src="assets/sector-government.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/hv4/1200/900'" />
+        <img src="assets/sector-government.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" />
         <div class="scard-veil"></div>
         <h3 class="h3">Government and public administration</h3>
         <p>Registries, service delivery and internal administration.</p>
       </article>
       <article class="scard sc-b rv">
-        <img src="assets/sector-banking.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/survey19/1200/900'" />
+        <img src="assets/sector-banking.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" />
         <div class="scard-veil"></div>
         <h3 class="h3">Banking and NBFI</h3>
         <p>Origination, servicing and regulatory reporting.</p>
       </article>
       <article class="scard sc-c rv">
-        <img src="assets/sector-education.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/crane41/1200/900'" />
+        <img src="assets/sector-education.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" />
         <div class="scard-veil"></div>
         <h3 class="h3">Education</h3>
         <p>Admissions and academic records.</p>
       </article>
       <article class="scard sc-d rv">
-        <img src="assets/sector-healthcare.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/hv3/1200/900'" />
+        <img src="assets/sector-healthcare.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" />
         <div class="scard-veil"></div>
         <h3 class="h3">Healthcare</h3>
         <p>Patient administration under access control.</p>
       </article>
       <article class="scard sc-e rv">
-        <img src="assets/sector-realestate.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/corridor4/1200/900'" />
+        <img src="assets/sector-realestate.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" />
         <div class="scard-veil"></div>
         <h3 class="h3">Real estate and construction</h3>
         <p>Cost control and handover records.</p>
       </article>
       <article class="scard sc-f rv">
-        <img src="assets/sector-ngo.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='https://picsum.photos/seed/mx4/1200/900'" />
+        <img src="assets/sector-ngo.jpg" alt="" width="1200" height="900" loading="lazy" decoding="async" />
         <div class="scard-veil"></div>
         <h3 class="h3">Development and NGO</h3>
         <p>Programme monitoring and donor reporting.</p>

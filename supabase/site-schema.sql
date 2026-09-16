@@ -109,8 +109,9 @@ drop policy if exists "anyone reads site_settings"  on public.site_settings;
 drop policy if exists "admins change site_settings" on public.site_settings;
 drop policy if exists "admins write site_settings"  on public.site_settings;
 
+-- both roles, for the reason given above site_images
 create policy "anyone reads site_settings"
-  on public.site_settings for select to anon using (true);
+  on public.site_settings for select to anon, authenticated using (true);
 create policy "admins change site_settings"
   on public.site_settings for update to authenticated
   using (public.is_admin()) with check (public.is_admin());
@@ -272,8 +273,12 @@ drop policy if exists "anyone reads site_images"   on public.site_images;
 drop policy if exists "admins change site_images"  on public.site_images;
 drop policy if exists "admins add site_images"     on public.site_images;
 
+-- anon and authenticated both, deliberately. A policy naming only anon does
+-- not apply to a signed in admin, who is the authenticated role, so the panel
+-- would read this table and get nothing back while the public page read it
+-- fine. Everything here is already public: the page serves it to anybody.
 create policy "anyone reads site_images"
-  on public.site_images for select to anon using (true);
+  on public.site_images for select to anon, authenticated using (true);
 create policy "admins change site_images"
   on public.site_images for update to authenticated
   using (public.is_admin()) with check (public.is_admin());
@@ -289,13 +294,13 @@ select * from (values
   ('favicon',        'Browser tab icon',       'Shown in the browser tab and when the site is saved to a phone home screen.', 'assets/favicon.png', 20),
   ('og_card',        'Social sharing card',    'The picture shown when a link to the site is pasted into a chat or a post.', 'assets/og-card.png', 30),
   ('logo_full',      'Logo for search results','The larger mark search engines are given for the organisation.', 'assets/logo-mark.png', 40),
-  ('hero_poster',    'Hero still',             'The frame shown at the top of the page before the video plays, and instead of it on a slow connection.', 'assets/hero-poster.jpg', 50),
-  ('ops_systems',    'Operations, systems',    'The photograph behind the operations band.', 'assets/ops-systems.jpg', 60),
-  ('ops_ai',         'Operations, AI',         'Shown when a reader points at the AI row.', 'assets/ops-ai.jpg', 70),
-  ('ops_data',       'Operations, data',       'Shown when a reader points at the data row.', 'assets/ops-data.jpg', 80),
-  ('ops_infra',      'Operations, infrastructure', 'Shown when a reader points at the infrastructure row.', 'assets/ops-infra.jpg', 90),
-  ('ops_report',     'Operations, reporting',  'Shown when a reader points at the reporting row.', 'assets/ops-report.jpg', 100),
-  ('products_floor', 'Products backdrop',      'The photograph along the bottom of the products section.', 'assets/corridoor.jpg', 110)
+  ('hero_poster',    'Hero still',             'The frame shown at the top of the page before the film plays, and instead of it on a slow connection.', 'assets/hero-poster.jpg', 50),
+  ('ops_systems',    'Maintenance photograph', 'The large photograph beside the Maintenance section, behind the heading.', 'assets/ops-systems.jpg', 60),
+  ('ops_ai',         'Maintenance: AI and language models', 'Behind that row when a reader points at it, and across the top of the AI and language models page.', 'assets/ops-ai.jpg', 70),
+  ('ops_data',       'Maintenance: Databases', 'Behind that row when a reader points at it, and across the top of the Databases page.', 'assets/ops-data.jpg', 80),
+  ('ops_infra',      'Maintenance: Backend and infrastructure', 'Behind that row when a reader points at it, and across the top of the Backend and infrastructure page.', 'assets/ops-infra.jpg', 90),
+  ('ops_report',     'Maintenance: Response and reporting', 'Behind that row when a reader points at it, and across the top of the Response and reporting page.', 'assets/ops-report.jpg', 100),
+  ('products_floor', 'Products backdrop',      'The photograph along the bottom of the Products section.', 'assets/corridoor.jpg', 110)
 ) as seed(slot, label, hint, fallback, sort)
 where not exists (select 1 from public.site_images s where s.slot = seed.slot);
 
