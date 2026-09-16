@@ -22,8 +22,8 @@
 window.SITE_CONFIG = {
   /* Supabase project the request form posts to. Leave both empty to fall
      back to email. */
-  supabaseUrl: '',
-  supabaseKey: '',
+  supabaseUrl: 'https://dnuqhgrxgthfbatnagbm.supabase.co',
+  supabaseKey: 'sb_publishable_nTzfhETJm69WQfq_7oicfw_TsJuY99r',
 
   /* Where a brief goes when there is no backend, and the address shown
      throughout the site. */
