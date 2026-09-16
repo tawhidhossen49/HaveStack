@@ -18,7 +18,7 @@
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="stylesheet" href="assets/domain.css" />
 <script>document.documentElement.classList.add('js');</script>
-<style>.mast::before{background-image:url("assets/ops-infra.jpg")}</style>
+<style>.mast::before{background-image:var(--img-ops-infra,url("assets/ops-infra.jpg"))}</style>
 </head>
 
 <body>
@@ -262,5 +262,7 @@
   }
 })();
 </script>
+<script src="assets/site-config.js"></script>
+<script defer src="assets/site-content.js"></script>
 </body>
 </html>

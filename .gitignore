@@ -1,0 +1,9 @@
+# Source masters kept locally, not in the repository. The hero film ships as
+# assets/hero.mp4, re encoded from the current master. The masters are tens of
+# megabytes and one of them exceeds GitHub's 100 MB per file limit.
+assets/background video.mp4
+assets/background video 2.mp4
+
+# The handoff zip is built inside the project by tools/make-handoff.py. It is
+# a copy of the repository, so it has no business inside the repository.
+havestack-handoff.zip

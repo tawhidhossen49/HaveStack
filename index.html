@@ -58,6 +58,19 @@
 
 :root{
   /* ----------------------------------------------------------------------
+     The photographs behind the page, named so the admin panel can replace
+     one. Each is a variable rather than a URL written into the rule, because
+     every one of these pictures carries a scrim, a mask or a grading on top
+     of it: swapping the whole background would take those with it.
+     ---------------------------------------------------------------------- */
+  --img-ops-systems:url("assets/ops-systems.jpg");
+  --img-ops-ai:url("assets/ops-ai.jpg");
+  --img-ops-data:url("assets/ops-data.jpg");
+  --img-ops-infra:url("assets/ops-infra.jpg");
+  --img-ops-report:url("assets/ops-report.jpg");
+  --img-products-floor:url("assets/corridoor.jpg");
+
+  /* ----------------------------------------------------------------------
      One permanent theme. The site is black; there is no light mode.
      The whole neutral ramp is generated in OKLCH at a single hue (286) so the
      greys read as one family rather than as unrelated parts. Chroma peaks in
@@ -508,7 +521,7 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
     linear-gradient(to bottom,
       rgba(5,5,6,.94) 0%, rgba(5,5,6,.94) 48%, rgba(5,5,6,.18) 62%,
       rgba(5,5,6,0) 78%, rgba(5,5,6,0) 100%),
-    url("assets/ops-systems.jpg") 40% center / cover no-repeat;
+    var(--img-ops-systems) 40% center / cover no-repeat;
   /* the reds in this frame are the brand accent, so it keeps its colour where
      the rest of the photography on the site is pulled to neutral */
   -webkit-mask-image:linear-gradient(to right,#000 0,#000 76%,transparent 100%);
@@ -588,10 +601,10 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
     opacity 200ms var(--ease-in) 120ms;
 }
 @media (hover:hover) and (pointer:fine){
-  .op-ai     .op-shot{background-image:url("assets/ops-ai.jpg")}
-  .op-data   .op-shot{background-image:url("assets/ops-data.jpg")}
-  .op-infra  .op-shot{background-image:url("assets/ops-infra.jpg")}
-  .op-report .op-shot{background-image:url("assets/ops-report.jpg")}
+  .op-ai     .op-shot{background-image:var(--img-ops-ai)}
+  .op-data   .op-shot{background-image:var(--img-ops-data)}
+  .op-infra  .op-shot{background-image:var(--img-ops-infra)}
+  .op-report .op-shot{background-image:var(--img-ops-report)}
   .op-shot{
     -webkit-mask-image:linear-gradient(to right,transparent 0,transparent 26%,rgba(0,0,0,.55) 58%,#000 100%);
             mask-image:linear-gradient(to right,transparent 0,transparent 26%,rgba(0,0,0,.55) 58%,#000 100%);
@@ -633,7 +646,7 @@ html.js .panel:not([hidden]){animation:pin .4s var(--ease-out) both}
 .sect-floor{
   position:absolute;left:0;right:0;bottom:0;z-index:0;pointer-events:none;
   height:clamp(250px,28vw,440px);
-  background:url("assets/corridoor.jpg") center 72% / cover no-repeat;
+  background:var(--img-products-floor) center 72% / cover no-repeat;
   /* graded to the same neutral the rest of the photography on this site runs
      at, so the green does not become a second accent on a page whose accent
      is red. Enough saturation is left for the strips to read as a cool glow. */

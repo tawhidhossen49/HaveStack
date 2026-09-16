@@ -335,6 +335,73 @@
     }
   }
 
+  /* ---- pictures ------------------------------------------------------------
+     The fixed images: the mark, the tab icon, the hero still, the photographs
+     behind the operations band and the products section. Each slot knows how
+     to put itself in place, because they are not all the same kind of thing:
+     two are attributes, one is a tag in the head, and the rest are custom
+     properties the stylesheet reads, so the scrim and the grading layered over
+     each photograph survive the swap.
+
+     A slot left empty is left alone, and the markup keeps the file that ships
+     with the site. Nothing here ever blanks a picture. */
+  var PICTURE = {
+    logo_mark: function (url) {
+      each('img[src*="logo-mark"]', function (img) {
+        img.src = url;
+        img.removeAttribute("srcset");
+      });
+    },
+    favicon: function (url) {
+      each('link[rel="icon"], link[rel="apple-touch-icon"]', function (l) { l.href = url; });
+    },
+    og_card: function (url) {
+      each('meta[property="og:image"], meta[name="twitter:image"]', function (m) {
+        m.setAttribute("content", url);
+      });
+    },
+    /* Search engines read this out of the markup. Rewriting it here reaches
+       the ones that render the page first, and no others; the file in the
+       repository is what the rest are given. */
+    logo_full: function (url) {
+      each('script[type="application/ld+json"]', function (s) {
+        try {
+          var data = JSON.parse(s.textContent);
+          if (!data || !data.logo) return;
+          data.logo = url;
+          s.textContent = JSON.stringify(data);
+        } catch (e) { /* a script we cannot parse is one we must not rewrite */ }
+      });
+    },
+    hero_poster: function (url) { each("video[poster]", function (v) { v.poster = url; }); },
+    ops_systems:    cssPicture("--img-ops-systems"),
+    ops_ai:         cssPicture("--img-ops-ai"),
+    ops_data:       cssPicture("--img-ops-data"),
+    ops_infra:      cssPicture("--img-ops-infra"),
+    ops_report:     cssPicture("--img-ops-report"),
+    products_floor: cssPicture("--img-products-floor")
+  };
+
+  function each(selector, fn) {
+    Array.prototype.slice.call(document.querySelectorAll(selector)).forEach(fn);
+  }
+  function cssPicture(name) {
+    return function (url) {
+      // quoted, so a filename with a bracket or a space cannot end the value
+      document.documentElement.style.setProperty(name, 'url("' + url.replace(/"/g, "%22") + '")');
+    };
+  }
+
+  function pictures(rows) {
+    if (!rows || !rows.length) return;
+    rows.forEach(function (r) {
+      var put = PICTURE[r.slot];
+      if (!put || !r.url) return;
+      try { put(r.url); }
+      catch (e) { /* one picture must not take the page down */ }
+    });
+  }
+
   /* ---- products and the two registers, unchanged --------------------------- */
   function products(rows) {
     var box = document.querySelector("#products .idx");
@@ -396,6 +463,7 @@
     });
 
     get("site_settings?select=key,value").then(settings);
+    get("site_images?select=slot,url").then(pictures);
     get("products?select=name,blurb,icon,link,state_label,sort&published=eq.true&order=sort")
       .then(products);
     get("organisations?select=name,register,mark,mark_w,mark_h,sort&published=eq.true&order=sort")

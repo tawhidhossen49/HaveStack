@@ -49,9 +49,9 @@
             '<td class="num">' + P.date(t.occurred_on) + '</td>' +
             '<td>' + P.escapeHtml(P.txKind(t.kind)) + '</td>' +
             '<td>' + P.escapeHtml((t.share_classes && t.share_classes.code) || '') + '</td>' +
-            '<td class="money">' + (t.shares ? P.shares(t.shares) : '—') + '</td>' +
-            '<td class="money">' + (Number(t.unit_price) ? P.price(t.unit_price) : '—') + '</td>' +
-            '<td class="money">' + (Number(t.total_value) ? P.money(t.total_value) : '—') + '</td>' +
+            '<td class="money">' + (t.shares ? P.shares(t.shares) : '·') + '</td>' +
+            '<td class="money">' + (Number(t.unit_price) ? P.price(t.unit_price) : '·') + '</td>' +
+            '<td class="money">' + (Number(t.total_value) ? P.money(t.total_value) : '·') + '</td>' +
             '<td class="num">' + P.escapeHtml(t.reference) + '</td>' +
             '<td>' + P.stateTag(t.status) + '</td>' +
             '<td><div class="row-actions" style="justify-content:flex-end">' +
@@ -89,7 +89,7 @@
         if (!t) return;
         P.modal({
           title: P.txKind(t.kind),
-          note: t.reference + '  ' + P.date(t.occurred_on),
+          note: t.reference + ' · ' + P.date(t.occurred_on),
           confirm: 'Close',
           fields: [
             { name: 'cls',   label: 'Share class', readonly: true,
@@ -97,7 +97,7 @@
             { name: 'qty',   label: 'Shares', readonly: true, value: P.shares(t.shares) },
             { name: 'unit',  label: 'Unit price', readonly: true, value: P.price(t.unit_price) },
             { name: 'total', label: 'Total value', readonly: true, value: P.money(t.total_value) },
-            { name: 'party', label: 'Counterparty', readonly: true, value: t.counterparty || '—' },
+            { name: 'party', label: 'Counterparty', readonly: true, value: t.counterparty || '·' },
             { name: 'state', label: 'Status', readonly: true, value: t.status },
             { name: 'note',  label: 'Note', readonly: true, multiline: true, rows: 3,
               value: t.note || 'No note recorded.' }

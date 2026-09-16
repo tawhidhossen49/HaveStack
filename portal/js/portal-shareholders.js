@@ -32,7 +32,7 @@
             '<td>' + P.escapeHtml(
               s.holder_type === 'entity' ? 'Entity'
               : s.holder_type === 'trust' ? 'Trust' : 'Individual') + '</td>' +
-            '<td>' + P.escapeHtml(s.classes || '—') + '</td>' +
+            '<td>' + P.escapeHtml(s.classes || '·') + '</td>' +
             '<td class="money">' + P.shares(s.shares) + '</td>' +
             '<td class="money">' + P.pct(s.ownership_pct) +
               P.bar(s.ownership_pct, s.is_me) + '</td>' +

@@ -95,18 +95,46 @@ Before you deploy this as your own
    from the menu at the same time. It is seeded with what the page already
    says, so running it changes nothing until you edit something.
 
+   It also creates the site-media bucket and the site_images table behind the
+   panel's Images page, where every picture on the public site can be replaced:
+   the logo, the tab icon, the sharing card, the hero still, the photographs
+   built into the layout, the capability and sector pictures, and the client
+   and partner marks. An upload goes to storage and the row is pointed at it;
+   the file in this folder is never touched, so "Undo" always works. Two
+   pictures are read out of the markup by robots before any script runs, the
+   sharing card and the logo given to search engines, so replacing those
+   reaches people but not every crawler until the file here is replaced too.
+
    portal-schema.sql creates the share register: shareholders, holdings,
    transactions, dividends, valuations, documents and updates, with row level
    security that lets a shareholder read their own records and nothing else.
+   It also holds the company's total shares, set under Register and access.
+   Allotments come out of that total and are refused once it is used up; what
+   is left over is unissued, and counts against everybody's percentage, so
+   holders' ownership adds up to less than 100% until every share is allotted.
+   Left at zero the total means "not stated", and percentages are worked out
+   against the shares actually allotted instead.
    It seeds a realistic cap table so every screen in the portal has something
    on it. Replace those figures with your own, or delete the seed block at the
    bottom of the file before you run it. The two seeded shareholder addresses
    are the same two as in auth-schema.sql, so change them as well.
 
-   A person is a shareholder because there is a row for their address in
-   public.shareholders, and an administrator because there is a row in
-   public.admins. The two are independent: somebody can be either, both or
-   neither, and giving somebody the portal does not give them the panel.
+   The portal has its own sign in, separate from the admin panel. Somebody
+   can use the same email address for both, but the portal password is a
+   different password on a different account, and a panel admin is not let
+   into the portal on that basis. Portal accounts are either holders, who see
+   their own position, or portal administrators, who set the share price,
+   run the register, record share movements, declare dividends, post
+   announcements and publish documents. Everything a portal administrator
+   does is written to an audit trail by the database itself.
+
+   Much of it is automatic. Setting a share price revalues every holding and
+   posts an update to every holder; open portals redraw without a reload.
+   Declaring a dividend works out every holder's entitlement from the
+   register on the record date, recalculates if shares move before then,
+   and marks each line paid when the dividend is paid. Investor references,
+   certificate numbers and transaction references are numbered for you, and
+   a settled movement or a paid dividend cannot be edited afterwards.
 
    Edit the address at the bottom of auth-schema.sql to your own before you
    run it: that seeds the first admin, and there is no way to add one from
@@ -124,6 +152,13 @@ Before you deploy this as your own
    That function is what lets the panel create an account with a password you
    choose. Without it the panel still signs people in, but Settings > Access
    can only read the list.
+
+   Deploy supabase/functions/portal-users the same way, named portal-users.
+   It creates portal accounts, sets their passwords and switches them on or
+   off. Then open /portal/setup.html once: sign in with your admin panel
+   email and password, and choose a separate portal password. That makes you
+   the first portal administrator, and the page refuses to run again once
+   one exists. Give everybody else portal access from Register and access.
 
    Change contactEmail to your own address. It is where briefs go when there
    is no database, and it is shown in the footer.

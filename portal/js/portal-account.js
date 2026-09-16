@@ -32,14 +32,14 @@
             ? 'Yes, other holders see your name'
             : 'No, you appear as an undisclosed holder']
         ]),
-        foot: '<button class="btn btn-sm" type="button" id="editProfile">Edit my details</button>'
+        foot: me.has_holding ? '<button class="btn btn-sm" type="button" id="editProfile">Edit my details</button>' : ''
       });
 
       var security = P.panel({
         title: 'Password and access',
-        note: 'Changing your password signs out your other devices.',
+        note: 'Your portal password is separate from any admin panel password. Changing it signs out your other devices.',
         body: P.kv([
-          ['Password', 'Set. Change it below if you think it may be known to anyone else.'],
+          ['Password', 'Your portal password. If you forget it, your portal administrator sets a new one.'],
           ['Two factor authentication', '<span id="mfaState">Checking</span>'],
           ['This device', P.escapeHtml(PortalAuth.shortDevice())]
         ]),
@@ -91,7 +91,7 @@
               return '<tr>' +
                 '<td class="num">' + P.dateTime(a.created_at) + '</td>' +
                 '<td>' + P.escapeHtml(LABEL[a.kind] || a.kind) + '</td>' +
-                '<td>' + P.escapeHtml(a.device || '—') + '</td>' +
+                '<td>' + P.escapeHtml(a.device || '·') + '</td>' +
                 '<td>' + P.escapeHtml(a.detail || '') + '</td>' +
               '</tr>';
             }).join(''));
@@ -143,7 +143,8 @@
             if (r.error) { P.toast(r.error, true); return; }
             PortalAuth.record('profile_change', 'Contact details updated');
             P.toast('Saved.');
-            PortalAuth.lookupHolder().then(function () { location.reload(); });
+            // the shell reads the record afresh on load
+            setTimeout(function () { location.reload(); }, 600);
           });
         });
         return;

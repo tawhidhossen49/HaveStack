@@ -1,15 +1,187 @@
 /* ==========================================================================
    HaveStack shareholder portal
-   Loaded after assets/console.css, which carries the shell, the controls,
-   the tables and the tokens. Nothing is redefined here. What follows are the
-   few shapes the portal needs that the admin panel never did, drawn in the
-   same language: one pixel borders, no radius, no gradient, no glow.
+   Loaded after assets/console.css, which carries the shell, the controls, the
+   tables and the tokens. The admin panel keeps that base exactly as it is.
+   What follows is the portal's own face, and nothing here is loaded by the
+   panel or the public site.
 
-   A portal is read far more than it is operated, so the additions are mostly
-   about presenting figures honestly: a number next to the date it was set, a
-   proportion you can see as well as read, and a record laid out as a record
-   rather than a form.
+   THE IDEA
+   A shareholder portal is read, not operated. Somebody opens it to answer one
+   question: what is my stake worth, and what has happened to it. So the portal
+   is dressed as an instrument rather than a dashboard: hairline corner ticks
+   where a panel is machined together, a measured grid behind the page, an
+   indexed rail, a live strip of readings under the title, and figures set
+   large against very small capitalised labels. The drama is all structure and
+   scale.
+
+   WHAT IT MAY NOT DO, and these outrank any design instinct
+   One permanent black theme. Helvetica only, no second typeface anywhere, so
+   the instrument feeling has to come from case, letterspacing and rule work.
+   Radius zero. One accent, the HaveStack red, held for state and for danger;
+   the chart's violet is data, not decoration. Neutrals at the one hue. Spacing
+   from the geometric scale only. No em dash or en dash anywhere a reader can
+   see, placeholders included.
    ========================================================================== */
+
+:root {
+  /* the machined edge on a panel corner, and the hairline grid behind the
+     page. Both are neutral at the same hue as everything else. */
+  --tick: #5A5A62;
+  /* the rail's index numerals: quiet, but still 4.5:1 against the rail, since
+     a numeral a reader can see is text whatever the markup calls it */
+  --index: #7A7A82;
+  --grid: rgba(255, 255, 255, .022);
+  --rule: 96px;
+}
+
+/* ==========================================================================
+   THE PAGE BEHIND THE PAGE
+   A faint vertical measure, like paper ruled for drawing on. It sits under
+   the panels, never behind running text, and it is the reason the portal
+   reads as a different room from the admin panel without a single new colour.
+   ========================================================================== */
+.content { position: relative }
+.content::before {
+  content: '';
+  position: absolute; inset: -1px 0 0;
+  z-index: -1; pointer-events: none;
+  background-image: linear-gradient(to right, var(--grid) 1px, transparent 1px);
+  background-size: var(--rule) 100%;
+}
+@media (forced-colors: active) { .content::before { display: none } }
+
+/* ==========================================================================
+   THE STRIP
+   Under the title, the readings that are true on every page: what a share is
+   worth, when that was set, and where the reader stands in the company. A
+   holder should never have to navigate to learn the number they came for.
+   ========================================================================== */
+.strip {
+  display: flex; flex-wrap: wrap; align-items: stretch;
+  padding: 0 clamp(18px, 2.4vw, 32px);
+  background: var(--band); border-bottom: 1px solid var(--line);
+}
+.strip-cell {
+  display: flex; align-items: baseline; gap: var(--space-3);
+  padding: 9px var(--space-5) 9px 0; margin-right: var(--space-5);
+  border-right: 1px solid var(--line-2);
+}
+.strip-cell:last-child { border-right: 0; margin-right: 0; padding-right: 0 }
+.strip-k {
+  font-size: 10px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--ink-3); white-space: nowrap;
+}
+.strip-v {
+  font-size: 13px; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.strip-v .delta { font-size: 12.5px }
+/* the live mark: the portal is listening for a new price, and says so */
+.strip-live { display: flex; align-items: center; gap: var(--space-2); padding-right: var(--space-4) }
+.strip-live i {
+  width: 6px; height: 6px; background: var(--ok); flex: 0 0 auto;
+  animation: strip-pulse 2.4s var(--ease) infinite;
+}
+@keyframes strip-pulse { 0%, 100% { opacity: 1 } 50% { opacity: .28 } }
+@media (prefers-reduced-motion: reduce) { .strip-live i { animation: none } }
+.strip-skel { height: 13px; width: 120px; background: var(--surface-2) }
+@media (max-width: 719px) {
+  .strip { padding-block: var(--space-1) }
+  .strip-cell { border-right: 0; margin-right: var(--space-5); padding-block: 6px }
+}
+
+/* ==========================================================================
+   THE RAIL
+   Numbered, because a register is a numbered thing and because it turns a
+   list of links into an index. The numeral is the quietest element on the
+   page until its row is the one you are on.
+   ========================================================================== */
+.rail-brand small { color: var(--ink-2) }
+.nav-group {
+  display: flex; align-items: center; gap: var(--space-3);
+  letter-spacing: .18em;
+}
+.nav-group::after { content: ''; flex: 1; height: 1px; background: var(--line-2) }
+
+.nav a { padding-left: var(--space-5) }
+.nav a .nav-i {
+  position: absolute; left: var(--space-2); top: 50%; transform: translateY(-50%);
+  font-size: 10px; font-weight: 500; letter-spacing: .04em;
+  font-variant-numeric: tabular-nums; color: var(--index);
+  transition: color var(--t-2) var(--ease);
+}
+.nav a[aria-current="page"] { background: rgba(255, 255, 255, .045) }
+.nav a[aria-current="page"] .nav-i { color: var(--red-text) }
+@media (hover: hover) and (pointer: fine) { .nav a:hover .nav-i { color: var(--ink-3) } }
+
+/* the person, set as a record rather than a caption */
+.who-mark { border-color: var(--line-3) }
+
+/* ==========================================================================
+   PANELS
+   Two corner ticks, top left and bottom right, where an instrument would be
+   screwed together. Two rather than four: it reads as deliberate, where four
+   reads as a frame. The heading carries a short rule so a scan down the page
+   lands on the titles.
+   ========================================================================== */
+.panel { position: relative }
+.panel::before,
+.panel::after {
+  content: ''; position: absolute; width: 11px; height: 11px; pointer-events: none;
+}
+.panel::before { top: -1px; left: -1px; border-top: 1px solid var(--tick); border-left: 1px solid var(--tick) }
+.panel::after { bottom: -1px; right: -1px; border-bottom: 1px solid var(--tick); border-right: 1px solid var(--tick) }
+@media (forced-colors: active) { .panel::before, .panel::after { display: none } }
+
+.panel-head { padding-block: var(--space-4) }
+.panel-head h2 { position: relative; padding-left: var(--space-4) }
+.panel-head h2::before {
+  content: ''; position: absolute; left: 0; top: .28em;
+  width: 2px; height: .95em; background: var(--ink-3);
+}
+.panel-head p { margin-left: var(--space-4) }
+
+/* ==========================================================================
+   READOUTS
+   A figure is the point of this product, so it is set large, tight and
+   tabular, against a label small enough to be furniture. Each tile carries a
+   short tick on its top edge: the same machined language as the panels.
+   ========================================================================== */
+/* The separators are drawn by the tiles, not by a gap showing the container
+   through it. With a gap, a row that does not fill leaves the container colour
+   standing as a large grey block, which reads as a broken panel at the widths
+   where four tiles wrap to three and one. Shadows on each tile, clipped at the
+   frame, give the same hairlines and leave any unfilled space as ground. */
+.stats {
+  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+  gap: 0; background: var(--bg); border: 1px solid var(--line); overflow: hidden;
+  margin-bottom: var(--space-5);
+}
+.stat { position: relative; box-shadow: 1px 0 0 var(--line), 0 1px 0 var(--line) }
+/* two up rather than three and a gap, on the widths where four tiles cannot
+   sit in one row */
+@media (max-width: 1080px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
+@media (max-width: 560px) { .stats { grid-template-columns: 1fr } }
+.stat::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 22px; height: 1px; background: var(--tick);
+}
+.stat .label { font-size: 10px; letter-spacing: .18em; color: var(--ink-3) }
+/* Portal figures run long: eight digits and a currency code. The ceiling is
+   what a four column row can hold at 1440 without breaking a number across
+   two lines, which misreads badly. Anywhere is the last resort, for a figure
+   that still will not fit rather than a document that scrolls sideways. */
+.stat .value {
+  margin-top: var(--space-4);
+  font-size: clamp(24px, 2vw, 32px); letter-spacing: -.035em; line-height: 1;
+  overflow-wrap: anywhere;
+}
+.stat .sub { margin-top: var(--space-3) }
+
+/* The currency code beside a large figure. Small and grey so the digits stay
+   the thing being read. */
+.stat .value .cur {
+  font-size: 12px; font-weight: 500; letter-spacing: .08em;
+  color: var(--ink-3); margin-right: .45em; vertical-align: .34em;
+}
 
 /* ---- figures -------------------------------------------------------------
    Money and share counts are compared down a column, so they are tabular and
@@ -23,6 +195,12 @@
   /* in record mode a right aligned value floats away from its label */
   .table td.money { text-align: left }
 }
+/* a figure, a date or a reference broken across two lines is misread */
+@media (min-width: 720px) { .table td.money, .table td.num { white-space: nowrap } }
+
+/* Nothing recorded here yet. A middot, because the house style forbids a dash
+   anywhere a reader can see one, and because an empty cell looks like a bug. */
+.nil { color: var(--ink-3) }
 
 /* A figure and the date it was true on. The date is not decoration: an
    internal valuation without one cannot be checked by the person reading it. */
@@ -55,7 +233,7 @@
   font-size: 14px;
 }
 .kv > dt { color: var(--ink-3); padding-right: var(--space-4) }
-.kv > dd { color: var(--ink) }
+.kv > dd { color: var(--ink); font-variant-numeric: tabular-nums }
 .kv > dt:last-of-type,
 .kv > dd:last-of-type { border-bottom: 0 }
 @media (max-width: 560px) {
@@ -63,6 +241,23 @@
   .kv > dt { padding-bottom: 0; border-bottom: 0 }
   .kv > dd { padding-top: var(--space-1) }
 }
+
+/* ---- tables --------------------------------------------------------------
+   The header is set as a band: darker, smaller, wider spaced, closed by a
+   brighter rule. It reads as the edge of the data rather than the first row
+   of it. */
+.table thead th {
+  background: var(--bg-2);
+  font-size: 10px; letter-spacing: .16em;
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--line-3);
+}
+@media (hover: hover) and (pointer: fine) {
+  .table tbody tr:hover td:first-child { box-shadow: inset 2px 0 0 var(--line-3) }
+}
+/* The row for the person reading it, in a register of other people. A left
+   rule rather than a fill: it marks the row without shouting over the data. */
+.table tbody tr.is-me td:first-child { box-shadow: inset 2px 0 0 var(--red) }
 
 /* ---- timeline ------------------------------------------------------------
    Updates and security activity. A rule down the left ties the entries
@@ -79,8 +274,8 @@
   width: 7px; height: 7px; background: var(--line-3);
 }
 .tl-item.is-key::before { background: var(--red) }
-.tl-when { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3) }
-.tl-title { margin-top: var(--space-1); font-size: 14.5px; font-weight: 500; letter-spacing: -.01em }
+.tl-when { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3) }
+.tl-title { margin-top: var(--space-2); font-size: 14.5px; font-weight: 500; letter-spacing: -.01em }
 .tl-body { margin-top: var(--space-2); font-size: 13.5px; line-height: 1.6; color: var(--ink-2); max-width: 74ch }
 
 /* ---- document rows -------------------------------------------------------
@@ -95,7 +290,9 @@
   border-bottom: 1px solid var(--line-2);
 }
 .doc:last-child { border-bottom: 0 }
-@media (hover: hover) and (pointer: fine) { .doc:hover { background: var(--surface-2) } }
+@media (hover: hover) and (pointer: fine) {
+  .doc:hover { background: var(--surface-2); box-shadow: inset 2px 0 0 var(--line-3) }
+}
 .doc > svg { width: 19px; height: 19px; color: var(--ink-3) }
 .doc-name { font-size: 14.5px; overflow-wrap: anywhere }
 .doc-meta { margin-top: 2px; font-size: 12.5px; color: var(--ink-3) }
@@ -106,16 +303,24 @@
 
 /* ---- segmented filter ----------------------------------------------------
    One row of choices where only one is on. Built from buttons so it is
-   reachable by keyboard and announced as pressed. */
+   reachable by keyboard and announced as pressed. The chosen one is marked
+   by a rule along its top edge as well as by its weight. */
 .seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); width: fit-content; max-width: 100% }
 .seg button {
+  position: relative;
   min-height: 32px; padding: 6px 13px 5px;
   background: transparent; border: 0; border-right: 1px solid var(--line);
   color: var(--ink-3); font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
   transition: color var(--t-2) var(--ease), background var(--t-2) var(--ease);
 }
 .seg button:last-child { border-right: 0 }
+.seg button::after {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px;
+  background: var(--ink); transform: scaleX(0);
+  transition: transform var(--t-2) var(--ease-out);
+}
 .seg button[aria-pressed="true"] { color: var(--ink); background: rgba(255, 255, 255, .05) }
+.seg button[aria-pressed="true"]::after { transform: scaleX(1) }
 @media (hover: hover) and (pointer: fine) { .seg button:hover { color: var(--ink) } }
 .seg button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px }
 
@@ -136,31 +341,27 @@
   border: 1px solid var(--line); font-size: 12px; text-align: center; color: var(--ink-2);
   font-variant-numeric: tabular-nums;
 }
+/* Small and letterspaced, but never capitalised: a status word set in capitals
+   reads as shouting in a table of them, and the page is read far more than it
+   is operated. */
+.tag { letter-spacing: .04em; font-size: 11.5px; padding: 4px 9px }
 .tag-paid { color: var(--ok); border-color: rgba(111, 192, 135, .4) }
 .tag-pending { color: var(--warn); border-color: rgba(217, 164, 65, .4) }
 .tag-cancelled { color: var(--ink-3) }
 .tag-me { color: var(--red-text); border-color: rgba(230, 66, 70, .4) }
 
-/* The row for the person reading it, in a register of other people. A left
-   rule rather than a fill: it marks the row without shouting over the data. */
-.table tbody tr.is-me td:first-child { box-shadow: inset 2px 0 0 var(--red) }
-
-/* The currency code beside a large figure. Small and grey so the digits stay
-   the thing being read. */
-.stat .value .cur {
-  font-size: 13px; font-weight: 500; letter-spacing: .06em;
-  color: var(--ink-3); margin-right: .45em; vertical-align: .28em;
+/* ---- arrival -------------------------------------------------------------
+   Every page paints its content in one go once the register has answered, so
+   the blocks are brought up in sequence rather than appearing at once. Short
+   and small: this is a document arriving, not a slideshow. */
+@media (prefers-reduced-motion: no-preference) {
+  .content > * { animation: rise var(--t-3) var(--ease-out) both }
+  .content > *:nth-child(2) { animation-delay: 50ms }
+  .content > *:nth-child(3) { animation-delay: 100ms }
+  .content > *:nth-child(4) { animation-delay: 150ms }
+  .content > *:nth-child(n+5) { animation-delay: 190ms }
 }
-
-/* Portal figures run long: a holding is eight digits and a currency code.
-   Three things keep one on a single line without ever pushing the page
-   sideways. The cards are given more room before the grid adds a column, the
-   figure scales with the viewport rather than sitting at a fixed 32px, and
-   anywhere is the last resort so a number that still will not fit breaks
-   instead of overflowing. Refusing to wrap is not an option: it does not make
-   the number fit, it just moves the problem onto the document. */
-.stats { grid-template-columns: repeat(auto-fit, minmax(232px, 1fr)) }
-.stat .value { font-size: clamp(23px, 2.1vw, 32px); overflow-wrap: anywhere }
+@keyframes rise { from { opacity: 0; transform: translateY(7px) } to { opacity: 1; transform: none } }
 
 /* Two panels side by side on a wide screen, stacked below. Used where a
    figure and its history belong together. */
@@ -170,7 +371,17 @@
 .split-wide { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr) }
 @media (max-width: 1180px) { .split-wide { grid-template-columns: 1fr } }
 .split > * { margin-bottom: 0 }
+/* the panels inside give up their own margin, so the pair keeps one */
+.split { margin-bottom: var(--space-5) }
 @media (max-width: 960px) { .split { grid-template-columns: 1fr } }
+
+/* A page with its own top bar action on a phone: the title keeps the row
+   beside the menu button and the buttons drop beneath it, rather than the
+   title being squeezed to one word a line. */
+@media (max-width: 719px) {
+  .topbar:has(> .btn ~ .btn) { flex-wrap: wrap; row-gap: var(--space-3) }
+  .topbar:has(> .btn ~ .btn) .topbar-title { flex: 1 1 calc(100% - 60px) }
+}
 
 /* A read only field in a form, for a record shown in a modal. It has to look
    unavailable, not merely be unavailable. */
@@ -182,7 +393,143 @@
 .notice-key { border-left-color: var(--red) }
 
 @media print {
-  .rail, .topbar, .scrim, .toasts, .seg, .row-actions { display: none }
+  .rail, .topbar, .strip, .scrim, .toasts, .seg, .row-actions { display: none }
   .split { grid-template-columns: 1fr 1fr }
   .bar > i { background: #444 }
+  .panel::before, .panel::after, .content::before { display: none }
+  .content > * { animation: none }
+}
+
+/* ==========================================================================
+   SHARE PRICE CHART
+   The series colour is HaveStack's own hue (286) at chart strength,
+   oklch(0.66 0.13 286). It passed the palette validator's lightness band,
+   chroma floor and contrast checks against the panel surface (5.76:1). It is
+   deliberately neither red nor green: those carry up and down in the deltas
+   printed right beside the chart, and a price line in either would read as a
+   verdict.
+   ========================================================================== */
+:root { --viz-series: #8c85de; }
+
+/* the headline reading: the largest figure in the product, because it is the
+   one every holder opens the portal to see */
+.price-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: var(--space-4) var(--space-6); margin-bottom: var(--space-6);
+  padding-bottom: var(--space-5); border-bottom: 1px solid var(--line-2);
+}
+.price-now { font-size: clamp(40px, 5.2vw, 60px); font-weight: 400; letter-spacing: -.04em; line-height: .96 }
+.price-now .cur {
+  font-size: 15px; font-weight: 500; letter-spacing: .16em; color: var(--ink-3);
+  margin-right: .55em; vertical-align: .62em;
+}
+.price-meta { margin-top: var(--space-3); font-size: 13px; color: var(--ink-3) }
+.price-meta .delta { margin-right: var(--space-3) }
+.price-controls { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); align-items: center }
+
+.viz { position: relative }
+.viz-plot { position: relative }
+.viz-svg { display: block; width: 100%; height: auto; overflow: visible }
+.viz-svg:focus { outline: none }
+.viz-svg:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px }
+.viz-grid { stroke: var(--line-2); stroke-width: 1 }
+.viz-base { stroke: var(--line-3); stroke-width: 1 }
+.viz-tick { fill: var(--ink-3); font-size: 11px; font-variant-numeric: tabular-nums }
+.viz-line { fill: none; stroke: var(--viz-series); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round }
+.viz-area { fill: var(--viz-series); fill-opacity: .10; stroke: none }
+/* a valuation is a filled dot; a change to the holding is a hollow one, so the
+   two kinds of point differ by shape and not by colour alone */
+.viz-dot { fill: var(--viz-series); stroke: var(--surface); stroke-width: 2 }
+.viz-dot-hold { fill: var(--surface); stroke: var(--viz-series); stroke-width: 2 }
+.viz-end { fill: var(--ink); font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums }
+.viz-end-sub { fill: var(--ink-3); font-size: 11px }
+.viz-cross { stroke: var(--ink-3); stroke-width: 1 }
+.viz-ring { fill: none; stroke: var(--ink); stroke-width: 2 }
+.viz-hit { fill: transparent; cursor: crosshair }
+
+/* drawn in once, left to right, the first time it appears; never again, and
+   never for anyone who asked for less motion */
+.viz-reveal { clip-path: inset(0 100% 0 0) }
+.viz-reveal.viz-revealed { clip-path: inset(0 0 0 0); transition: clip-path 900ms var(--ease-out) }
+
+.viz-tip {
+  position: absolute; z-index: 5; pointer-events: none;
+  min-width: 184px; max-width: 264px; padding: var(--space-3) var(--space-4);
+  background: var(--surface-2); border: 1px solid var(--line-3); box-shadow: var(--elev-3);
+}
+.viz-tip b { display: block; font-size: 17px; font-weight: 500; letter-spacing: -.015em; color: var(--ink) }
+.viz-tip-name { margin-top: 2px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-2) }
+.viz-key { flex: 0 0 auto; width: 14px; height: 2px; background: var(--viz-series) }
+.viz-tip-row { margin-top: 6px; font-size: 12.5px; color: var(--ink-3) }
+.viz-tip-change { font-variant-numeric: tabular-nums }
+.viz-empty { padding: var(--space-8) var(--space-5); text-align: center; color: var(--ink-3); font-size: 13.5px }
+.viz-table { margin-top: var(--space-2) }
+
+@media (forced-colors: active) {
+  .viz-line { stroke: CanvasText }
+  .viz-area { fill: none }
+  .viz-dot { fill: CanvasText; stroke: Canvas }
+  .viz-dot-hold { fill: Canvas; stroke: CanvasText }
+  .viz-key { background: CanvasText }
+}
+
+/* ==========================================================================
+   ADMINISTRATION
+   The same instrument, with the one difference that matters: every control on
+   these pages changes what other people see. The banner carries the red rule
+   the console already uses for "this is live", and the panel ticks turn red
+   so an administration page is never mistaken for a reading page.
+   ========================================================================== */
+.admin-banner {
+  position: relative;
+  display: flex; gap: var(--space-3); align-items: flex-start;
+  padding: var(--space-4); margin-bottom: var(--space-5);
+  border: 1px solid var(--line); border-left: 2px solid var(--red); background: var(--surface);
+  font-size: 13px; line-height: 1.55; color: var(--ink-2);
+}
+.admin-banner svg { width: 16px; height: 16px; flex: 0 0 auto; margin-top: 2px; color: var(--red-text) }
+body.is-admin-page .panel::before { border-top-color: var(--red); border-left-color: var(--red) }
+body.is-admin-page .panel::after { border-bottom-color: var(--red); border-right-color: var(--red) }
+
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0 var(--space-5) }
+.form-grid .full { grid-column: 1 / -1 }
+/* what saving will do, said before the button is pressed */
+.impact {
+  margin: 0 0 var(--space-4); padding: var(--space-4);
+  background: var(--band); border: 1px solid var(--line-2); border-left: 2px solid var(--line-3);
+  font-size: 13px; line-height: 1.6; color: var(--ink-2);
+}
+.impact b { color: var(--ink); font-weight: 500 }
+.confirm-text { font-size: 14px; line-height: 1.6; color: var(--ink-2); margin: 0 0 4px }
+.confirm-text b { color: var(--ink); font-weight: 500 }
+.tag-admin { color: var(--red-text); border-color: rgba(230, 66, 70, .4) }
+.tag-auto { color: var(--ink-2); border-color: var(--line-3) }
+.audit-diff { font-family: var(--mono); font-size: 12px; color: var(--ink-2); white-space: pre-wrap; overflow-wrap: anywhere }
+
+/* ==========================================================================
+   THE WAY IN
+   The sign in and first run pages are the only ones without the shell, so
+   they carry the instrument language themselves: the ticks, the measured
+   ground, and a capitalised line naming which of the two consoles this is.
+   ========================================================================== */
+.login { position: relative }
+.login::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: linear-gradient(to right, var(--grid) 1px, transparent 1px);
+  background-size: var(--rule) 100%;
+  mask-image: radial-gradient(120% 80% at 50% 0, #000 0, transparent 70%);
+}
+.login-card { position: relative; z-index: 1 }
+.login-card::before,
+.login-card::after {
+  content: ''; position: absolute; width: 12px; height: 12px; pointer-events: none;
+}
+.login-card::before { top: -1px; left: -1px; border-top: 1px solid var(--tick); border-left: 1px solid var(--tick) }
+.login-card::after { bottom: -1px; right: -1px; border-bottom: 1px solid var(--tick); border-right: 1px solid var(--tick) }
+.login-eyebrow {
+  display: block; text-align: center; margin-bottom: var(--space-3);
+  font-size: 10px; font-weight: 500; letter-spacing: .28em; text-transform: uppercase; color: var(--ink-3);
+}
+@media (forced-colors: active) {
+  .login::before, .login-card::before, .login-card::after { display: none }
 }

@@ -32,7 +32,7 @@
       box.innerHTML = '<div class="tl">' + list.map(function (u) {
         return '<div class="tl-item' + (u.pinned ? ' is-key' : '') + '">' +
           '<div class="tl-when">' + P.escapeHtml(P.updateKind(u.kind)) +
-            '  ' + P.dateTime(u.published_at) +
+            ' · ' + P.dateTime(u.published_at) +
             (u.pinned ? '  Pinned' : '') + '</div>' +
           '<div class="tl-title">' + P.escapeHtml(u.title) + '</div>' +
           (u.body ? '<div class="tl-body">' + P.escapeHtml(u.body) + '</div>' : '') +

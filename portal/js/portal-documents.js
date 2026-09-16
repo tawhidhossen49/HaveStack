@@ -37,9 +37,9 @@
           P.svg(P.I.file, 19) +
           '<div><div class="doc-name">' + P.escapeHtml(d.title) + '</div>' +
             '<div class="doc-meta">' + P.escapeHtml(P.docKind(d.category)) +
-              '  ' + (mine ? 'Issued to you' : 'Company wide') +
-              '  ' + P.date(d.issued_on) +
-              (P.bytes(d.file_size) ? '  ' + P.bytes(d.file_size) : '') +
+              ' · ' + (mine ? 'Issued to you' : 'Company wide') +
+              ' · ' + P.date(d.issued_on) +
+              (P.bytes(d.file_size) ? ' · ' + P.bytes(d.file_size) : '') +
             '</div></div>' +
           '<div class="row-actions">' +
             '<button class="btn btn-sm" type="button" data-doc="' + d.id + '">' +
@@ -88,10 +88,8 @@
       /* A short lived signed URL, minted per request. The bucket itself stays
          private, so a path on its own is worth nothing to anybody who has one. */
       btn.disabled = true;
-      var bucket = doc.storage_path.indexOf('/') > -1
-        ? doc.storage_path.slice(0, doc.storage_path.indexOf('/')) : 'documents';
-      var key = doc.storage_path.indexOf('/') > -1
-        ? doc.storage_path.slice(doc.storage_path.indexOf('/') + 1) : doc.storage_path;
+      var bucket = 'portal-documents';
+      var key = doc.storage_path;
 
       PortalAuth.client().storage.from(bucket).createSignedUrl(key, 60)
         .then(function (r) {

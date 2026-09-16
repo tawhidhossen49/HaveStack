@@ -1,24 +1,29 @@
 /* =========================================================
    portal-auth.js
    ---------------------------------------------------------
-   Sign in for the shareholder portal. Email and password
-   through Supabase Auth, then a lookup against
-   public.shareholders.
+   Sign in for the shareholder portal, kept apart from the
+   admin panel's.
 
-   The same two step shape as the admin panel, deliberately,
-   but against a different table. The password proves the
-   account is yours; the shareholders row decides whether that
-   account owns anything. An address can therefore be a
-   shareholder, an administrator, both, or neither, and none
-   of those four cases needs the others to change.
+   A person who uses both has two passwords. The admin panel
+   signs in the Supabase Auth user for their real address.
+   The portal signs in a second Auth user that exists only
+   for the portal, whose sign in address is derived from the
+   real one: name+hsportal@domain. Nobody types that address;
+   this file works it out from the one they do type. The two
+   Auth users share nothing, so the admin password does not
+   open the portal, the portal password does not open the
+   panel, and changing one never changes the other.
 
-   A holder whose status is no longer 'active' fails the
-   second step. They keep their account and lose the portal,
-   which is what happens when somebody exits the register.
+   Being signed in is not enough on its own. The session has
+   to belong to an active row in public.portal_accounts, and
+   that row says whether this person is a holder or a portal
+   administrator. A holder whose account has been switched
+   off, or who has left the register, is signed straight back
+   out.
 
-   There is no sign up. Accounts are created by an
-   administrator, because a portal that lets a stranger create
-   one is a portal with a public door onto a share register.
+   There is no sign up and no emailed password reset. A
+   portal administrator creates each account with a password,
+   and sets a new one if it is forgotten.
    ========================================================= */
 window.PortalAuth = (function () {
   "use strict";
@@ -28,8 +33,9 @@ window.PortalAuth = (function () {
   var KEY_ = CFG.supabaseKey || "";
 
   var _client = null;
-  var _holder = null;   // the row from public.shareholders once verified
-  var _session = null;  // kept so a lookup need not fetch it twice
+  var _account = null;   // the row from public.portal_accounts
+  var _holder = null;    // the row from public.shareholders, if there is one
+  var _me = null;        // the two merged, which is what every page reads
 
   function configured() {
     return !!(URL_ && KEY_ && window.supabase && window.supabase.createClient);
@@ -42,7 +48,9 @@ window.PortalAuth = (function () {
         auth: {
           persistSession: true,
           autoRefreshToken: true,
-          detectSessionInUrl: true,   // the password reset link lands here
+          detectSessionInUrl: false,
+          // its own storage key, so a portal session and an admin panel
+          // session can live in the same browser without replacing each other
           storageKey: "hs-portal-auth"
         }
       });
@@ -50,27 +58,23 @@ window.PortalAuth = (function () {
     return _client;
   }
 
-  /* Where a reset link should return to. Derived from the current location so
-     the same build works on the deployment, on a preview URL and on localhost. */
-  function redirectTo() {
-    var p = location.pathname;
-    return location.origin + p.slice(0, p.lastIndexOf("/") + 1) + "login.html";
+  /* The portal's own sign in address for a real one. Must stay identical to
+     portalLoginEmail() in supabase/functions/portal-users/index.ts, which
+     created the account with it. */
+  function portalLoginEmail(real) {
+    var e = String(real || "").trim().toLowerCase();
+    var at = e.lastIndexOf("@");
+    if (at < 1) return e;
+    return e.slice(0, at) + "+hsportal" + e.slice(at);
   }
 
   function signIn(email, password) {
     var c = client();
     if (!c) return Promise.reject(new Error("not configured"));
     return c.auth.signInWithPassword({
-      email: String(email || "").trim().toLowerCase(),
+      email: portalLoginEmail(email),
       password: String(password || "")
     });
-  }
-
-  function sendReset(email) {
-    var c = client();
-    if (!c) return Promise.reject(new Error("not configured"));
-    return c.auth.resetPasswordForEmail(
-      String(email || "").trim().toLowerCase(), { redirectTo: redirectTo() });
   }
 
   function updatePassword(password) {
@@ -88,97 +92,120 @@ window.PortalAuth = (function () {
       .then(function () { location.href = "login.html"; });
   }
 
-  /* Sign out every other device but this one. Supabase can revoke the rest of
-     a user's refresh tokens in one call, which is the honest version of a
-     "sign out everywhere" control: it does not pretend we can pick one remote
-     session out of a list, because the client cannot. */
+  /* Sign out every other device but this one. The client cannot pick one
+     remote session out of a list, so this does not pretend to: it ends all of
+     them at once. */
   function signOutOthers() {
     var c = client();
     if (!c) return Promise.reject(new Error("not configured"));
     return c.auth.signOut({ scope: "others" });
   }
 
-  /* Is this session on the register?
-     Returns the shareholders row, or null. Null with no error means signed in
-     but not a shareholder, which is a different thing from not signed in.
-
-     The address is in the query rather than left to row level security to
-     narrow. Somebody who is both a shareholder and an administrator matches
-     the admin policy as well as their own, so the unfiltered version returns
-     the whole register and asking for a single row fails, locking the owner
-     of the company out of their own portal. Ask for the row you actually
-     want. */
-  function lookupHolder(session) {
+  /* ---- who the session belongs to ----
+     Looked up by the Auth user's id, never by an address in the token. */
+  function loadMember(session) {
     var c = client();
-    var known = session || (_session || null);
-    var email = (known && known.user && known.user.email) || "";
-    var go = email
-      ? Promise.resolve(email.toLowerCase())
-      : c.auth.getSession().then(function (r) {
-          var s = r.data && r.data.session;
-          _session = s;
-          return ((s && s.user && s.user.email) || "").toLowerCase();
-        });
+    var uid = session && session.user && session.user.id;
+    if (!uid) return Promise.resolve(null);
+    return c.from("portal_accounts")
+      .select("id,email,full_name,role,status,shareholder_id,last_sign_in_at")
+      .eq("auth_user_id", uid)
+      .maybeSingle()
+      .then(function (r) {
+        if (r.error || !r.data) return null;
+        var account = r.data;
+        if (!account.shareholder_id) return { account: account, holder: null };
+        return c.from("shareholders")
+          .select("id,user_email,full_name,investor_ref,holder_type,country,status," +
+                  "joined_on,phone,address,directory_opt_in")
+          .eq("id", account.shareholder_id)
+          .maybeSingle()
+          .then(function (h) {
+            return { account: account, holder: h.error ? null : h.data };
+          });
+      });
+  }
 
-    return go.then(function (addr) {
-      if (!addr) return null;
-      return c.from("shareholders")
-        .select("id,user_email,full_name,investor_ref,holder_type,country,status," +
-                "joined_on,phone,address,directory_opt_in")
-        .eq("user_email", addr)
-        .maybeSingle()
-        .then(function (r) { return r.error ? null : r.data; });
+  /* What a page is handed. A holder's register record, with their account
+     laid over it; or, for an administrator who holds no shares, the account
+     alone in the same shape, so no page has to ask which it got. */
+  function merge(account, holder) {
+    var me = holder ? Object.assign({}, holder) : {
+      id: null, user_email: account.email, full_name: account.full_name || account.email,
+      investor_ref: "", holder_type: "", country: "", status: "active", joined_on: null,
+      phone: "", address: "", directory_opt_in: false
+    };
+    me.account_id = account.id;
+    me.account_email = account.email;
+    me.role = account.role;
+    me.is_admin = account.role === "admin";
+    me.has_holding = !!holder;
+    me.last_sign_in_at = account.last_sign_in_at;
+    return me;
+  }
+
+  function denied(reason) {
+    var c = client();
+    return c.auth.signOut().then(function () {
+      location.replace("login.html?" + reason + "=1");
+      return new Promise(function () {});
     });
   }
 
-  /* Called at the top of every protected page. Resolves with the holder row,
-     or redirects and never resolves. */
+  /* Called at the top of every page. Resolves with the signed in person, or
+     sends them to the sign in page and never resolves. */
   function requireShareholder() {
     if (!configured()) { showUnconfigured(); return new Promise(function () {}); }
     var c = client();
     return c.auth.getSession().then(function (r) {
       var session = r.data && r.data.session;
       if (!session) { location.replace("login.html"); return new Promise(function () {}); }
-      _session = session;
-      return lookupHolder(session).then(function (row) {
-        if (!row) {
-          // signed in, but not a holder. Do not leave a half authenticated
-          // session lying around.
-          return c.auth.signOut().then(function () {
-            location.replace("login.html?denied=1");
-            return new Promise(function () {});
-          });
-        }
-        _holder = row;
-        return row;
+      return loadMember(session).then(function (m) {
+        if (!m) return denied("denied");
+        if (m.account.status !== "active") return denied("disabled");
+        if (m.holder && m.holder.status !== "active") return denied("disabled");
+        _account = m.account;
+        _holder = m.holder;
+        _me = merge(m.account, m.holder);
+        return _me;
       });
     });
   }
 
-  function currentHolder() { return _holder; }
+  /* The administration pages. A holder who reaches one by address is sent to
+     the overview; the database would refuse them anyway, but they should not
+     be shown controls that cannot work. */
+  function requirePortalAdmin() {
+    return requireShareholder().then(function (me) {
+      if (!me.is_admin) {
+        location.replace("index.html");
+        return new Promise(function () {});
+      }
+      return me;
+    });
+  }
 
-  /* The signed in holder's id. Pages filter by it explicitly so the portal
-     shows your position even when your account can see more than it. */
+  function currentHolder() { return _me; }
+  function currentAccount() { return _account; }
   function holderId() { return _holder ? _holder.id : null; }
+  function isAdmin() { return !!(_account && _account.role === "admin"); }
 
   /* ---- the security log ----
      Written by the portal, never editable by the person it is about: there is
-     an insert policy for a holder's own rows and no update or delete policy at
-     all. A log its subject can rewrite is not a log. */
+     an insert policy for your own rows and no update or delete policy at all. */
   function record(kind, detail) {
     var c = client();
-    if (!c || !_holder) return Promise.resolve();
+    if (!c || !_account) return Promise.resolve();
     return c.from("portal_activity").insert({
-      shareholder_id: _holder.id,
+      account_id: _account.id,
+      shareholder_id: _holder ? _holder.id : null,
       kind: kind,
       detail: detail || "",
       device: shortDevice()
     }).then(function () {}, function () {});
   }
 
-  /* A recognisable name for this browser, not a fingerprint. Enough for the
-     reader to tell one of their own devices from a stranger's, and nothing
-     more precise than that. */
+  /* A recognisable name for this browser, not a fingerprint. */
   function shortDevice() {
     var ua = navigator.userAgent || "";
     var os = /Windows/.test(ua) ? "Windows"
@@ -194,10 +221,35 @@ window.PortalAuth = (function () {
     return br + " on " + os;
   }
 
-  /* ---- two factor ----
-     Supabase calls these factors. Enrolling returns a QR and a secret; the
-     factor stays unverified until a code from the app is accepted, so a
-     half finished enrolment cannot lock anybody out. */
+  /* ---- the portal-users edge function ----
+     Account changes need the secret key, so they happen on the server. The
+     publishable key goes on the apikey header only: the new keys are not JWTs,
+     and a gateway that sees one on Authorization rejects the request. */
+  function callFunction(action, payload, opts) {
+    opts = opts || {};
+    if (!configured()) return Promise.resolve({ error: "Sign in is not configured." });
+    var headers = { "Content-Type": "application/json", apikey: KEY_ };
+    var token = opts.token
+      ? Promise.resolve(opts.token)
+      : opts.anonymous
+        ? Promise.resolve(null)
+        : client().auth.getSession().then(function (r) {
+            return r.data && r.data.session ? r.data.session.access_token : null;
+          });
+    return token.then(function (t) {
+      if (t) headers.Authorization = "Bearer " + t;
+      var body = Object.assign({ action: action }, payload || {});
+      return fetch(URL_ + "/functions/v1/portal-users", {
+        method: "POST", headers: headers, body: JSON.stringify(body)
+      }).then(function (res) {
+        return res.json().catch(function () { return { error: "Unexpected reply (" + res.status + ")." }; });
+      }, function () {
+        return { error: "Could not reach the server. Check your connection and try again." };
+      });
+    });
+  }
+
+  /* ---- two factor ---- */
   function listFactors() {
     var c = client();
     if (!c) return Promise.resolve({ totp: [] });
@@ -224,8 +276,6 @@ window.PortalAuth = (function () {
     return client().auth.mfa.unenroll({ factorId: factorId });
   }
 
-  /* Shown instead of the portal when site-config has no Supabase values, which
-     is how a handed over copy arrives. */
   function showUnconfigured() {
     document.body.innerHTML =
       '<main class="login"><div class="login-card">' +
@@ -237,8 +287,8 @@ window.PortalAuth = (function () {
         '<div class="notice" style="border-left-color:var(--line-3)"><p>' +
           "Put your Supabase project URL and publishable key into " +
           "<code>assets/site-config.js</code>, then run " +
-          "<code>supabase/portal-schema.sql</code> in the SQL editor to create the " +
-          "share register this portal reads." +
+          "<code>supabase/portal-schema.sql</code> in the SQL editor and deploy the " +
+          "<code>portal-users</code> edge function." +
         "</p></div>" +
         '<a class="btn btn-block btn-sm" href="../index.html">Back to the site</a>' +
       "</div></main>";
@@ -247,18 +297,21 @@ window.PortalAuth = (function () {
   return {
     configured: configured,
     client: client,
-    redirectTo: redirectTo,
+    portalLoginEmail: portalLoginEmail,
     signIn: signIn,
-    sendReset: sendReset,
     updatePassword: updatePassword,
     signOut: signOut,
     signOutOthers: signOutOthers,
+    loadMember: loadMember,
     requireShareholder: requireShareholder,
-    lookupHolder: lookupHolder,
+    requirePortalAdmin: requirePortalAdmin,
     currentHolder: currentHolder,
+    currentAccount: currentAccount,
     holderId: holderId,
+    isAdmin: isAdmin,
     record: record,
     shortDevice: shortDevice,
+    callFunction: callFunction,
     listFactors: listFactors,
     enrollTotp: enrollTotp,
     verifyTotp: verifyTotp,

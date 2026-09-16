@@ -27,15 +27,21 @@
 
       var stats = '<div class="stats">' +
         P.statCard('Company valuation',
-                   v.total_valuation ? P.moneyBig(v.total_valuation) : '—',
+                   v.total_valuation ? P.moneyBig(v.total_valuation) : '·',
                    v.effective_on ? P.escapeHtml(v.method || 'Board valuation') +
                      '<span class="asof">As at ' + P.date(v.effective_on) + '</span>'
                      : 'No valuation published') +
-        P.statCard('Share price', v.price_per_share ? P.price(v.price_per_share) : '—',
+        P.statCard('Share price', v.price_per_share ? P.price(v.price_per_share) : '·',
                    v.effective_on ? 'Effective ' + P.date(v.effective_on) : '') +
         P.statCard('Shares in issue', P.shares(t.total_shares),
                    'Held by ' + (t.holders || 0) + ' ' +
                    ((t.holders === 1) ? 'shareholder' : 'shareholders')) +
+        (Number(t.company_total) > 0
+          ? P.statCard('Shares in the company', P.shares(t.company_total),
+                       Number(t.unallocated) > 0
+                         ? P.shares(t.unallocated) + ' of them not yet issued'
+                         : 'Every one of them is allotted')
+          : '') +
       '</div>';
 
       var history = '';
@@ -51,7 +57,7 @@
                 '<td class="num">' + P.date(x.effective_on) + '</td>' +
                 '<td class="money">' + P.price(x.price_per_share) + '</td>' +
                 '<td class="money">' + P.money(x.total_valuation) + '</td>' +
-                '<td>' + P.escapeHtml(x.method || '—') +
+                '<td>' + P.escapeHtml(x.method || '·') +
                   (x.note ? '<div class="doc-meta">' + P.escapeHtml(x.note) + '</div>' : '') +
                 '</td>' +
               '</tr>';
@@ -104,7 +110,7 @@
             return '<div class="doc">' + P.svg(P.I.file, 19) +
               '<div><div class="doc-name">' + P.escapeHtml(d.title) + '</div>' +
                 '<div class="doc-meta">' + P.escapeHtml(P.docKind(d.category)) +
-                '  ' + P.date(d.issued_on) + '</div></div>' +
+                ' · ' + P.date(d.issued_on) + '</div></div>' +
               '<div class="row-actions">' +
                 '<a class="btn btn-sm" href="documents.html">Open in Documents</a></div>' +
             '</div>';

@@ -52,7 +52,10 @@
       var summary = '<div class="stats">' +
         P.statCard('Shares owned', P.shares(p.shares), 'Active lots only') +
         P.statCard('Ownership', P.pct(p.ownership_pct),
-                   'Of ' + P.shares(p.total_shares) + ' in issue' + P.bar(p.ownership_pct, true)) +
+                   (Number(p.company_total) > 0
+                     ? 'Of ' + P.shares(p.company_total) + ' in the company'
+                     : 'Of ' + P.shares(p.total_shares) + ' in issue') +
+                   P.bar(p.ownership_pct, true)) +
         P.statCard('Current valuation', P.moneyBig(p.current_value),
                    P.deltaHtml(Number(p.current_value) || 0, Number(p.invested) || 0)) +
       '</div>';
@@ -85,7 +88,7 @@
             '<td class="money">' + P.price(h.unit_price) +
               '<div class="doc-meta">' + P.money(cost) + ' in total</div></td>' +
             '<td class="num">' + P.date(h.acquired_on) + '</td>' +
-            '<td class="money">' + (h.status === 'active' ? P.money(val) : '—') + '</td>' +
+            '<td class="money">' + (h.status === 'active' ? P.money(val) : '·') + '</td>' +
             '<td>' + P.stateTag(h.status) + '</td>' +
           '</tr>';
         }).join(''));
@@ -107,7 +110,7 @@
               '<td>' + P.escapeHtml(P.txKind(t.kind)) +
                 (t.status !== 'settled' ? ' ' + P.stateTag(t.status) : '') + '</td>' +
               '<td>' + P.escapeHtml((t.share_classes && t.share_classes.code) || '') + '</td>' +
-              '<td class="money">' + (t.shares ? P.shares(t.shares) : '—') + '</td>' +
+              '<td class="money">' + (t.shares ? P.shares(t.shares) : '·') + '</td>' +
               '<td class="money">' + P.shares(running) + '</td>' +
               '<td class="num">' + P.escapeHtml(t.reference) + '</td>' +
             '</tr>';

@@ -6,7 +6,7 @@
   AdminAuth.requireAdmin().then(function (admin) {
     var content = A.Shell("partners.html", 'Clients and partners', 'The marks shown in the two registers.', null, admin);
     if (!content) return;
-    content.innerHTML = A.notice('These are the marks in the Clients and Partners rows on the public site. Upload the image into the assets folder first, then point a row at it.') + A.panel({ title: 'Marks', flush: true, actions: '<button class="btn btn-key btn-sm" type="button" id="add">' + A.svg(A.I.plus, 14) + 'Add organisation</button>', body: '<div id="list">' + A.empty('Loading', 'Reading the registers.') + '</div>' });
+    content.innerHTML = A.notice('These are the marks in the Clients and Partners rows on the public site. To change the picture on a row, use Images, which uploads the file for you and measures it. This page is for the name, the register and the order.') + A.panel({ title: 'Marks', flush: true, actions: '<button class="btn btn-key btn-sm" type="button" id="add">' + A.svg(A.I.plus, 14) + 'Add organisation</button>', body: '<div id="list">' + A.empty('Loading', 'Reading the registers.') + '</div>' });
 
     var box = document.getElementById('list');
 
@@ -17,7 +17,7 @@
         { name: 'register', label: 'Register', value: o.register || 'partner',
           options: [{ value: 'client', label: 'Client' }, { value: 'partner', label: 'Partner' }] },
         { name: 'mark', label: 'Mark', value: o.mark || 'assets/',
-          hint: 'Path to the image, for example assets/mark-acme.png' },
+          hint: 'Set by Images when you upload one. A path like assets/mark-acme.png also works.' },
         { name: 'mark_w', label: 'Image width', type: 'number', value: (o.mark_w == null ? 160 : o.mark_w) },
         { name: 'mark_h', label: 'Image height', type: 'number', value: (o.mark_h == null ? 160 : o.mark_h),
           hint: 'The real pixel size, so the row reserves the right space.' },
@@ -30,8 +30,9 @@
       var mark = (v.mark || '').trim();
       if (!(v.name || '').trim()) return { error: 'Give it a name.' };
       if (reg !== 'client' && reg !== 'partner') return { error: 'Register must be client or partner.' };
-      if (!/^[A-Za-z0-9._\/-]+\.(png|jpg|jpeg|svg|webp)$/.test(mark)) {
-        return { error: 'The mark must be a path to an image file, like assets/mark-acme.png' };
+      // an uploaded mark is a storage address, not a path under assets
+      if (!/^[A-Za-z0-9._\/-]+\.(png|jpg|jpeg|svg|webp)$/.test(mark) && !/^https:\/\//.test(mark)) {
+        return { error: 'The mark must be an uploaded image or a path like assets/mark-acme.png' };
       }
       return { row: {
         name: v.name.trim(), register: reg, mark: mark,

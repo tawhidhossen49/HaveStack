@@ -290,6 +290,38 @@ table{border-collapse:collapse}
   background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(230,66,70,.09) 4px,rgba(230,66,70,.09) 8px);
 }
 
+/* ---- media library --------------------------------------------------------
+   Every picture the public site uses, shown large enough to recognise. The
+   preview is contained rather than cropped: half of these are marks, and a
+   mark cropped to fill a tile is unreadable. */
+/* The hairlines are drawn by the cards and clipped at the frame, so a row that
+   does not fill leaves ground rather than a slab of separator colour. */
+.media{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:0;background:var(--surface);border-top:1px solid var(--line);overflow:hidden;
+}
+.media-card{
+  display:flex;flex-direction:column;gap:var(--space-2);padding:var(--space-4);
+  background:var(--surface);box-shadow:1px 0 0 var(--line),0 1px 0 var(--line);
+}
+.media-shot{
+  aspect-ratio:16/10;display:grid;place-items:center;overflow:hidden;
+  background:var(--bg-2);border:1px solid var(--line);
+}
+.media-shot img{width:100%;height:100%;object-fit:contain}
+.media-name{font-size:14px;font-weight:500;letter-spacing:-.01em}
+.media-where{font-size:12.5px;color:var(--ink-3)}
+.media-src{
+  font-family:var(--mono);font-size:11.5px;color:var(--ink-3);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.media-foot{
+  margin-top:auto;padding-top:var(--space-2);display:flex;flex-wrap:wrap;
+  align-items:center;justify-content:space-between;gap:var(--space-3);
+}
+/* a picture the page points at and the server does not have */
+.media-card.is-gone .media-shot{border-color:rgba(230,66,70,.5);border-style:dashed}
+
 .tag{
   display:inline-flex;align-items:center;gap:6px;
   padding:3px 9px;border:1px solid var(--line-3);

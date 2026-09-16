@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Set up | HaveStack Portal</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="../assets/favicon.png" />
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content="#0A0A0C" />
+<link rel="stylesheet" href="../assets/console.css" />
+<link rel="stylesheet" href="css/portal.css" />
+</head>
+<body>
+<main class="login">
+  <div class="login-card" style="max-width:440px">
+    <span class="login-eyebrow">First run</span>
+    <div class="login-brand">
+      <img src="../assets/logo-mark-96.png" alt="" width="26" height="26" />
+      <h1>Set up the portal</h1>
+    </div>
+    <p class="lead" id="lead">Checking whether the portal needs setting up.</p>
+    <div id="slot"></div>
+  </div>
+</main>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+<script src="../assets/site-config.js"></script>
+<script src="../assets/console-ui.js"></script>
+<script src="js/vendor/supabase.js"></script>
+<script src="js/portal-auth.js"></script>
+<script>
+/* =========================================================
+   First time setup.
+
+   The portal's administrators are the people who can create
+   portal accounts, so the very first one has to come from
+   somewhere else. This page lets an admin panel administrator
+   prove who they are with their admin panel sign in, and then
+   creates a separate portal account for them with a password
+   of its own.
+
+   It only works while the portal has no administrator at all.
+   After that, portal access is given from inside the portal.
+
+   The admin panel sign in used here is never saved: it lives
+   in a client that does not persist, is used once to vouch
+   for the request, and is signed out straight after.
+   ========================================================= */
+(function () {
+  "use strict";
+  var lead = document.getElementById("lead");
+  var slot = document.getElementById("slot");
+  var esc  = ConsoleUI.escapeHtml;
+  var CFG  = window.SITE_CONFIG || {};
+
+  if (!PortalAuth.configured()) { PortalAuth.showUnconfigured(); return; }
+
+  // a throwaway client for the admin panel sign in: nothing stored, nothing
+  // refreshed, and a storage key of its own so it cannot disturb either the
+  // portal session or the admin panel's
+  var vouch = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false,
+            storageKey: "hs-portal-setup" }
+  });
+
+  function notice(msg, isError) {
+    if (!msg) return "";
+    return '<div class="notice" style="border-left-color:' +
+      (isError ? "var(--red)" : "var(--line-3)") + '"><p>' + msg + "</p></div>";
+  }
+
+  function alreadySetUp() {
+    lead.textContent = "The portal is already set up.";
+    slot.innerHTML = notice("It has an administrator, and new portal access is given from inside " +
+      "the portal. Ask a portal administrator to add you.") +
+      '<a class="btn btn-key btn-block" href="login.html">Go to sign in</a>';
+  }
+
+  /* ---- step one: prove you run the admin panel --------------------------- */
+  function proveView(msg, isError, email) {
+    lead.textContent = "Step 1 of 2. Confirm you run the admin panel.";
+    slot.innerHTML = notice(msg, isError) +
+      notice("Sign in with your <strong>admin panel</strong> address and password. They are " +
+             "used once, to confirm who you are, and are not saved.") +
+      '<form id="f1" novalidate>' +
+        '<div class="field"><label for="aemail">Admin panel email</label>' +
+          '<input id="aemail" type="email" autocomplete="username" value="' + esc(email || "") + '" /></div>' +
+        '<div class="field"><label for="apw">Admin panel password</label>' +
+          '<input id="apw" type="password" autocomplete="current-password" /></div>' +
+        '<button class="btn btn-key btn-block" type="submit" id="go1">Continue</button>' +
+      "</form>" +
+      '<p class="login-foot"><a href="login.html">Back to sign in</a></p>';
+
+    document.getElementById("f1").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var em = document.getElementById("aemail").value.trim().toLowerCase();
+      var pw = document.getElementById("apw").value;
+      if (!em || !pw) { proveView("Enter both your admin panel address and password.", true, em); return; }
+      var btn = document.getElementById("go1");
+      btn.disabled = true; btn.textContent = "Checking";
+      vouch.auth.signInWithPassword({ email: em, password: pw }).then(function (r) {
+        if (r.error || !r.data.session) {
+          proveView("That admin panel address and password did not match.", true, em);
+          return;
+        }
+        chooseView(r.data.session, em, "", false);
+      }).catch(function (err) {
+        proveView("Could not reach the server. " + esc(err.message || String(err)), true, em);
+      });
+    });
+  }
+
+  /* ---- step two: the portal account -------------------------------------- */
+  function chooseView(session, adminEmail, msg, isError) {
+    lead.textContent = "Step 2 of 2. Create your portal administrator account.";
+    slot.innerHTML = notice(msg, isError) +
+      notice("This is a separate sign in for the portal. Choose a password you do not use for " +
+             "the admin panel: the two stay independent, and changing one never changes the other.") +
+      '<form id="f2" novalidate>' +
+        '<div class="field"><label for="pemail">Portal email</label>' +
+          '<input id="pemail" type="email" autocomplete="off" value="' + esc(adminEmail) + '" />' +
+          '<span class="hint">Usually the same address. If it matches someone on the share register, ' +
+          'this account is linked to their holding.</span></div>' +
+        '<div class="field"><label for="pname">Your name</label>' +
+          '<input id="pname" type="text" autocomplete="name" /></div>' +
+        '<div class="field"><label for="ppw">Portal password</label>' +
+          '<input id="ppw" type="password" autocomplete="new-password" />' +
+          '<span class="hint">At least ten characters.</span></div>' +
+        '<div class="field"><label for="ppw2">Portal password again</label>' +
+          '<input id="ppw2" type="password" autocomplete="new-password" /></div>' +
+        '<button class="btn btn-key btn-block" type="submit" id="go2">Create the account</button>' +
+      "</form>";
+
+    document.getElementById("f2").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var pemail = document.getElementById("pemail").value.trim().toLowerCase();
+      var name = document.getElementById("pname").value.trim();
+      var pw = document.getElementById("ppw").value;
+      var pw2 = document.getElementById("ppw2").value;
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(pemail)) { ConsoleUI.toast("That does not look like an email address.", true); return; }
+      if (pw.length < 10) { ConsoleUI.toast("Use a portal password of at least ten characters.", true); return; }
+      if (pw !== pw2) { ConsoleUI.toast("Those two passwords do not match.", true); return; }
+
+      var btn = document.getElementById("go2");
+      btn.disabled = true; btn.textContent = "Creating";
+      PortalAuth.callFunction("bootstrap",
+        { email: pemail, password: pw, full_name: name },
+        { token: session.access_token }
+      ).then(function (r) {
+        if (!r || r.error) {
+          btn.disabled = false; btn.textContent = "Create the account";
+          chooseView(session, adminEmail, esc((r && r.error) || "Something went wrong."), true);
+          return;
+        }
+        return vouch.auth.signOut().catch(function () {}).then(function () { doneView(pemail); });
+      });
+    });
+  }
+
+  function doneView(email) {
+    lead.textContent = "The portal is set up.";
+    slot.innerHTML = notice("<strong>" + esc(email) + "</strong> is now a portal administrator. " +
+      "Sign in with your new portal password. From inside the portal you can set the share price, " +
+      "manage the register and give other people access.") +
+      '<a class="btn btn-key btn-block" href="login.html">Sign in to the portal</a>';
+  }
+
+  PortalAuth.callFunction("setup-state", {}, { anonymous: true }).then(function (r) {
+    if (r && r.error) { proveView("Could not check the portal: " + esc(r.error), true); return; }
+    if (r && r.setup_required === false) { alreadySetUp(); return; }
+    proveView("", false);
+  });
+})();
+</script>
+</body>
+</html>

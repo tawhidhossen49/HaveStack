@@ -89,7 +89,7 @@
             '<td class="money">' + P.shares(d.eligible_shares) + '</td>' +
             '<td class="money">' + P.money(d.gross) + '</td>' +
             '<td class="money">' + P.money(d.net) + '</td>' +
-            '<td class="num">' + (d.paid_on ? P.date(d.paid_on) : '—') + '</td>' +
+            '<td class="num">' + (d.paid_on ? P.date(d.paid_on) : '·') + '</td>' +
             '<td>' + P.stateTag(d.status) + '</td>' +
           '</tr>';
         }).join(''));

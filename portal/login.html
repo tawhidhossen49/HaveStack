@@ -14,6 +14,7 @@
 <body>
 <main class="login">
   <div class="login-card">
+    <span class="login-eyebrow">Shareholder portal</span>
     <div class="login-brand">
       <img src="../assets/logo-mark-96.png" alt="" width="26" height="26" />
       <h1>HaveStack Portal</h1>
@@ -35,8 +36,12 @@
   var lead = document.getElementById("lead");
   var slot = document.getElementById("slot");
   var esc  = ConsoleUI.escapeHtml;
+  var params = new URLSearchParams(location.search);
 
   if (!PortalAuth.configured()) { PortalAuth.showUnconfigured(); return; }
+
+  var OFF = "Your portal access has been switched off. If you think that is a mistake, " +
+            "contact your portal administrator.";
 
   function notice(msg, isError) {
     if (!msg) return "";
@@ -44,41 +49,52 @@
       (isError ? "var(--red)" : "var(--line-3)") + '"><p>' + msg + "</p></div>";
   }
 
+  /* Before the portal has an administrator nobody can sign in, so say how the
+     first one is made rather than showing a form that cannot work. */
+  function offerSetup() {
+    PortalAuth.callFunction("setup-state", {}, { anonymous: true }).then(function (r) {
+      var box = document.getElementById("setupHint");
+      if (!box || !r || !r.setup_required) return;
+      box.innerHTML = notice("The portal has no administrator yet. If you run the HaveStack " +
+        'admin panel, <a href="setup.html">set up the portal</a> to create the first one.');
+    });
+  }
+
   /* ---- sign in ----------------------------------------------------------- */
   function signInView(msg, isError, email) {
-    lead.textContent = "Sign in to view your shareholding.";
-    slot.innerHTML = notice(msg, isError) +
+    lead.textContent = "Sign in to the shareholder portal.";
+    slot.innerHTML = notice(msg, isError) + '<div id="setupHint"></div>' +
       '<form id="f" novalidate>' +
         '<div class="field"><label for="email">Email</label>' +
           '<input id="email" type="email" autocomplete="username" ' +
             'placeholder="you@example.com" value="' + esc(email || "") + '" /></div>' +
-        '<div class="field"><label for="pw">Password</label>' +
+        '<div class="field"><label for="pw">Portal password</label>' +
           '<input id="pw" type="password" autocomplete="current-password" /></div>' +
         '<button class="btn btn-key btn-block" type="submit" id="go">Sign in</button>' +
       "</form>" +
-      '<p class="login-foot"><a href="#" id="forgot">Forgot your password?</a><br />' +
-      "Accounts are created by the company. If you are a shareholder and cannot get in, " +
-      "contact the company secretary.</p>";
+      '<p class="login-foot">Your portal password is separate from any admin panel password.<br />' +
+      '<a href="#" id="forgot">Forgotten your password?</a></p>';
 
     document.getElementById("f").addEventListener("submit", function (e) {
       e.preventDefault();
       var em = document.getElementById("email").value.trim();
       var pw = document.getElementById("pw").value;
-      if (!em || !pw) { signInView("Enter both your address and password.", true, em); return; }
+      if (!em || !pw) { signInView("Enter both your address and your portal password.", true, em); return; }
 
       var btn = document.getElementById("go");
       btn.disabled = true; btn.textContent = "Signing in";
 
       PortalAuth.signIn(em, pw).then(function (res) {
         if (res.error) {
-          /* Supabase returns the same message for a wrong password and for an
-             address with no account. Repeat that rather than narrowing it:
-             saying which one it was tells a stranger whether an address is on
-             the share register, which is exactly what a register is not for. */
-          signInView("That address and password did not match an account.", true, em);
+          /* A switched off account is banned in Auth, which is the one refusal
+             worth naming. Otherwise the same words whether the address has no
+             account or the password is wrong: saying which tells a stranger
+             whether an address is on the share register. */
+          signInView(/banned/i.test(res.error.message || "") ? OFF
+                     : "That address and portal password did not match an account.", true, em);
           return;
         }
-        lead.textContent = "Checking the register.";
+        lead.textContent = "Checking your access.";
         return afterSession(res.data.session, em);
       }).catch(function (err) {
         signInView("Could not reach the server. " + esc(err.message || String(err)), true, em);
@@ -87,33 +103,53 @@
 
     document.getElementById("forgot").addEventListener("click", function (e) {
       e.preventDefault();
-      resetView(document.getElementById("email").value.trim());
+      forgotView(document.getElementById("email").value.trim());
+    });
+    offerSetup();
+  }
+
+  function forgotView(email) {
+    lead.textContent = "Forgotten your password?";
+    slot.innerHTML = notice("Portal passwords are set by your portal administrator, so ask them " +
+      "for a new one. The portal does not send reset emails: an emailed link is the easiest " +
+      "way into somebody else's account, and a share register should not have one.") +
+      '<p class="login-foot"><a href="#" id="back">Back to sign in</a></p>';
+    document.getElementById("back").addEventListener("click", function (e) {
+      e.preventDefault(); signInView("", false, email);
     });
   }
 
-  /* Signed in. Are they on the register, and is there a second factor still to
-     satisfy? Both have to pass before the portal opens. */
+  function logSignIn(m, detail) {
+    return PortalAuth.client().from("portal_activity").insert({
+      account_id: m.account.id,
+      shareholder_id: m.holder ? m.holder.id : null,
+      kind: "sign_in",
+      detail: detail,
+      device: PortalAuth.shortDevice()
+    }).then(function () {}, function () {});
+  }
+
+  /* Signed in. Is this sign in a portal account, is it switched on, and is
+     there a second factor still to satisfy? All three before the portal opens. */
   function afterSession(session, typed) {
-    var email = (session && session.user && session.user.email) || typed || "";
-    return PortalAuth.lookupHolder().then(function (row) {
-      if (!row) {
+    return PortalAuth.loadMember(session).then(function (m) {
+      if (!m) {
         return PortalAuth.client().auth.signOut().then(function () {
-          signInView("<strong>" + esc(email) + "</strong> signed in, but is not on the " +
-            "share register. If you believe you are a shareholder, contact the company " +
-            "secretary.", true, email);
+          signInView("That sign in has no portal access.", true, typed);
+        });
+      }
+      if (m.account.status !== "active" || (m.holder && m.holder.status !== "active")) {
+        return PortalAuth.client().auth.signOut().then(function () {
+          signInView(OFF, true, typed || m.account.email);
         });
       }
       return needsSecondFactor().then(function (factorId) {
-        if (factorId) { challengeView(factorId); return; }
-        PortalAuth.record("sign_in", "Signed in");
-        location.replace("index.html");
+        if (factorId) { challengeView(factorId, m); return; }
+        return logSignIn(m, "Signed in").then(function () { location.replace("index.html"); });
       });
     });
   }
 
-  /* Supabase reports the level this session has reached and the level the
-     account requires. A verified factor that has not been used this session is
-     the gap between the two. */
   function needsSecondFactor() {
     var c = PortalAuth.client();
     if (!c.auth.mfa || !c.auth.mfa.getAuthenticatorAssuranceLevel) return Promise.resolve(null);
@@ -127,7 +163,7 @@
     }).catch(function () { return null; });
   }
 
-  function challengeView(factorId) {
+  function challengeView(factorId, m) {
     lead.textContent = "One more step.";
     slot.innerHTML =
       '<form id="mf" novalidate>' +
@@ -151,8 +187,7 @@
           ConsoleUI.toast("That code was not accepted. Try the next one.", true);
           return;
         }
-        PortalAuth.record("sign_in", "Signed in with two factor");
-        location.replace("index.html");
+        logSignIn(m, "Signed in with two factor").then(function () { location.replace("index.html"); });
       });
     });
     document.getElementById("cancel").addEventListener("click", function (e) {
@@ -161,82 +196,16 @@
     });
   }
 
-  /* ---- ask for a reset link ---------------------------------------------- */
-  function resetView(email) {
-    lead.textContent = "Reset your password.";
-    slot.innerHTML =
-      '<form id="rf" novalidate>' +
-        '<div class="field"><label for="remail">Email</label>' +
-          '<input id="remail" type="email" autocomplete="username" value="' + esc(email || "") + '" />' +
-          '<span class="hint">We will send a link that lets you set a new password.</span></div>' +
-        '<button class="btn btn-key btn-block" type="submit" id="rgo">Send the link</button>' +
-      "</form>" +
-      '<p class="login-foot"><a href="#" id="back">Back to sign in</a></p>';
-
-    document.getElementById("rf").addEventListener("submit", function (e) {
-      e.preventDefault();
-      var em = document.getElementById("remail").value.trim();
-      if (!em) return;
-      var btn = document.getElementById("rgo");
-      btn.disabled = true; btn.textContent = "Sending";
-      PortalAuth.sendReset(em).then(function () {
-        lead.textContent = "Check your inbox.";
-        /* Same wording whether or not that address has an account. */
-        slot.innerHTML = notice("If <strong>" + esc(em) + "</strong> has an account, a " +
-          "reset link is on its way. It opens this page and asks for a new password.") +
-          '<p class="login-foot"><a href="login.html">Back to sign in</a></p>';
-      }).catch(function (err) {
-        btn.disabled = false; btn.textContent = "Send the link";
-        ConsoleUI.toast(err.message || String(err), true);
-      });
-    });
-    document.getElementById("back").addEventListener("click", function (e) {
-      e.preventDefault(); signInView("", false, email);
-    });
-  }
-
-  /* ---- arrived from a reset link ----------------------------------------- */
-  function newPasswordView() {
-    lead.textContent = "Set a new password.";
-    slot.innerHTML =
-      '<form id="pf" novalidate>' +
-        '<div class="field"><label for="p1">New password</label>' +
-          '<input id="p1" type="password" autocomplete="new-password" />' +
-          '<span class="hint">At least ten characters.</span></div>' +
-        '<div class="field"><label for="p2">Repeat it</label>' +
-          '<input id="p2" type="password" autocomplete="new-password" /></div>' +
-        '<button class="btn btn-key btn-block" type="submit" id="pgo">Save and sign in</button>' +
-      "</form>";
-
-    document.getElementById("pf").addEventListener("submit", function (e) {
-      e.preventDefault();
-      var a = document.getElementById("p1").value, b = document.getElementById("p2").value;
-      if (a.length < 10) { ConsoleUI.toast("Use at least ten characters.", true); return; }
-      if (a !== b)       { ConsoleUI.toast("Those two do not match.", true); return; }
-      var btn = document.getElementById("pgo");
-      btn.disabled = true; btn.textContent = "Saving";
-      PortalAuth.updatePassword(a).then(function (res) {
-        if (res.error) {
-          btn.disabled = false; btn.textContent = "Save and sign in";
-          ConsoleUI.toast(res.error.message, true); return;
-        }
-        location.replace("index.html");
-      });
-    });
-  }
-
-  /* ---- which of these is this? ------------------------------------------- */
-  var denied = new URLSearchParams(location.search).get("denied");
-  var recovery = /type=recovery/.test(location.hash || "");
-
+  /* ---- which view is this? ----------------------------------------------- */
   PortalAuth.client().auth.getSession().then(function (r) {
     var session = r.data && r.data.session;
-    if (recovery && session) { newPasswordView(); return; }
     if (!session) {
-      signInView(denied ? "That account is not on the share register." : "", !!denied);
+      signInView(params.get("disabled") ? OFF
+                 : params.get("denied") ? "That sign in has no portal access." : "",
+                 !!(params.get("disabled") || params.get("denied")));
       return;
     }
-    lead.textContent = "Checking the register.";
+    lead.textContent = "Checking your access.";
     return afterSession(session, "");
   }).catch(function (err) {
     signInView("Could not reach the server. " + esc(err.message || String(err)), true);

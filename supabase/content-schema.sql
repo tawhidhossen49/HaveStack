@@ -39,7 +39,7 @@ create table if not exists public.organisations (
   id         uuid primary key default gen_random_uuid(),
   name       text not null,
   register   text not null,
-  mark       text not null,               -- path under assets/
+  mark       text not null,               -- a path under assets/, or an upload
   mark_w     integer not null default 160,
   mark_h     integer not null default 160,
   sort       integer not null default 0,
@@ -47,8 +47,21 @@ create table if not exists public.organisations (
   updated_at timestamptz not null default now(),
   constraint organisations_register check (register in ('client', 'partner')),
   constraint organisations_name_len check (char_length(name) between 1 and 120),
-  constraint organisations_mark_shape check (mark ~ '^[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp)$')
+  constraint organisations_mark_shape check (mark ~ '^[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp)$'
+                                             or mark ~ '^https://')
 );
+
+-- What the row shipped with, so a mark uploaded from the panel can always be
+-- undone. Filled once from whatever the row already points at.
+alter table public.organisations add column if not exists mark_default text not null default '';
+update public.organisations set mark_default = mark where mark_default = '' and mark <> '';
+
+-- A mark uploaded from the panel is a storage address rather than a path, so
+-- the shape check has to allow both. Stated again here because a database
+-- created before this line existed still carries the older, stricter one.
+alter table public.organisations drop constraint if exists organisations_mark_shape;
+alter table public.organisations add constraint organisations_mark_shape
+  check (mark ~ '^[A-Za-z0-9._/-]+\.(png|jpg|jpeg|svg|webp)$' or mark ~ '^https://');
 
 -- keep updated_at honest without the client having to remember
 create or replace function public.touch_updated_at()

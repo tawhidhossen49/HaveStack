@@ -60,6 +60,11 @@ create table if not exists public.section_items (
 create index if not exists section_items_by_section
   on public.section_items (section_key, sort);
 
+-- What the block shipped with, so a picture uploaded from the panel can always
+-- be undone. Filled once from whatever the row already points at.
+alter table public.section_items add column if not exists image_default text not null default '';
+update public.section_items set image_default = image where image_default = '' and image <> '';
+
 -- search_path is pinned so the function cannot be redirected at a schema the
 -- caller controls, and nobody may call it directly: a trigger function is
 -- called by its trigger.
@@ -231,6 +236,100 @@ select * from (values
 Those relationships give an institutional buyer more than one organisation to examine, and continuity that does not rest on any one individual.', '{}'::text[], '', '', 'standing', 5)
 ) as seed(section_key, item_key, icon, title, body, bullets, link, image, meta, sort)
 where not exists (select 1 from public.section_items);
+
+-- ---------------------------------------------------------------------------
+--  Pictures
+--  Every image on the public page can be replaced from the panel. Two kinds
+--  already had a home: a capability or sector picture is a column on
+--  section_items, and a client or partner mark is a column on organisations.
+--  The rest are fixed parts of the layout, so they get a row each here, keyed
+--  by where they appear rather than by the file that happens to be there.
+--
+--  url empty means "use the file that ships with the site". The markup keeps
+--  the original either way, so a crawler, a reader with no JavaScript and
+--  anyone here while Supabase is slow all still see a finished page.
+-- ---------------------------------------------------------------------------
+create table if not exists public.site_images (
+  slot        text primary key,
+  label       text not null,
+  hint        text not null default '',
+  fallback    text not null default '',      -- the file in this repository
+  url         text not null default '',      -- the uploaded replacement, if any
+  sort        integer not null default 0,
+  updated_at  timestamptz not null default now(),
+  updated_by  text not null default '',
+  constraint site_images_slot_shape check (slot ~ '^[a-z][a-z0-9_]{1,40}$'),
+  constraint site_images_url_shape  check (url = '' or url ~ '^https://')
+);
+
+drop trigger if exists site_images_touch on public.site_images;
+create trigger site_images_touch before update on public.site_images
+  for each row execute function public.touch_updated_at();
+
+alter table public.site_images enable row level security;
+
+drop policy if exists "anyone reads site_images"   on public.site_images;
+drop policy if exists "admins change site_images"  on public.site_images;
+drop policy if exists "admins add site_images"     on public.site_images;
+
+create policy "anyone reads site_images"
+  on public.site_images for select to anon using (true);
+create policy "admins change site_images"
+  on public.site_images for update to authenticated
+  using (public.is_admin()) with check (public.is_admin());
+create policy "admins add site_images"
+  on public.site_images for insert to authenticated with check (public.is_admin());
+
+grant select on public.site_images to anon;
+grant select, insert, update on public.site_images to authenticated;
+
+insert into public.site_images (slot, label, hint, fallback, sort)
+select * from (values
+  ('logo_mark',      'Logo mark',              'The mark in the header, the footer and on the meeting request page.', 'assets/logo-mark-96.png', 10),
+  ('favicon',        'Browser tab icon',       'Shown in the browser tab and when the site is saved to a phone home screen.', 'assets/favicon.png', 20),
+  ('og_card',        'Social sharing card',    'The picture shown when a link to the site is pasted into a chat or a post.', 'assets/og-card.png', 30),
+  ('logo_full',      'Logo for search results','The larger mark search engines are given for the organisation.', 'assets/logo-mark.png', 40),
+  ('hero_poster',    'Hero still',             'The frame shown at the top of the page before the video plays, and instead of it on a slow connection.', 'assets/hero-poster.jpg', 50),
+  ('ops_systems',    'Operations, systems',    'The photograph behind the operations band.', 'assets/ops-systems.jpg', 60),
+  ('ops_ai',         'Operations, AI',         'Shown when a reader points at the AI row.', 'assets/ops-ai.jpg', 70),
+  ('ops_data',       'Operations, data',       'Shown when a reader points at the data row.', 'assets/ops-data.jpg', 80),
+  ('ops_infra',      'Operations, infrastructure', 'Shown when a reader points at the infrastructure row.', 'assets/ops-infra.jpg', 90),
+  ('ops_report',     'Operations, reporting',  'Shown when a reader points at the reporting row.', 'assets/ops-report.jpg', 100),
+  ('products_floor', 'Products backdrop',      'The photograph along the bottom of the products section.', 'assets/corridoor.jpg', 110)
+) as seed(slot, label, hint, fallback, sort)
+where not exists (select 1 from public.site_images s where s.slot = seed.slot);
+
+-- ---------------------------------------------------------------------------
+--  Where an uploaded picture lives
+--  Public to read, because these are the pictures on a public page and a
+--  signed link would expire behind the reader. Written only by an admin.
+-- ---------------------------------------------------------------------------
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('site-media', 'site-media', true, 5242880,
+        array['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml', 'image/avif'])
+on conflict (id) do update
+  set public = true,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "site media is public"      on storage.objects;
+drop policy if exists "admins upload site media"  on storage.objects;
+drop policy if exists "admins replace site media" on storage.objects;
+drop policy if exists "admins remove site media"  on storage.objects;
+
+create policy "site media is public"
+  on storage.objects for select to anon, authenticated
+  using (bucket_id = 'site-media');
+create policy "admins upload site media"
+  on storage.objects for insert to authenticated
+  with check (bucket_id = 'site-media' and public.is_admin());
+create policy "admins replace site media"
+  on storage.objects for update to authenticated
+  using (bucket_id = 'site-media' and public.is_admin())
+  with check (bucket_id = 'site-media' and public.is_admin());
+create policy "admins remove site media"
+  on storage.objects for delete to authenticated
+  using (bucket_id = 'site-media' and public.is_admin());
 
 -- ---------------------------------------------------------------------------
 --  Check it worked.
