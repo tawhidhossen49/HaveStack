@@ -53,6 +53,7 @@ window.Portal = (function () {
     { href: "admin-dividends.html",    label: "Declare dividends",  icon: I.check },
     { href: "admin-updates.html",      label: "Announcements",      icon: I.inbox },
     { href: "admin-documents.html",    label: "Publish documents",  icon: I.download },
+    { href: "admin-company.html",      label: "Company information", icon: I.building },
     { href: "admin-audit.html",        label: "Audit trail",        icon: I.clock }
   ]};
 
