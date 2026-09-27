@@ -14,5 +14,6 @@
   // never built by this editor.
   "deno.enable": true,
   "deno.enablePaths": ["supabase/functions"],
-  "deno.lint": true
+  "deno.lint": true,
+  "liveServer.settings.port": 5621
 }
