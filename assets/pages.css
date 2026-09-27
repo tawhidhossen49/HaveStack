@@ -1,0 +1,75 @@
+/* ==========================================================================
+   PAGES  the landing page's voice carried onto the inner pages
+   (the request form and the four maintenance pages). Presentation only: no
+   selector here touches a form control's behaviour, and nothing starts
+   hidden unless the page is allowed to move.
+   ========================================================================== */
+
+@font-face{
+  font-family:'Instrument Serif';font-style:normal;font-weight:400;font-display:swap;
+  src:url(fonts/instrument-serif-latin.woff2) format('woff2');
+}
+@font-face{
+  font-family:'Instrument Serif';font-style:italic;font-weight:400;font-display:swap;
+  src:url(fonts/instrument-serif-italic-latin.woff2) format('woff2');
+}
+:root{
+  --serif:'Instrument Serif','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --expo:cubic-bezier(.19,1,.22,1);
+}
+
+/* ---- header: glass, with the serif name ---- */
+.head{
+  background:rgba(8,8,10,.74);
+  -webkit-backdrop-filter:blur(16px) saturate(1.2);backdrop-filter:blur(16px) saturate(1.2);
+  border-bottom-color:rgba(255,255,255,.07);
+}
+.brand span{font-family:var(--serif);font-size:22px;font-weight:400;letter-spacing:-.005em}
+.foot-brand span{font-family:var(--serif);font-size:22px;font-weight:400;letter-spacing:0}
+
+/* ---- the display voice ---- */
+.mast .h1,.rail h1{
+  font-family:var(--serif);font-weight:400;letter-spacing:-.02em;line-height:.98;
+}
+.mast .h1{font-size:clamp(46px,7vw,112px);max-width:16ch}
+.rail h1{font-size:clamp(46px,5.4vw,84px)}
+.art .h2,.part-head h2{font-family:var(--serif);font-weight:400;letter-spacing:-.012em}
+.art .h2{font-size:clamp(30px,3.4vw,50px);line-height:1.04}
+.part-head h2{font-size:clamp(24px,2vw,30px);line-height:1.1}
+.part-no{color:var(--red-text,#FC918E)}
+.art .h3,.pact .h3{font-family:var(--serif);font-weight:400;font-size:clamp(22px,1.8vw,28px);letter-spacing:-.006em}
+.kicker{display:inline-flex;align-items:center;gap:12px;letter-spacing:.18em}
+.kicker::before{content:'';width:22px;height:1px;background:var(--red)}
+.mast .facts dd,.rail-meta dd{font-family:var(--serif);font-size:clamp(19px,1.5vw,23px);font-weight:400;line-height:1.2}
+.rail h2{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:500}
+.toc a{transition:color 200ms ease,padding 500ms var(--expo)}
+@media (hover:hover) and (pointer:fine){ .toc a:hover{padding-left:6px} }
+
+/* ---- the footer closes on the name ---- */
+.foot{position:relative;overflow:hidden}
+.foot::after{
+  content:'HaveStack';
+  content:'HaveStack' / '';
+  display:block;text-align:center;white-space:nowrap;pointer-events:none;user-select:none;
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(84px,22.5vw,340px);line-height:.78;letter-spacing:-.02em;
+  margin:clamp(40px,5vw,80px) 0 -.06em;
+  color:transparent;background:linear-gradient(to bottom,#2A2A30 0%,#16161A 85%);
+  -webkit-background-clip:text;background-clip:text;
+}
+
+/* ---- entry: the masthead rises in once, in CSS alone ---- */
+@media (prefers-reduced-motion:no-preference){
+  .mast .kicker,.mast .h1,.mast .lead,.mast .facts,
+  .rail > .kicker,.rail > h1,.rail > .lede,.rail > .rail-meta{
+    animation:pg-rise 1200ms var(--expo) both;
+  }
+  .mast .h1,.rail > h1{animation-delay:.08s}
+  .mast .lead,.rail > .lede{animation-delay:.18s}
+  .mast .facts,.rail > .rail-meta{animation-delay:.28s}
+  .mast::before{animation:pg-zoom 2200ms var(--expo) both}
+}
+@keyframes pg-rise{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:none}}
+@keyframes pg-zoom{from{transform:scale(1.12)}to{transform:none}}
+
+@media print{ .foot::after{display:none} }

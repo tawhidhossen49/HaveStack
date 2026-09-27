@@ -43,6 +43,15 @@
     function release(){ var h=document.querySelector('.hero'); if(h) h.classList.add('lit'); }
     document.addEventListener('DOMContentLoaded',function(){ requestAnimationFrame(release); });
     window.setTimeout(release,1200);
+    /* the preloader, once a session, and never for a reader who asked for
+       stillness. It takes itself down after a few seconds whatever happens,
+       so a failed script can never leave the page covered. */
+    try {
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches && !sessionStorage.getItem('hs-pl')) {
+        r.classList.add('pl');
+        window.setTimeout(function(){ r.classList.remove('pl','pl-out'); }, 6000);
+      }
+    } catch (e) {}
   })();
 </script>
 
@@ -972,6 +981,8 @@ html:not(.js) .rv{opacity:1;transform:none}
   a[href^="http"]::after{content:' (' attr(href) ')';font-size:8pt;color:#555}
 }
 </style>
+<link rel="preload" href="assets/fonts/instrument-serif-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/landing.css">
 </head>
 
 <body>
@@ -1014,6 +1025,16 @@ html:not(.js) .rv{opacity:1;transform:none}
 </defs></svg>
 
 <a class="skip" href="#main">Skip to content</a>
+
+<div class="plr" aria-hidden="true">
+  <span class="pl-panel"></span>
+  <div class="pl-in">
+    <img class="pl-mark" src="assets/logo-mark-96.png" alt="" width="46" height="46" />
+    <div class="pl-word"><span>H</span><span>a</span><span>v</span><span>e</span><span>S</span><span>t</span><span>a</span><span>c</span><span>k</span></div>
+    <div class="pl-bar"><i></i></div>
+    <div class="pl-meta"><span>Enterprise software</span><span class="pl-n">000</span></div>
+  </div>
+</div>
 
 <div id="page">
 <div id="anchor" aria-hidden="true"></div>
@@ -1062,15 +1083,19 @@ html:not(.js) .rv{opacity:1;transform:none}
 
   <div class="hero-inner">
     <div class="wrap hero-copy">
-      <h1 class="h1">Build your ideas</h1>
-      <p class="hero-sub">HaveStack builds, integrates and maintains the systems institutions depend on. Enterprise software from Dhaka.</p>
-      <div class="hero-cta">
-        <a class="btn" href="request.html"><span class="btn-face">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span></a>
-        <a class="btn-ghost" href="#about">Read the mandate <span class="ar" aria-hidden="true">&#8595;</span></a>
+      <h1 class="h1"><span class="hl"><span>Build your</span></span> <span class="hl"><span><em>ideas</em></span></span></h1>
+      <div class="hero-foot">
+        <p class="hero-sub">HaveStack builds, integrates and maintains the systems institutions depend on. Enterprise software from Dhaka.</p>
+        <div class="hero-cta">
+          <a class="btn" href="request.html"><span class="btn-face">Request a meeting <span class="ar" aria-hidden="true">&#8599;</span></span></a>
+          <a class="btn-ghost" href="#about">Read the mandate <span class="ar" aria-hidden="true">&#8595;</span></a>
+        </div>
       </div>
     </div>
     <div class="hero-tail" aria-hidden="true"></div>
   </div>
+  <div class="hero-meta" aria-hidden="true"><div class="wrap"><span>Enterprise software</span><span>Dhaka, Bangladesh</span></div></div>
+  <div class="hero-cue" aria-hidden="true"></div>
 </section>
 
 <div class="strip">
@@ -1083,6 +1108,12 @@ html:not(.js) .rv{opacity:1;transform:none}
       <a href="#maintenance"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-gauge"/></svg>Maintenance</a>
     </div>
   </div>
+</div>
+
+<!-- Decoration. The script refills it from the capability tabs, so it follows
+     whatever the admin panel names the practice areas. -->
+<div class="ticker ticker-cap" aria-hidden="true">
+  <div class="ticker-track"><span>Resource planning</span><i></i><span>Learning</span><i></i><span>Public services</span><i></i><span>Integration</span><i></i><span>Managed operations</span><i></i></div>
 </div>
 
 <!-- ============================ MANDATE ============================ -->
@@ -1560,6 +1591,9 @@ html:not(.js) .rv{opacity:1;transform:none}
       </div>
     </div>
   </div>
+  <div class="ticker ticker-cta" aria-hidden="true">
+    <div class="ticker-track"><span>Request a meeting</span><i></i><span>Request a meeting</span><i></i><span>Request a meeting</span><i></i><span>Request a meeting</span><i></i></div>
+  </div>
 </section>
 
 </main>
@@ -1775,5 +1809,11 @@ html:not(.js) .rv{opacity:1;transform:none}
      finished page. -->
 <script src="assets/site-config.js"></script>
 <script src="assets/site-content.js" defer></script>
+<!-- The scroll layer. Presentation only: if any of these fail to load the page
+     stays exactly as the stylesheets leave it. -->
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/vendor/lenis.min.js" defer></script>
+<script src="assets/landing.js" defer></script>
 </body>
 </html>
