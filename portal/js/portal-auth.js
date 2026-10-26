@@ -60,11 +60,14 @@ window.PortalAuth = (function () {
 
   /* The portal's own sign in address for a real one. Must stay identical to
      portalLoginEmail() in supabase/functions/portal-users/index.ts, which
-     created the account with it. */
+     created the account with it. Someone who types the +hsportal address
+     they have seen in the dashboard is let through as typed, rather than
+     being turned into name+hsportal+hsportal@domain, which never matches. */
   function portalLoginEmail(real) {
     var e = String(real || "").trim().toLowerCase();
     var at = e.lastIndexOf("@");
     if (at < 1) return e;
+    if (/\+hsportal$/.test(e.slice(0, at))) return e;
     return e.slice(0, at) + "+hsportal" + e.slice(at);
   }
 

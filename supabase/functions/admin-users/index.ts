@@ -11,13 +11,13 @@
 //  Every request is checked twice before anything happens:
 //    1. the caller's token has to resolve to a real user
 //    2. that user's address has to be in public.admins
-//  Supabase verifies the token is signed by this project before the function
-//  runs, but the anon key is also such a token, so that check alone would let
-//  anybody through. The allowlist lookup below is the one that matters.
+//  The function is deployed with JWT verification off, like portal-users,
+//  because it does its own: getUser() below rejects anything that is not a
+//  real signed in user, and the allowlist lookup is the check that matters.
 //
-//  Deploy from the dashboard: Edge Functions, new function named
-//  admin-users, paste this in, Deploy. SUPABASE_URL and
-//  SUPABASE_SERVICE_ROLE_KEY are injected for you; there is nothing to set.
+//  It must be deployed under the exact name admin-users, because that is the
+//  address the admin panel calls. SUPABASE_URL and the secret key are injected
+//  for you; there is nothing to set.
 // ===========================================================================
 // Editors that check this with the Node TypeScript server report "cannot find
 // module" on the URL import below and "cannot find name Deno" further down.
@@ -40,12 +40,29 @@ function json(body: unknown, status = 200) {
   });
 }
 
+// New projects carry their secret keys as a JSON object keyed by name; older
+// ones carry the legacy service role key. Accept either, the same way
+// portal-users does.
+function secretKey(): string {
+  const many = Deno.env.get("SUPABASE_SECRET_KEYS");
+  if (many) {
+    try {
+      const keys = JSON.parse(many) as Record<string, string>;
+      if (keys.default) return keys.default;
+      const first = Object.values(keys)[0];
+      if (first) return first;
+    } catch { /* fall back to the legacy key below */ }
+  }
+  return Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   if (req.method !== "POST") return json({ error: "Use POST." }, 405);
 
-  const url = Deno.env.get("SUPABASE_URL")!;
-  const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const url = Deno.env.get("SUPABASE_URL") || "";
+  const serviceKey = secretKey();
+  if (!url || !serviceKey) return json({ error: "The server is missing its keys." }, 500);
   const admin = createClient(url, serviceKey, { auth: { persistSession: false } });
 
   // ---- who is asking -------------------------------------------------------
